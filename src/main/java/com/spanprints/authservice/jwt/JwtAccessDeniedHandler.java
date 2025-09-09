@@ -1,0 +1,30 @@
+package com.spanprints.authservice.jwt;
+
+import java.io.IOException;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.spanprints.authservice.dto.ErrorResponseDto;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+@Component
+public class JwtAccessDeniedHandler implements AccessDeniedHandler {
+
+	@Override
+	public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException exception)
+			throws IOException {
+		HttpStatus status = HttpStatus.valueOf(HttpServletResponse.SC_FORBIDDEN);
+		response.setStatus(status.value());
+		response.setContentType("application/json");
+		ErrorResponseDto responseBody = new ErrorResponseDto(status, "Forbidden",
+				exception.getMessage(), request.getRequestURI());
+		response.getWriter().write(new ObjectMapper().writeValueAsString(responseBody));
+        response.getWriter().flush();
+	}
+}
