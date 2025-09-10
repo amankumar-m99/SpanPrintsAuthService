@@ -53,7 +53,7 @@ public class AccountService {
 		TokenResponseDto tokenResponse = verificationTokenService.getTokenResponseForAccount(account);
 
 		// 3. Send verification email (outside transaction � discussed below)
-		publisher.publishEvent(new AccountRegisteredEvent(request.getEmail(), tokenResponse));
+		publisher.publishEvent(new AccountRegisteredEvent(request.getEmail(), request.getUsername(), tokenResponse));
 
 		return BasicUtils.maskEmail(request.getEmail());
 	}

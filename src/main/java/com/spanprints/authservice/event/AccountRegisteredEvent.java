@@ -10,5 +10,6 @@ import lombok.Getter;
 public class AccountRegisteredEvent {
 
 	private String email;
+	private String username;
 	private TokenResponseDto tokenResponseDto;
 }
