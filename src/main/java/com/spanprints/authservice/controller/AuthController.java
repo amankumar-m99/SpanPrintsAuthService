@@ -25,15 +25,14 @@ import com.spanprints.authservice.dto.RegisterRequestDto;
 import com.spanprints.authservice.dto.RoleSaveDto;
 import com.spanprints.authservice.dto.RoleUpdateDto;
 import com.spanprints.authservice.dto.SuccessResponseDto;
-import com.spanprints.authservice.dto.TokenResponseDto;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.Role;
 import com.spanprints.authservice.jwt.CustomUserDetailsService;
 import com.spanprints.authservice.jwt.JwtResponseDto;
 import com.spanprints.authservice.jwt.JwtUtils;
 import com.spanprints.authservice.service.AccountService;
-import com.spanprints.authservice.service.AccountVerificationService;
 import com.spanprints.authservice.service.RoleService;
+import com.spanprints.authservice.service.VerificationTokenService;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -52,24 +51,24 @@ public class AuthController {
 
 	private AccountService accountService;
 
-	private AccountVerificationService accountVerificationService;
+	private VerificationTokenService verificationTokenService;
 
 	private RoleService roleService;
 
 	public AuthController(AuthenticationManager authenticationManager, CustomUserDetailsService userDetailsService,
 			JwtUtils jwtUtils, AccountService accountService, RoleService roleService,
-			AccountVerificationService accountVerificationService) {
+			VerificationTokenService verificationTokenService) {
 		this.authenticationManager = authenticationManager;
 		this.userDetailsService = userDetailsService;
 		this.jwtUtils = jwtUtils;
 		this.accountService = accountService;
 		this.roleService = roleService;
-		this.accountVerificationService = accountVerificationService;
+		this.verificationTokenService = verificationTokenService;
 	}
 
 	@GetMapping("/verify")
 	public ResponseEntity<SuccessResponseDto> verifyUser(@RequestParam("token") String verificationToken) {
-		Account account = accountVerificationService.verifyToken(verificationToken);
+		Account account = verificationTokenService.verifyToken(verificationToken);
 		accountService.enableAccount(account);
 		HttpStatus status = HttpStatus.OK;
 		SuccessResponseDto responseDto = new SuccessResponseDto(status, "Account verified successfully.");
@@ -95,16 +94,16 @@ public class AuthController {
 	}
 
 	@PostMapping("/account")
-	public ResponseEntity<TokenResponseDto> register(@Valid @RequestBody RegisterRequestDto request) {
-		Account account = accountService.register(request);
-		TokenResponseDto tokenResponseForAccount = accountVerificationService.getTokenResponseForAccount(account);
-//		String link = "https://yourapp.com/api/auth/verify?token=" + token;
-//		emailService.send(user.getEmail(), "Click to verify: " + link);
-		return new ResponseEntity<>(tokenResponseForAccount, HttpStatus.CREATED);
+	public ResponseEntity<SuccessResponseDto> register(@Valid @RequestBody RegisterRequestDto request) {
+		String email = accountService.register(request);
+		String message = String.format(
+				"Account created sucessfully. Verification link sent to your registered e-mail address `%s`", email);
+		SuccessResponseDto responseDto = new SuccessResponseDto(HttpStatus.CREATED, message);
+		return new ResponseEntity<>(responseDto, responseDto.getStatus());
 	}
 
-	@GetMapping("/account/{id}")
-	public ResponseEntity<Account> getAccountById(@PathVariable @NotNull @Positive @Min(1) Long id) {
+	@GetMapping("/account/{accountId}")
+	public ResponseEntity<Account> getAccountById(@PathVariable("accountId") @NotNull @Positive @Min(1) Long id) {
 		Account accounts = accountService.getAccountById(id);
 		return new ResponseEntity<>(accounts, HttpStatus.OK);
 	}
@@ -116,15 +115,13 @@ public class AuthController {
 	}
 
 	@PutMapping("/account")
-	public ResponseEntity<Account> updateAccount(@Valid @RequestBody RegisterRequestDto request) {
-		Account account = accountService.register(request);
-		return new ResponseEntity<>(account, HttpStatus.OK);
+	public ResponseEntity<String> updateAccount(@Valid @RequestBody RegisterRequestDto request) {
+		return new ResponseEntity<>(accountService.register(request), HttpStatus.OK);
 	}
 
 	@PutMapping("/account-admin")
-	public ResponseEntity<Account> updateAccountByAdmin(@Valid @RequestBody RegisterRequestDto request) {
-		Account account = accountService.register(request);
-		return new ResponseEntity<>(account, HttpStatus.OK);
+	public ResponseEntity<String> updateAccountByAdmin(@Valid @RequestBody RegisterRequestDto request) {
+		return new ResponseEntity<>(accountService.register(request), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/accounts")
@@ -141,7 +138,7 @@ public class AuthController {
 	}
 
 	@GetMapping("/role/{roleId}")
-	public ResponseEntity<Role> getRole(@PathVariable @NotNull @Positive @Min(1) Long id) {
+	public ResponseEntity<Role> getRole(@PathVariable("roleId") @NotNull @Positive @Min(1) Long id) {
 		return new ResponseEntity<>(roleService.getRoleById(id), HttpStatus.OK);
 	}
 
@@ -156,8 +153,8 @@ public class AuthController {
 	}
 
 	@DeleteMapping("/role/{roleId}")
-	public ResponseEntity<SuccessResponseDto> deleteRole(@PathVariable @NotNull @Positive @Min(1) Long roleId) {
-		return new ResponseEntity<>(roleService.deleteRoleById(roleId), HttpStatus.OK);
+	public ResponseEntity<SuccessResponseDto> deleteRole(@PathVariable("roleId") @NotNull @Positive @Min(1) Long id) {
+		return new ResponseEntity<>(roleService.deleteRoleById(id), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/roles")

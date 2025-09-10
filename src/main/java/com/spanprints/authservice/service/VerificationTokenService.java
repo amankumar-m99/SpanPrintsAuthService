@@ -8,27 +8,27 @@ import org.springframework.stereotype.Service;
 
 import com.spanprints.authservice.dto.TokenResponseDto;
 import com.spanprints.authservice.entity.Account;
-import com.spanprints.authservice.entity.AccountVerificationToken;
+import com.spanprints.authservice.entity.VerificationToken;
 import com.spanprints.authservice.exception.account.verification.AccountVerificationTokenAlreadyUsedException;
 import com.spanprints.authservice.exception.account.verification.AccountVerificationTokenExpiredException;
 import com.spanprints.authservice.exception.account.verification.AccountVerificationTokenNotFoundException;
 import com.spanprints.authservice.repository.AccountVerificationRepository;
 
 @Service
-public class AccountVerificationService {
+public class VerificationTokenService {
 
 	@Autowired
 	private AccountVerificationRepository repository;
 
 	public TokenResponseDto getTokenResponseForAccount(Account account) {
-		AccountVerificationToken tokenForAccount = addTokenForAccount(account);
+		VerificationToken tokenForAccount = addTokenForAccount(account);
 		return new TokenResponseDto(tokenForAccount.getToken(), tokenForAccount.getExpiryDate());
 	}
 
-	public AccountVerificationToken addTokenForAccount(Account account) {
+	public VerificationToken addTokenForAccount(Account account) {
 		String uuidToken = UUID.randomUUID().toString();
 		LocalDateTime expiry = LocalDateTime.now().plusDays(1);
-		AccountVerificationToken token = new AccountVerificationToken(null, uuidToken, expiry, false, account);
+		VerificationToken token = new VerificationToken(null, uuidToken, expiry, false, account);
 		return repository.save(token);
 	}
 
