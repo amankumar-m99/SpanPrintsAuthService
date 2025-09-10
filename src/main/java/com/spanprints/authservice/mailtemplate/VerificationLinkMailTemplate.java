@@ -20,7 +20,7 @@ public class VerificationLinkMailTemplate {
 				.footer {padding: 18px 32px;font-size: 13px;color: #6b7280;border-top: 1px solid #eef2f7;text-align: center;}
 				a.support {color: #2563eb;text-decoration: none;}@media (max-width: 420px) {.content {padding: 20px;}.footer {padding: 16px 20px;}}
 				</style></head><body><div role="article" aria-label="Account activation"
-				style="width: 100%;max-width: 580px;margin: 24px auto;background: white;border-radius: 8px;overflow: hidden;box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);">
+				style="width: 100%%;max-width: 580px;margin: 24px auto;background: white;border-radius: 8px;overflow: hidden;box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);">
 				<div class="header"><h1>Activate your %s account</h1></div><div class="content"><p style="margin-top: 0;font-size: 16px;font-weight: 600;">Hi %s,</p>
 				<p>Thanks for creating an account with <strong>%s</strong>. To complete your registration and activate your account,
 				  please confirm your email address by clicking the button below (expires in %s):</p>
@@ -29,7 +29,7 @@ public class VerificationLinkMailTemplate {
 				<a href="%s" target="_blank" rel="noopener" class="support">%s</a></p><hr style="border:none;border-top:1px solid #f1f5f9;margin:18px 0;">
 				<p class="note">If you didn't create an account with <strong>%s</strong>, you can safely ignore this email. No action is required.</p>
 				<p style="margin-top:18px;">Need help? Contact our support at <a href="mailto:%s" class="support">%s</a>.</p></div>
-				<div class="footer"><div>&copy; %d {{app_name}}. All rights reserved.</div><div style="margin-top:8px;">
+				<div class="footer"><div>&copy; %d %s. All rights reserved.</div><div style="margin-top:8px;">
 				If you did not request this email, you can safely ignore it.</div></div></div></body></html>
 										"""
 				.formatted(appName, username, appName, expiresAt, activationLink, activationLink, activationLink,
