@@ -11,6 +11,7 @@ public class SwaggerConfig {
 
 	@Bean
 	OpenAPI apiInfo() {
-		return new OpenAPI().info(new Info().title("Auth Service").description("This is auth service for SpanPrints").version("1.0"));
+		return new OpenAPI().info(
+				new Info().title("Auth Service").description("This is auth service for SpanPrints").version("1.0"));
 	}
 }
