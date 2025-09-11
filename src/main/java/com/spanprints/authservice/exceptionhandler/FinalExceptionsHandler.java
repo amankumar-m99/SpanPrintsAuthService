@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @RestControllerAdvice
 @Order(Ordered.LOWEST_PRECEDENCE)
-public class FinalExceptionHandler {
+public class FinalExceptionsHandler {
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ErrorResponseDto> handleAnyUnHandledException(Exception ex, HttpServletRequest request) {

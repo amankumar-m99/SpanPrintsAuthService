@@ -21,7 +21,7 @@ import jakarta.validation.ConstraintViolationException;
 
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
-public class GlobalExceptionHandler {
+public class GlobalExceptionsHandler {
 
 	// Handle @Valid body validation errors
 	@ExceptionHandler(MethodArgumentNotValidException.class)
