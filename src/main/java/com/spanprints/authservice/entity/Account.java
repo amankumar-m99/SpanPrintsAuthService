@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -19,6 +20,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -52,6 +54,15 @@ public class Account implements UserDetails  {
 	@ManyToMany(fetch=FetchType.EAGER, cascade=CascadeType.MERGE)
 	@JoinTable(name = "ACCOUNT_ROLE", joinColumns = {@JoinColumn(name="ACCOUNT_ID")}, inverseJoinColumns = {@JoinColumn(name="ROLE_ID")})
 	private Set<Role> roles;
+
+	@OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnore
+    private VerificationToken verificationToken;
+
+	@JsonProperty("verificationTokenId")  // will be included in JSON
+	public Long getVerificationTokenId() {
+	    return verificationToken != null ? verificationToken.getId() : null;
+	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -27,6 +27,7 @@ import com.spanprints.authservice.dto.RoleUpdateDto;
 import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.Role;
+import com.spanprints.authservice.entity.VerificationToken;
 import com.spanprints.authservice.jwt.CustomUserDetailsService;
 import com.spanprints.authservice.jwt.JwtResponseDto;
 import com.spanprints.authservice.jwt.JwtUtils;
@@ -64,6 +65,19 @@ public class AuthController {
 		this.accountService = accountService;
 		this.roleService = roleService;
 		this.verificationTokenService = verificationTokenService;
+	}
+
+	@GetMapping("/tokens")
+	public ResponseEntity<List<VerificationToken>> getAllTokens() {
+		List<VerificationToken> allTokens = verificationTokenService.getAllTokens();
+		return new ResponseEntity<>(allTokens, HttpStatus.OK);
+	}
+
+	@DeleteMapping("/token/{tokenId}")
+	public ResponseEntity<SuccessResponseDto> deleteTokenById(
+			@PathVariable("tokenId") @NotNull @Positive @Min(1) Long id) {
+		SuccessResponseDto response = verificationTokenService.deleteTokenById(id);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	@GetMapping("/verify")
@@ -127,6 +141,13 @@ public class AuthController {
 	@DeleteMapping("/accounts")
 	public ResponseEntity<SuccessResponseDto> deleteAllAccounts() {
 		SuccessResponseDto response = accountService.deleteAllAccounts();
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+	@DeleteMapping("/account/{accountId}")
+	public ResponseEntity<SuccessResponseDto> deleteAccountById(
+			@PathVariable("accountId") @NotNull @Positive @Min(1) Long id) {
+		SuccessResponseDto response = accountService.deleteById(id);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
