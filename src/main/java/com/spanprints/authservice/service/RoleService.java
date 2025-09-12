@@ -49,15 +49,12 @@ public class RoleService {
 
 	public SuccessResponseDto deleteRoleById(Long roleId) {
 		repository.delete(getRoleById(roleId));
-		SuccessResponseDto response = new SuccessResponseDto(HttpStatus.OK,
-				String.format("Deleted role by id `%d`", roleId));
-		return response;
+		return new SuccessResponseDto(HttpStatus.OK, String.format("Deleted role by id `%d`", roleId));
 	}
 
 	public SuccessResponseDto deleteAllRoles() {
 		repository.deleteAll();
-		SuccessResponseDto response = new SuccessResponseDto(HttpStatus.OK, "Deleted all roles.");
-		return response;
+		return new SuccessResponseDto(HttpStatus.OK, "Deleted all roles.");
 	}
 
 	private void throwIfRoleAlreadyExists(String roleName) {

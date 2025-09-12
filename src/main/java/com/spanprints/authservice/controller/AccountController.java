@@ -59,15 +59,15 @@ public class AccountController {
 
 	@DeleteMapping("/accounts")
 	public ResponseEntity<SuccessResponseDto> deleteAllAccounts() {
-		SuccessResponseDto response = accountService.deleteAllAccounts();
-		return new ResponseEntity<>(response, response.getStatus());
+		SuccessResponseDto responseDto = accountService.deleteAllAccounts();
+		return new ResponseEntity<>(responseDto, responseDto.getStatus());
 	}
 
 	@DeleteMapping("/account/{accountId}")
 	public ResponseEntity<SuccessResponseDto> deleteAccountById(
 			@PathVariable("accountId") @NotNull @Positive @Min(1) Long id) {
-		SuccessResponseDto response = accountService.deleteById(id);
-		return new ResponseEntity<>(response, response.getStatus());
+		SuccessResponseDto responseDto = accountService.deleteById(id);
+		return new ResponseEntity<>(responseDto, responseDto.getStatus());
 	}
 
 }
