@@ -20,17 +20,17 @@ public class RoleExceptionsHandler {
 	@ExceptionHandler(RoleNotFoundException.class)
 	public ResponseEntity<ErrorResponseDto> handleRoleNotFoundException(RoleNotFoundException ex,
 			HttpServletRequest request) {
-		ErrorResponseDto errorResponse = new ErrorResponseDto(HttpStatus.NOT_FOUND, null, ex.getMessage(),
+		ErrorResponseDto responseDto = new ErrorResponseDto(HttpStatus.NOT_FOUND, null, ex.getMessage(),
 				request.getRequestURI());
-		return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
+		return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
 	}
 
 	@ExceptionHandler(RoleAlreadyExistsException.class)
 	public ResponseEntity<ErrorResponseDto> handleRoleAlreadyExistsException(RoleAlreadyExistsException ex,
 			HttpServletRequest request) {
-		ErrorResponseDto errorResponse = new ErrorResponseDto(HttpStatus.BAD_REQUEST, null, ex.getMessage(),
+		ErrorResponseDto responseDto = new ErrorResponseDto(HttpStatus.BAD_REQUEST, null, ex.getMessage(),
 				request.getRequestURI());
-		return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
+		return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
 	}
 
 }

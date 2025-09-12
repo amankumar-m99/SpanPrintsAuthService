@@ -37,8 +37,8 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 		}
 		response.setStatus(status.value());
 		response.setContentType("application/json");
-		ErrorResponseDto responseBody = new ErrorResponseDto(status, "Unauthorized", message, path);
-		response.getWriter().write(new ObjectMapper().writeValueAsString(responseBody));
+		ErrorResponseDto responseDto = new ErrorResponseDto(status, "Unauthorized", message, path);
+		response.getWriter().write(new ObjectMapper().writeValueAsString(responseDto));
 		response.getWriter().flush();
 	}
 }

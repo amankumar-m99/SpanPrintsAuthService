@@ -30,9 +30,9 @@ public class GlobalExceptionsHandler {
 		List<String> errors = ex.getBindingResult().getFieldErrors().stream()
 				.map(err -> err.getField() + ": " + err.getDefaultMessage()).toList();
 
-		ErrorResponseDto errorResponse = new ErrorResponseDto(HttpStatus.BAD_REQUEST, null, "Validation failed",
+		ErrorResponseDto responseDto = new ErrorResponseDto(HttpStatus.BAD_REQUEST, null, "Validation failed",
 				request.getRequestURI(), errors);
-		return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
+		return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
 	}
 
 	// Handle validation errors for query params / path variables
@@ -41,9 +41,9 @@ public class GlobalExceptionsHandler {
 			HttpServletRequest request) {
 		List<String> errors = ex.getConstraintViolations().stream()
 				.map(violation -> violation.getPropertyPath() + ": " + violation.getMessage()).toList();
-		ErrorResponseDto errorResponse = new ErrorResponseDto(HttpStatus.BAD_REQUEST, null, "Validation failed",
+		ErrorResponseDto responseDto = new ErrorResponseDto(HttpStatus.BAD_REQUEST, null, "Validation failed",
 				request.getRequestURI(), errors);
-		return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
+		return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
 	}
 
 	@ExceptionHandler(HandlerMethodValidationException.class)
@@ -51,9 +51,9 @@ public class GlobalExceptionsHandler {
 			HttpServletRequest request) {
 		String message = ex.getAllErrors().stream().map(err -> err.getDefaultMessage()).findFirst()
 				.orElse("Validation failed");
-		ErrorResponseDto errorResponse = new ErrorResponseDto(HttpStatus.BAD_REQUEST, "Bad Request", message,
+		ErrorResponseDto responseDto = new ErrorResponseDto(HttpStatus.BAD_REQUEST, "Bad Request", message,
 				request.getRequestURI(), null);
-		return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
+		return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
 	}
 
 	// path-variable data-type mismatch
@@ -62,17 +62,17 @@ public class GlobalExceptionsHandler {
 			HttpServletRequest request) {
 		String message = String.format("Invalid value '%s' for parameter '%s'. Expected type: %s", ex.getValue(),
 				ex.getName(), ex.getRequiredType() != null ? ex.getRequiredType().getSimpleName() : "unknown");
-		ErrorResponseDto errorResponse = new ErrorResponseDto(HttpStatus.BAD_REQUEST, "Bad Request", message,
+		ErrorResponseDto responseDto = new ErrorResponseDto(HttpStatus.BAD_REQUEST, "Bad Request", message,
 				request.getRequestURI(), null);
-		return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
+		return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
 	}
 
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
 	public ResponseEntity<ErrorResponseDto> handleHttpRequestMethodNotSupportedException(
 			HttpRequestMethodNotSupportedException ex, HttpServletRequest request) {
-		ErrorResponseDto errorResponse = new ErrorResponseDto(HttpStatus.METHOD_NOT_ALLOWED, "Method not allowed",
+		ErrorResponseDto responseDto = new ErrorResponseDto(HttpStatus.METHOD_NOT_ALLOWED, "Method not allowed",
 				ex.getMessage(), request.getRequestURI(), null);
-		return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
+		return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
 	}
 
 	@ExceptionHandler(HttpMessageNotReadableException.class)
@@ -82,9 +82,9 @@ public class GlobalExceptionsHandler {
 		if (message.contains("Required request body is missing")) {
 			message = "Required request body is missing";
 		}
-		ErrorResponseDto errorResponse = new ErrorResponseDto(HttpStatus.BAD_REQUEST, null, message,
+		ErrorResponseDto responseDto = new ErrorResponseDto(HttpStatus.BAD_REQUEST, null, message,
 				request.getRequestURI(), null);
-		return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
+		return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
 	}
 
 }

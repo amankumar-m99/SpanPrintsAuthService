@@ -21,25 +21,25 @@ public class VerificationTokenExceptionsHandler {
 	@ExceptionHandler(VerificationTokenAlreadyUsedException.class)
 	public ResponseEntity<ErrorResponseDto> handleVerificationTokenAlreadyUsedException(
 			VerificationTokenAlreadyUsedException ex, HttpServletRequest request) {
-		ErrorResponseDto errorResponse = new ErrorResponseDto(HttpStatus.BAD_REQUEST, null, ex.getMessage(),
+		ErrorResponseDto responseDto = new ErrorResponseDto(HttpStatus.BAD_REQUEST, null, ex.getMessage(),
 				request.getRequestURI());
-		return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
+		return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
 	}
 
 	@ExceptionHandler(VerificationTokenExpiredException.class)
 	public ResponseEntity<ErrorResponseDto> handleVerificationTokenExpiredException(
 			VerificationTokenExpiredException ex, HttpServletRequest request) {
-		ErrorResponseDto errorResponse = new ErrorResponseDto(HttpStatus.BAD_REQUEST, null, ex.getMessage(),
+		ErrorResponseDto responseDto = new ErrorResponseDto(HttpStatus.BAD_REQUEST, null, ex.getMessage(),
 				request.getRequestURI());
-		return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
+		return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
 	}
 
 	@ExceptionHandler(VerificationTokenNotFoundException.class)
 	public ResponseEntity<ErrorResponseDto> handleVerificationTokenNotFoundException(
 			VerificationTokenNotFoundException ex, HttpServletRequest request) {
-		ErrorResponseDto errorResponse = new ErrorResponseDto(HttpStatus.BAD_REQUEST, null, ex.getMessage(),
+		ErrorResponseDto responseDto = new ErrorResponseDto(HttpStatus.BAD_REQUEST, null, ex.getMessage(),
 				request.getRequestURI());
-		return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
+		return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
 	}
 
 }
