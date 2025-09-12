@@ -13,10 +13,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -37,9 +39,9 @@ public class VerificationToken {
 	@JsonIgnore
 	private Account account;
 
-	@JsonProperty("accountId")  // will be included in JSON
+	@JsonProperty("accountId") // will be included in JSON
 	public Long getAccountId() {
-	    return account != null ? account.getId() : null;
+		return account != null ? account.getId() : null;
 	}
 
 }

@@ -23,19 +23,18 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
-public class Account implements UserDetails  {
+public class Account implements UserDetails {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 2409871067906954451L;
 
 	@Id
@@ -50,25 +49,26 @@ public class Account implements UserDetails  {
 	private Boolean isEnabled;
 	private Boolean isAccountExpired;
 	private Boolean isCredentialExpired;
-	
-	@ManyToMany(fetch=FetchType.EAGER, cascade=CascadeType.MERGE)
-	@JoinTable(name = "ACCOUNT_ROLE", joinColumns = {@JoinColumn(name="ACCOUNT_ID")}, inverseJoinColumns = {@JoinColumn(name="ROLE_ID")})
+
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+	@JoinTable(name = "ACCOUNT_ROLE", joinColumns = { @JoinColumn(name = "ACCOUNT_ID") }, inverseJoinColumns = {
+			@JoinColumn(name = "ROLE_ID") })
 	private Set<Role> roles;
 
 	@OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonIgnore
-    private VerificationToken verificationToken;
+	private VerificationToken verificationToken;
 
-	@JsonProperty("verificationTokenId")  // will be included in JSON
+	@JsonProperty("verificationTokenId")
 	public Long getVerificationTokenId() {
-	    return verificationToken != null ? verificationToken.getId() : null;
+		return verificationToken != null ? verificationToken.getId() : null;
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		Set<GrantedAuthority> authorities = new HashSet<>();
-		getRoles().forEach(role->{
-			authorities.add(new SimpleGrantedAuthority("ROLE_"+role.getRoleName()));
+		getRoles().forEach(role -> {
+			authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRoleName()));
 		});
 		return authorities;
 	}

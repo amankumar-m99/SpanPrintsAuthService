@@ -1,4 +1,4 @@
-package com.spanprints.authservice.event.listener;
+package com.spanprints.authservice.listener;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;

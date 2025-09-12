@@ -21,24 +21,24 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 			throws IOException {
 		HttpStatus status = HttpStatus.valueOf(HttpServletResponse.SC_UNAUTHORIZED);
 		String message = null;
-		if(request.getAttribute("jwt_error") != null) {
+		if (request.getAttribute("jwt_error") != null) {
 			message = request.getAttribute("jwt_error").toString();
 		}
 		if (message == null) {
 			message = exception.getMessage();
 		}
-		
+
 		String path = null;
-		if(request.getAttribute("jwt_req_path") != null) {
+		if (request.getAttribute("jwt_req_path") != null) {
 			path = request.getAttribute("jwt_req_path").toString();
 		}
-		if(path == null) {
+		if (path == null) {
 			path = request.getRequestURI();
 		}
 		response.setStatus(status.value());
 		response.setContentType("application/json");
 		ErrorResponseDto responseBody = new ErrorResponseDto(status, "Unauthorized", message, path);
 		response.getWriter().write(new ObjectMapper().writeValueAsString(responseBody));
-        response.getWriter().flush();
+		response.getWriter().flush();
 	}
 }

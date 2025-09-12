@@ -24,7 +24,7 @@ public class JwtUtils {
 
 	private SecretKey getSigningKey() {
 		return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
-    }
+	}
 
 	public JwtResponseDto generateJwtResponseDto(UserDetails userDetails) {
 		Date expiryDate = new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000);
@@ -38,40 +38,31 @@ public class JwtUtils {
 
 	public String generateToken(UserDetails userDetails, Date expiryDate) {
 		Map<String, Object> claims = new HashMap<>();
-		List<String> roles = userDetails.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .toList();
+		List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
 		claims.put("roles", roles);
-		return Jwts.builder().claims(claims).subject(userDetails.getUsername())
-				.header().empty().add("typ", "JWT").and()
-				.issuedAt(new Date(System.currentTimeMillis()))
-				.expiration(expiryDate)
-				.signWith(getSigningKey()).compact();
+		return Jwts.builder().claims(claims).subject(userDetails.getUsername()).header().empty().add("typ", "JWT").and()
+				.issuedAt(new Date(System.currentTimeMillis())).expiration(expiryDate).signWith(getSigningKey())
+				.compact();
 	}
 
 	public String extractUsername(String token) {
-        Claims claims = extractAllClaims(token);
-        return claims.getSubject();
-    }
+		Claims claims = extractAllClaims(token);
+		return claims.getSubject();
+	}
 
-    public Date extractExpiration(String token) {
-        return extractAllClaims(token).getExpiration();
-    }
+	public Date extractExpiration(String token) {
+		return extractAllClaims(token).getExpiration();
+	}
 
-    private Claims extractAllClaims(String token) {
-        return Jwts.parser()
-                .verifyWith(getSigningKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
-    }
+	private Claims extractAllClaims(String token) {
+		return Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token).getPayload();
+	}
 
-    private Boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
-    }
+	private Boolean isTokenExpired(String token) {
+		return extractExpiration(token).before(new Date());
+	}
 
-    public boolean validateToken(String token) {
-        return !isTokenExpired(token);
-    }
+	public boolean validateToken(String token) {
+		return !isTokenExpired(token);
+	}
 }

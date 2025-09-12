@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.spanprints.authservice.entity.Account;
 
 @Repository
-public interface AccountRepository extends JpaRepository<Account, Long>{
+public interface AccountRepository extends JpaRepository<Account, Long> {
 
 	public Optional<Account> findByEmail(String email);
 

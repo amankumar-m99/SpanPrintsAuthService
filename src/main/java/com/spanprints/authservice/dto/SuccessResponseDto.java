@@ -6,9 +6,15 @@ import org.springframework.http.HttpStatus;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class SuccessResponseDto {
 	// Java 8 date/time type `java.time.Instant` not supported by default when using
 	// `com.fasterxml.jackson.databind.ObjectMapper` for converting to JSON-String

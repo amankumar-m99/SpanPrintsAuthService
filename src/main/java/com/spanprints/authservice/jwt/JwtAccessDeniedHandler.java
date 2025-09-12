@@ -22,9 +22,9 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
 		HttpStatus status = HttpStatus.valueOf(HttpServletResponse.SC_FORBIDDEN);
 		response.setStatus(status.value());
 		response.setContentType("application/json");
-		ErrorResponseDto responseBody = new ErrorResponseDto(status, "Forbidden",
-				exception.getMessage(), request.getRequestURI());
+		ErrorResponseDto responseBody = new ErrorResponseDto(status, "Forbidden", exception.getMessage(),
+				request.getRequestURI());
 		response.getWriter().write(new ObjectMapper().writeValueAsString(responseBody));
-        response.getWriter().flush();
+		response.getWriter().flush();
 	}
 }

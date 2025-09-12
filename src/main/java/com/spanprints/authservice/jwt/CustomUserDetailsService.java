@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.repository.AccountRepository;
 
-
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
