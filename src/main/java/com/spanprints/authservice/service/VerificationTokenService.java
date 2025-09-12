@@ -12,9 +12,9 @@ import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.dto.TokenResponseDto;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.VerificationToken;
-import com.spanprints.authservice.exception.account.verification.AccountVerificationTokenAlreadyUsedException;
-import com.spanprints.authservice.exception.account.verification.AccountVerificationTokenExpiredException;
-import com.spanprints.authservice.exception.account.verification.AccountVerificationTokenNotFoundException;
+import com.spanprints.authservice.exception.verificationtoken.AccountVerificationTokenAlreadyUsedException;
+import com.spanprints.authservice.exception.verificationtoken.AccountVerificationTokenExpiredException;
+import com.spanprints.authservice.exception.verificationtoken.AccountVerificationTokenNotFoundException;
 import com.spanprints.authservice.repository.AccountVerificationRepository;
 
 @Service

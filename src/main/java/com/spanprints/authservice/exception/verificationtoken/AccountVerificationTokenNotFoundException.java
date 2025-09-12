@@ -1,11 +1,8 @@
-package com.spanprints.authservice.exception.account.verification;
+package com.spanprints.authservice.exception.verificationtoken;
 
 public class AccountVerificationTokenNotFoundException extends RuntimeException {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -8830854733339183818L;
+	private static final long serialVersionUID = 5547023544347417354L;
 
 	public AccountVerificationTokenNotFoundException() {
 		super();

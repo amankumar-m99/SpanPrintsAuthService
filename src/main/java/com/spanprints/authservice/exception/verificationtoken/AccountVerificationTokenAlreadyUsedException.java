@@ -1,11 +1,8 @@
-package com.spanprints.authservice.exception.account.verification;
+package com.spanprints.authservice.exception.verificationtoken;
 
 public class AccountVerificationTokenAlreadyUsedException extends RuntimeException {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -8830854733339183818L;
+	private static final long serialVersionUID = 501784983155667964L;
 
 	public AccountVerificationTokenAlreadyUsedException() {
 		super();
