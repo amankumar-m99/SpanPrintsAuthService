@@ -1,6 +1,7 @@
 package com.spanprints.authservice.dto;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,7 +21,7 @@ public class TokenResponseDto {
 	private String token;
 
 	public TokenResponseDto(String token, LocalDateTime expirationTime) {
-		this.expiry = expirationTime.toString();
+		this.expiry = expirationTime.format(DateTimeFormatter.ofPattern("dd MMM yyyy, hh:mm a"));
 		this.token = token;
 	}
 }

@@ -1,6 +1,7 @@
 package com.spanprints.authservice.dto;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.springframework.http.HttpStatus;
 
@@ -27,7 +28,7 @@ public class SuccessResponseDto {
 	private String message;
 
 	public SuccessResponseDto(HttpStatus status, String message) {
-		this.timestamp = LocalDateTime.now().toString();
+		this.timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMM yyyy, hh:mm a"));
 		this.statusCode = status.value();
 		this.status = status;
 		this.message = message;

@@ -1,6 +1,7 @@
 package com.spanprints.authservice.dto;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,7 @@ public class ErrorResponseDto {
 	private List<String> fieldErrors; // optional
 
 	public ErrorResponseDto(HttpStatus status, String error, String message, String path) {
-		this.timestamp = LocalDateTime.now().toString();
+		this.timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMM yyyy, hh:mm a"));
 		this.status = status.value();
 		this.error = (error == null || error.isBlank())?status.getReasonPhrase():error;
 		this.message = message;

@@ -23,7 +23,7 @@ public class VerificationLinkMailTemplate {
 				style="width: 100%%;max-width: 580px;margin: 24px auto;background: white;border-radius: 8px;overflow: hidden;box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);">
 				<div class="header"><h1>Activate your %s account</h1></div><div class="content"><p style="margin-top: 0;font-size: 16px;font-weight: 600;">Hi %s,</p>
 				<p>Thanks for creating an account with <strong>%s</strong>. To complete your registration and activate your account,
-				  please confirm your email address by clicking the button below (expires in %s):</p>
+				  please confirm your email address by clicking the button below (expires at %s):</p>
 				<p style="text-align: center;" class="btn-div"><a href="%s" class="btn" target="_blank" rel="noopener">Activate my account</a></p>
 				<p class="note">If the button doesn't work, copy and paste the following link into your browser:<br>
 				<a href="%s" target="_blank" rel="noopener" class="support">%s</a></p><hr style="border:none;border-top:1px solid #f1f5f9;margin:18px 0;">
