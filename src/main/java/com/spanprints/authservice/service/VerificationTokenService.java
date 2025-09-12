@@ -12,9 +12,9 @@ import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.dto.TokenResponseDto;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.VerificationToken;
-import com.spanprints.authservice.exception.verificationtoken.AccountVerificationTokenAlreadyUsedException;
-import com.spanprints.authservice.exception.verificationtoken.AccountVerificationTokenExpiredException;
-import com.spanprints.authservice.exception.verificationtoken.AccountVerificationTokenNotFoundException;
+import com.spanprints.authservice.exception.verificationtoken.VerificationTokenAlreadyUsedException;
+import com.spanprints.authservice.exception.verificationtoken.VerificationTokenExpiredException;
+import com.spanprints.authservice.exception.verificationtoken.VerificationTokenNotFoundException;
 import com.spanprints.authservice.repository.AccountVerificationRepository;
 
 @Service
@@ -55,16 +55,16 @@ public class VerificationTokenService {
 	public Account verifyToken(String token) {
 		return accountVerificationRepository.findByToken(token).map(verificationToken -> {
 			if (verificationToken.getIsUsed().equals(true)) {
-				throw new AccountVerificationTokenAlreadyUsedException("Verification token has already been used.");
+				throw new VerificationTokenAlreadyUsedException("Verification token has already been used.");
 			}
 			if (verificationToken.getExpiryDate().isBefore(java.time.LocalDateTime.now())) {
-				throw new AccountVerificationTokenExpiredException("Verification token is expired.");
+				throw new VerificationTokenExpiredException("Verification token is expired.");
 			}
 			verificationToken.setIsUsed(true);
 			accountVerificationRepository.save(verificationToken);
 			return verificationToken.getAccount();
 		}).orElseThrow(
-				() -> new AccountVerificationTokenNotFoundException(String.format("No token found as `%s`", token)));
+				() -> new VerificationTokenNotFoundException(String.format("No token found as `%s`", token)));
 	}
 
 }
