@@ -33,6 +33,7 @@ public class MailService {
 		try {
 			MimeMessage mimeMessage = mailSender.createMimeMessage();
 			MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false);
+			mimeMessageHelper.setFrom("no-reply@" + appName.toLowerCase() + ".com");
 			mimeMessageHelper.setTo(toEmailAddress);
 			mimeMessageHelper.setSubject("Verification mail");
 			String link = "http://localhost:8080/auth/verify?token=" + tokenResponse.getToken();
