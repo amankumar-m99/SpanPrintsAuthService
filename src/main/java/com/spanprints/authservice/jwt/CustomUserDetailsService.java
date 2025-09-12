@@ -13,15 +13,15 @@ import com.spanprints.authservice.repository.AccountRepository;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-	private AccountRepository repository;
+	private AccountRepository accountRepository;
 
-	public CustomUserDetailsService(AccountRepository repository) {
-		this.repository = repository;
+	public CustomUserDetailsService(AccountRepository accountRepository) {
+		this.accountRepository = accountRepository;
 	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Optional<Account> optional = repository.findByUsername(username);
+		Optional<Account> optional = accountRepository.findByUsername(username);
 		if (optional.isPresent()) {
 			Account account = optional.get();
 			return account;

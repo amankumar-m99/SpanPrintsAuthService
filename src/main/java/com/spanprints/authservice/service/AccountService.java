@@ -28,18 +28,18 @@ import jakarta.transaction.Transactional;
 @Service
 public class AccountService {
 
-	private AccountRepository accountRepo;
+	private AccountRepository accountRepository;
 
-	private RoleRepository roleRepo;
+	private RoleRepository roleRepository;
 
 	private VerificationTokenService verificationTokenService;
 
 	private ApplicationEventPublisher publisher;
 
-	public AccountService(AccountRepository accountRepo, RoleRepository roleRepo,
+	public AccountService(AccountRepository accountRepository, RoleRepository roleRepository,
 			VerificationTokenService verificationTokenService, ApplicationEventPublisher publisher) {
-		this.accountRepo = accountRepo;
-		this.roleRepo = roleRepo;
+		this.accountRepository = accountRepository;
+		this.roleRepository = roleRepository;
 		this.publisher = publisher;
 		this.verificationTokenService = verificationTokenService;
 	}
@@ -75,11 +75,11 @@ public class AccountService {
 		if (!anyMatch) {
 			insertRoleIntoAccount("User", account);
 		}
-		return accountRepo.save(account);
+		return accountRepository.save(account);
 	}
 
 	private void insertRoleIntoAccount(String roleName, Account account) {
-		Optional<Role> roleOptional = roleRepo.findByRoleName(roleName.toUpperCase());
+		Optional<Role> roleOptional = roleRepository.findByRoleName(roleName.toUpperCase());
 		if (roleOptional.isPresent()) {
 			account.getRoles().add(roleOptional.get());
 		}
@@ -87,37 +87,37 @@ public class AccountService {
 
 	public void enableAccount(Account account) {
 		account.setIsEnabled(true);
-		accountRepo.save(account);
+		accountRepository.save(account);
 	}
 
 	public Account getAccountById(Long id) {
-		return accountRepo.findById(id)
+		return accountRepository.findById(id)
 				.orElseThrow(() -> new AccountNotFoundException(String.format("No account found with id `%d`", id)));
 	}
 
 	public List<Account> getAllAccounts() {
-		return accountRepo.findAll();
+		return accountRepository.findAll();
 	}
 
 	public SuccessResponseDto deleteById(Long id) {
-		accountRepo.delete(getAccountById(id));
+		accountRepository.delete(getAccountById(id));
 		return new SuccessResponseDto(HttpStatus.OK, String.format("Deleted role by id `%d`", id));
 	}
 
 	public SuccessResponseDto deleteAllAccounts() {
-		accountRepo.deleteAll();
+		accountRepository.deleteAll();
 		return new SuccessResponseDto(HttpStatus.OK, "All accounts deleted.");
 	}
 
 	private void throwIfEmailAlreadyExists(String email) {
-		if (!accountRepo.findByEmail(email).isEmpty()) {
+		if (!accountRepository.findByEmail(email).isEmpty()) {
 			throw new EmailAlreadyExistsException(
 					String.format("An account already exsists with the email `%s`", email));
 		}
 	}
 
 	private void throwIfUsernameAlreadyExists(String username) {
-		if (!accountRepo.findByUsername(username).isEmpty()) {
+		if (!accountRepository.findByUsername(username).isEmpty()) {
 			throw new UsernameAlreadyExistsException(
 					String.format("An account already exsists with the username `%s`", username));
 		}

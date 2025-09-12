@@ -18,47 +18,47 @@ import com.spanprints.authservice.repository.RoleRepository;
 public class RoleService {
 
 	@Autowired
-	private RoleRepository repository;
+	private RoleRepository roleRepository;
 
 	public Role addRole(RoleSaveDto roleDto) {
 		roleDto.setRoleName(roleDto.getRoleName().toUpperCase());
 		throwIfRoleAlreadyExists(roleDto.getRoleName());
 		Role role = buildRole(roleDto);
-		return repository.save(role);
+		return roleRepository.save(role);
 	}
 
 	public Role getRoleById(Long roleId) {
-		return repository.findById(roleId)
+		return roleRepository.findById(roleId)
 				.orElseThrow(() -> new RoleNotFoundException(String.format("No role exists with id `%d`", roleId)));
 	}
 
 	public List<Role> getAllRoles() {
-		return repository.findAll();
+		return roleRepository.findAll();
 	}
 
 	public Role updateRole(RoleUpdateDto roleDto) {
 		roleDto.setRoleName(roleDto.getRoleName().toUpperCase());
 		Role role = getRoleById(roleDto.getRoleId());
 		role = updateRoleDetails(role.getId(), roleDto);
-		return repository.save(role);
+		return roleRepository.save(role);
 	}
 
 	public void deleteRole(Role role) {
-		repository.delete(role);
+		roleRepository.delete(role);
 	}
 
 	public SuccessResponseDto deleteRoleById(Long roleId) {
-		repository.delete(getRoleById(roleId));
+		roleRepository.delete(getRoleById(roleId));
 		return new SuccessResponseDto(HttpStatus.OK, String.format("Deleted role by id `%d`", roleId));
 	}
 
 	public SuccessResponseDto deleteAllRoles() {
-		repository.deleteAll();
+		roleRepository.deleteAll();
 		return new SuccessResponseDto(HttpStatus.OK, "Deleted all roles.");
 	}
 
 	private void throwIfRoleAlreadyExists(String roleName) {
-		if (repository.findByRoleName(roleName).isPresent()) {
+		if (roleRepository.findByRoleName(roleName).isPresent()) {
 			throw new RoleAlreadyExistsException(String.format("One role already exists with name `%s`", roleName));
 		}
 	}
