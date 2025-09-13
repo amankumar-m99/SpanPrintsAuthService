@@ -57,7 +57,7 @@ public class MailService {
 
 	private String generateLink(String token) {
 		ServiceInstance si = loadBalancerClient.choose(apiGatewayServiceId);
-		return String.format("%s:%s/auth/verify?token=%s", si.getHost(), si.getPort(), token);
+		return String.format("http://%s:%s/auth/verify?token=%s", si.getHost(), si.getPort(), token);
 	}
 
 	public boolean send(String to, String subject, String text, String[] cc, String[] bcc, Resource resource) {
