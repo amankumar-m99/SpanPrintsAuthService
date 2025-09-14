@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.repository.AccountRepository;
+import com.spanprints.authservice.util.BasicUtils;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -21,7 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Optional<Account> optional = accountRepository.findByUsername(username);
+		Optional<Account> optional = findAccount(username);
 		if (optional.isPresent()) {
 			Account account = optional.get();
 			return account;
@@ -32,5 +33,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 //					.build();
 		}
 		throw new UsernameNotFoundException(username);
+	}
+
+	private Optional<Account> findAccount(String userId){
+		if(BasicUtils.isValidEmail(userId)) {
+			return accountRepository.findByEmail(userId);
+		}
+		return accountRepository.findByUsername(userId);
 	}
 }
