@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.spanprints.authservice.dto.RegisterRequestDto;
@@ -36,6 +38,9 @@ public class AccountService {
 
 	private ApplicationEventPublisher publisher;
 
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
 	public AccountService(AccountRepository accountRepository, RoleRepository roleRepository,
 			VerificationTokenService verificationTokenService, ApplicationEventPublisher publisher) {
 		this.accountRepository = accountRepository;
@@ -62,8 +67,8 @@ public class AccountService {
 		throwIfEmailAlreadyExists(request.getEmail());
 		throwIfUsernameAlreadyExists(request.getUsername());
 		Account account = Account.builder().UUID(UUID.randomUUID().toString()).email(request.getEmail())
-				.username(request.getUsername()).password(request.getPassword()).isLocked(false).isEnabled(false)
-				.isAccountExpired(false).isCredentialExpired(false).build();
+				.username(request.getUsername()).password(passwordEncoder.encode(request.getPassword())).isLocked(false)
+				.isEnabled(false).isAccountExpired(false).isCredentialExpired(false).build();
 		if (request.getRoles() == null) {
 			request.setRoles(Collections.emptySet());
 		}

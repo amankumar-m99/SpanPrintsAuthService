@@ -24,6 +24,8 @@ import com.spanprints.authservice.jwt.JwtUtils;
 import com.spanprints.authservice.service.AccountService;
 import com.spanprints.authservice.service.VerificationTokenService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("")
 public class AuthController {
@@ -56,14 +58,14 @@ public class AuthController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<JwtResponseDto> login(@RequestBody LoginRequestDto request) {
+	public ResponseEntity<JwtResponseDto> login(@Valid @RequestBody LoginRequestDto request) {
 		try {
 			authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 			UserDetails user = userDetailsService.loadUserByUsername(request.getUsername());
 			return new ResponseEntity<>(jwtUtils.generateJwtResponseDto(user), HttpStatus.OK);
 		} catch (DisabledException e) {
-			throw new DisabledException("User is disabled");
+			throw new DisabledException("Account is disabled");
 		} catch (LockedException e) {
 			throw new LockedException("Account is locked!");
 		} catch (BadCredentialsException e) {
