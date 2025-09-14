@@ -100,6 +100,11 @@ public class AccountService {
 				.orElseThrow(() -> new AccountNotFoundException(String.format("No account found with id `%d`", id)));
 	}
 
+	public Account getAccountByUsername(String username) {
+		return accountRepository.findByUsername(username)
+				.orElseThrow(() -> new AccountNotFoundException(String.format("No account found with username `%s`", username)));
+	}
+
 	public List<Account> getAllAccounts() {
 		return accountRepository.findAll();
 	}
