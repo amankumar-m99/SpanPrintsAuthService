@@ -44,7 +44,7 @@ public class MailService {
 			MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false);
 			mimeMessageHelper.setFrom("no-reply@" + appName.toLowerCase() + ".com");
 			mimeMessageHelper.setTo(toEmailAddress);
-			mimeMessageHelper.setSubject("Verification mail");
+			mimeMessageHelper.setSubject("Verification mail for " + username);
 			String link = generateLink(tokenResponse.getToken());
 			String mailContenText = VerificationLinkMailTemplate.buildHtmlContent(appName, supportEmailAddress, link,
 					tokenResponse.getExpiry(), username);
