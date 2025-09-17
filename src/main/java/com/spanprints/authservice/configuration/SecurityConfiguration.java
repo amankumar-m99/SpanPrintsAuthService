@@ -32,16 +32,21 @@ public class SecurityConfiguration {
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http, JwtRequestFilter filter,
 			JwtAuthenticationEntryPoint authEntryPoint, JwtAccessDeniedHandler accessDeniedHandler) throws Exception {
-		http.authorizeHttpRequests(auth -> auth.requestMatchers("/login").permitAll().requestMatchers("/register")
-				.permitAll().requestMatchers("/role/**").permitAll().requestMatchers("/roles").permitAll()
-				.requestMatchers("/admin-context").hasRole("ADMIN").anyRequest().permitAll() // /person/** is
-																								// authenticated
+		http.authorizeHttpRequests(auth -> auth.requestMatchers("/h2-console/**").permitAll().requestMatchers("/login")
+				.permitAll().requestMatchers("/register").permitAll().requestMatchers("/role/**").permitAll()
+				.requestMatchers("/roles").permitAll().requestMatchers("/admin-context").hasRole("ADMIN").anyRequest()
+				.permitAll() // /person/** is
+								// authenticated
 //				.anyRequest().authenticated() // /person/** is authenticated
 		).httpBasic(Customizer.withDefaults())
 				.sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.exceptionHandling(
 						e -> e.authenticationEntryPoint(authEntryPoint).accessDeniedHandler(accessDeniedHandler))
-				.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class).csrf(csrf -> csrf.disable());
+				.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class).csrf(csrf -> csrf.disable())
+				.headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()) // Allow frames from same origin
+				);
+//		.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
+
 		return http.build();
 	}
 }
