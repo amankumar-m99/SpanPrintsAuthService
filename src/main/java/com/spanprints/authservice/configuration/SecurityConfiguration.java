@@ -1,5 +1,7 @@
 package com.spanprints.authservice.configuration;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,6 +13,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.spanprints.authservice.jwt.JwtAccessDeniedHandler;
 import com.spanprints.authservice.jwt.JwtAuthenticationEntryPoint;
@@ -43,10 +48,22 @@ public class SecurityConfiguration {
 				.exceptionHandling(
 						e -> e.authenticationEntryPoint(authEntryPoint).accessDeniedHandler(accessDeniedHandler))
 				.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class).csrf(csrf -> csrf.disable())
+				.cors(Customizer.withDefaults())
 				.headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()) // Allow frames from same origin
 				);
 //		.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
-
 		return http.build();
 	}
+
+	@Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:4200",  "http://192.168.1.5:4200"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
 }
