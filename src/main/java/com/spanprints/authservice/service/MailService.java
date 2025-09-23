@@ -1,7 +1,6 @@
 package com.spanprints.authservice.service;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.core.io.Resource;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -25,6 +24,9 @@ public class MailService {
 
 	@Value("${api-gateway.service-id:SpanPrintsApiGateway}")
 	private String apiGatewayServiceId;
+
+	@Value("${verify-token-url}")
+	private String verifyTokenUrl;
 
 	private JavaMailSender mailSender;
 
@@ -56,11 +58,12 @@ public class MailService {
 	}
 
 	private String generateLink(String token) {
-		ServiceInstance si = loadBalancerClient.choose(apiGatewayServiceId);
-		return String.format("http://%s:%s/auth/verify?token=%s", si.getHost(), si.getPort(), token);
+//		ServiceInstance si = loadBalancerClient.choose(apiGatewayServiceId);
+//		return String.format("http://%s:%s/auth/verify?token=%s", si.getHost(), si.getPort(), token);
+		return String.format("%s?token=%s", verifyTokenUrl, token);
 	}
 
-	public boolean send(String to, String subject, String text, String[] cc, String[] bcc, Resource resource) {
+	public boolean send(String[] to, String subject, String text, String[] cc, String[] bcc, Resource resource) {
 		try {
 			// 1. Create an empty message
 			MimeMessage mimeMessage = mailSender.createMimeMessage();
