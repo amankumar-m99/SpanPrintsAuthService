@@ -40,7 +40,7 @@ public class SecurityConfiguration {
 		http.authorizeHttpRequests(auth -> auth.requestMatchers("/h2-console/**").permitAll().requestMatchers("/login")
 				.permitAll().requestMatchers("/register").permitAll().requestMatchers("/role/**").permitAll()
 				.requestMatchers("/roles").permitAll().requestMatchers("/admin-context").hasRole("ADMIN").anyRequest()
-				.permitAll() // /person/** is
+				.authenticated() // /person/** is
 								// authenticated
 //				.anyRequest().authenticated() // /person/** is authenticated
 		).httpBasic(Customizer.withDefaults())

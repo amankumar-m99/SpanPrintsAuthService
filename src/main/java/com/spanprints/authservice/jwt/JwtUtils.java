@@ -18,7 +18,7 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtUtils {
 
-	public static final long JWT_TOKEN_VALIDITY = 2 * 60 * 60L; // 2 hours validity
+	public static final long JWT_TOKEN_VALIDITY_SEC = 2 * 60 * 60L; // 2 hours validity
 
 	private static final String SECRET_KEY = "TaK+HaV^uvCHEFsEVfypW#7g9^k*Z8$V";
 
@@ -27,13 +27,13 @@ public class JwtUtils {
 	}
 
 	public JwtResponseDto generateJwtResponseDto(UserDetails userDetails) {
-		Date expiryDate = new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000);
+		Date expiryDate = new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY_SEC * 1000);
 		String token = generateToken(userDetails, expiryDate);
 		return new JwtResponseDto(token, "Bearer", expiryDate.toString());
 	}
 
 	public String generateToken(UserDetails userDetails) {
-		return generateToken(userDetails, new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000));
+		return generateToken(userDetails, new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY_SEC * 1000));
 	}
 
 	public String generateToken(UserDetails userDetails, Date expiryDate) {
