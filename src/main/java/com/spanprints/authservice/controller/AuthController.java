@@ -17,12 +17,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spanprints.authservice.dto.LoginRequestDto;
+import com.spanprints.authservice.dto.ProfileDto;
 import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.entity.Account;
+import com.spanprints.authservice.entity.PersonalDetails;
 import com.spanprints.authservice.jwt.CustomUserDetailsService;
 import com.spanprints.authservice.jwt.JwtResponseDto;
 import com.spanprints.authservice.jwt.JwtUtils;
 import com.spanprints.authservice.service.AccountService;
+import com.spanprints.authservice.service.PersonalDetailsService;
 import com.spanprints.authservice.service.VerificationTokenService;
 
 import jakarta.validation.Valid;
@@ -39,14 +42,18 @@ public class AuthController {
 
 	private AccountService accountService;
 
+	private PersonalDetailsService personalDetailsService;
+
 	private VerificationTokenService verificationTokenService;
 
 	public AuthController(AuthenticationManager authenticationManager, CustomUserDetailsService userDetailsService,
-			JwtUtils jwtUtils, AccountService accountService, VerificationTokenService verificationTokenService) {
+			JwtUtils jwtUtils, AccountService accountService, PersonalDetailsService personalDetailsService,
+			VerificationTokenService verificationTokenService) {
 		this.authenticationManager = authenticationManager;
 		this.userDetailsService = userDetailsService;
 		this.jwtUtils = jwtUtils;
 		this.accountService = accountService;
+		this.personalDetailsService = personalDetailsService;
 		this.verificationTokenService = verificationTokenService;
 	}
 
@@ -77,9 +84,17 @@ public class AuthController {
 	}
 
 	@GetMapping("/me")
-	public ResponseEntity<Account> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
-		String username = userDetails.getUsername();
-		return new ResponseEntity<>(accountService.getAccountByUsername(username), HttpStatus.OK);
+	public ResponseEntity<ProfileDto> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
+		Account account = accountService.getAccountByUsername(userDetails.getUsername());
+		ProfileDto dto = new ProfileDto();
+		dto.setAccount(account);
+		if (account.getPersonalDetailsId() != null) {
+			dto.setPersonalDetails(personalDetailsService.getPersonalDetailsById(account.getPersonalDetailsId()));
+		}
+		else {
+			dto.setPersonalDetails(new PersonalDetails());
+		}
+		return new ResponseEntity<>(dto, HttpStatus.OK);
 	}
 
 }

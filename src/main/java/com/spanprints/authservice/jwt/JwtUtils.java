@@ -11,6 +11,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import com.spanprints.authservice.entity.Account;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -40,6 +42,9 @@ public class JwtUtils {
 		Map<String, Object> claims = new HashMap<>();
 		List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
 		claims.put("roles", roles);
+		if (userDetails instanceof Account a) {
+			claims.put("UID", a.getUUID());
+		}
 		return Jwts.builder().claims(claims).subject(userDetails.getUsername()).header().empty().add("typ", "JWT").and()
 				.issuedAt(new Date(System.currentTimeMillis())).expiration(expiryDate).signWith(getSigningKey())
 				.compact();

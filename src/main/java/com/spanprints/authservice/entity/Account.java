@@ -1,9 +1,11 @@
 package com.spanprints.authservice.entity;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -49,6 +51,9 @@ public class Account implements UserDetails {
 	private Boolean isEnabled;
 	private Boolean isAccountExpired;
 	private Boolean isCredentialExpired;
+	@CreatedDate
+//    @Column(nullable = false, updatable = false)
+	private LocalDateTime createdAt;
 
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
 	@JoinTable(name = "ACCOUNT_ROLE", joinColumns = { @JoinColumn(name = "ACCOUNT_ID") }, inverseJoinColumns = {
@@ -62,6 +67,15 @@ public class Account implements UserDetails {
 	@JsonProperty("verificationTokenId")
 	public Long getVerificationTokenId() {
 		return verificationToken != null ? verificationToken.getId() : null;
+	}
+
+	@OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnore
+	private PersonalDetails personalDetails;
+
+	@JsonProperty("personalDetailsId")
+	public Long getPersonalDetailsId() {
+		return personalDetails != null ? personalDetails.getId() : null;
 	}
 
 	@Override

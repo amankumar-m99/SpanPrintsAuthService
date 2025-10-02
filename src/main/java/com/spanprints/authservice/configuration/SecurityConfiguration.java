@@ -37,9 +37,13 @@ public class SecurityConfiguration {
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http, JwtRequestFilter filter,
 			JwtAuthenticationEntryPoint authEntryPoint, JwtAccessDeniedHandler accessDeniedHandler) throws Exception {
-		http.authorizeHttpRequests(auth -> auth.requestMatchers("/h2-console/**").permitAll().requestMatchers("/login")
-				.permitAll().requestMatchers("/register").permitAll().requestMatchers("/role/**").permitAll()
-				.requestMatchers("/roles").permitAll().requestMatchers("/admin-context").hasRole("ADMIN").anyRequest()
+		http.authorizeHttpRequests(auth -> auth.requestMatchers("/h2-console/**").permitAll()
+				.requestMatchers("/login").permitAll()
+				.requestMatchers("/register").permitAll()
+				.requestMatchers("/verify").permitAll()
+				.requestMatchers("/role/**").permitAll()
+				.requestMatchers("/roles").permitAll()
+				.requestMatchers("/admin-context").hasRole("ADMIN").anyRequest()
 				.authenticated() // /person/** is
 								// authenticated
 //				.anyRequest().authenticated() // /person/** is authenticated

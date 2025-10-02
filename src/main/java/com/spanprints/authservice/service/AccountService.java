@@ -1,5 +1,6 @@
 package com.spanprints.authservice.service;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -67,8 +68,9 @@ public class AccountService {
 		throwIfEmailAlreadyExists(request.getEmail());
 		throwIfUsernameAlreadyExists(request.getUsername());
 		Account account = Account.builder().UUID(UUID.randomUUID().toString()).email(request.getEmail())
-				.username(request.getUsername()).password(passwordEncoder.encode(request.getPassword())).isLocked(false)
-				.isEnabled(false).isAccountExpired(false).isCredentialExpired(false).build();
+				.createdAt(LocalDateTime.now()).username(request.getUsername())
+				.password(passwordEncoder.encode(request.getPassword())).isLocked(false).isEnabled(false)
+				.isAccountExpired(false).isCredentialExpired(false).build();
 		if (request.getRoles() == null) {
 			request.setRoles(Collections.emptySet());
 		}
@@ -101,8 +103,8 @@ public class AccountService {
 	}
 
 	public Account getAccountByUsername(String username) {
-		return accountRepository.findByUsername(username)
-				.orElseThrow(() -> new AccountNotFoundException(String.format("No account found with username `%s`", username)));
+		return accountRepository.findByUsername(username).orElseThrow(
+				() -> new AccountNotFoundException(String.format("No account found with username `%s`", username)));
 	}
 
 	public List<Account> getAllAccounts() {

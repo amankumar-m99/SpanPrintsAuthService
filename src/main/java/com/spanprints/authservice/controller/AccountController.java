@@ -31,7 +31,7 @@ public class AccountController {
 	@Autowired
 	private AccountService accountService;
 
-	@PostMapping("/account")
+	@PostMapping({ "/account", "/register" })
 	public ResponseEntity<SuccessResponseDto> register(@Valid @RequestBody RegisterRequestDto request) {
 		String email = accountService.register(request);
 		String message = String.format(
