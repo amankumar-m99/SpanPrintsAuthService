@@ -67,7 +67,7 @@ public class AccountService {
 	private Account createAccount(RegisterRequestDto request) {
 		throwIfEmailAlreadyExists(request.getEmail());
 		throwIfUsernameAlreadyExists(request.getUsername());
-		Account account = Account.builder().UUID(UUID.randomUUID().toString()).email(request.getEmail())
+		Account account = Account.builder().uuid(UUID.randomUUID().toString()).email(request.getEmail())
 				.createdAt(LocalDateTime.now()).username(request.getUsername())
 				.password(passwordEncoder.encode(request.getPassword())).isLocked(false).isEnabled(false)
 				.isAccountExpired(false).isCredentialExpired(false).build();
@@ -100,6 +100,11 @@ public class AccountService {
 	public Account getAccountById(Long id) {
 		return accountRepository.findById(id)
 				.orElseThrow(() -> new AccountNotFoundException(String.format("No account found with id `%d`", id)));
+	}
+
+	public Account getAccountByUuid(String uuid) {
+		return accountRepository.findByUuid(uuid)
+				.orElseThrow(() -> new AccountNotFoundException(String.format("No account found with uuid `%d`", uuid)));
 	}
 
 	public Account getAccountByUsername(String username) {

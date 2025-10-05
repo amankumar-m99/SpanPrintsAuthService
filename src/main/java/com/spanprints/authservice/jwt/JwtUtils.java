@@ -43,7 +43,7 @@ public class JwtUtils {
 		List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
 		claims.put("roles", roles);
 		if (userDetails instanceof Account a) {
-			claims.put("UID", a.getUUID());
+			claims.put("UID", a.getUuid());
 		}
 		return Jwts.builder().claims(claims).subject(userDetails.getUsername()).header().empty().add("typ", "JWT").and()
 				.issuedAt(new Date(System.currentTimeMillis())).expiration(expiryDate).signWith(getSigningKey())

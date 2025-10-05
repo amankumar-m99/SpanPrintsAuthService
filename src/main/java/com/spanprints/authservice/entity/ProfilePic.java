@@ -1,10 +1,9 @@
 package com.spanprints.authservice.entity;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.spanprints.authservice.enums.Gender;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,13 +23,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @Builder
 @Entity
-public class PersonalDetails {
+public class ProfilePic {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
-	private LocalDate birthday;
-	private Gender gender;
+	private LocalDateTime lastUpdated;
 	
 	@OneToOne
 	@JoinColumn(name = "account_id", referencedColumnName = "id")

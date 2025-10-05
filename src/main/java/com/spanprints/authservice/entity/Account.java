@@ -42,7 +42,7 @@ public class Account implements UserDetails {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private String UUID;
+	private String uuid;
 	private String email;
 	private String username;
 	@JsonIgnore
@@ -76,6 +76,15 @@ public class Account implements UserDetails {
 	@JsonProperty("personalDetailsId")
 	public Long getPersonalDetailsId() {
 		return personalDetails != null ? personalDetails.getId() : null;
+	}
+
+	@OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnore
+	private ProfilePic profilePic;
+
+	@JsonProperty("profilePicId")
+	public Long getProfilePicId() {
+		return profilePic != null ? profilePic.getId() : null;
 	}
 
 	@Override
