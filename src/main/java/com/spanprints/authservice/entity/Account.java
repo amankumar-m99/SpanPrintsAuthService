@@ -3,7 +3,9 @@ package com.spanprints.authservice.entity;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.jsonwebtoken.lang.Collections;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -22,6 +25,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,12 +33,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
-@Entity
 public class Account implements UserDetails {
 
 	private static final long serialVersionUID = 2409871067906954451L;
@@ -60,7 +64,16 @@ public class Account implements UserDetails {
 			@JoinColumn(name = "ROLE_ID") })
 	private Set<Role> roles;
 
-	@OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		Set<GrantedAuthority> authorities = new HashSet<>();
+		getRoles().forEach(role -> {
+			authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRoleName()));
+		});
+		return authorities;
+	}
+
+	@OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
 	private VerificationToken verificationToken;
 
@@ -69,7 +82,7 @@ public class Account implements UserDetails {
 		return verificationToken != null ? verificationToken.getId() : null;
 	}
 
-	@OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
 	private PersonalDetails personalDetails;
 
@@ -78,7 +91,7 @@ public class Account implements UserDetails {
 		return personalDetails != null ? personalDetails.getId() : null;
 	}
 
-	@OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
 	private ProfilePic profilePic;
 
@@ -87,13 +100,43 @@ public class Account implements UserDetails {
 		return profilePic != null ? profilePic.getId() : null;
 	}
 
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		Set<GrantedAuthority> authorities = new HashSet<>();
-		getRoles().forEach(role -> {
-			authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRoleName()));
-		});
-		return authorities;
+	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JsonIgnore
+	private List<Order> orders;
+
+	@JsonProperty("orderIds")
+	public List<Long> getOrderIds() {
+		if (orders == null) {
+			return Collections.emptyList();
+		}
+		List<Long> ids = orders.stream().map(o -> o.getId()).collect(Collectors.toList());
+		return ids;
+	}
+
+	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JsonIgnore
+	private List<Expense> expenses;
+
+	@JsonProperty("expenseIds")
+	public List<Long> getExpenseIds() {
+		if (expenses == null) {
+			return Collections.emptyList();
+		}
+		List<Long> ids = expenses.stream().map(o -> o.getId()).collect(Collectors.toList());
+		return ids;
+	}
+
+	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JsonIgnore
+	private List<Ledger> ledger;
+
+	@JsonProperty("ledgerIds")
+	public List<Long> getLedgerIds() {
+		if (ledger == null) {
+			return Collections.emptyList();
+		}
+		List<Long> ids = ledger.stream().map(o -> o.getId()).collect(Collectors.toList());
+		return ids;
 	}
 
 	@Override

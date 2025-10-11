@@ -4,15 +4,16 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.spanprints.authservice.enums.TransactionDomain;
+import com.spanprints.authservice.enums.TransactionType;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,19 +23,26 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-@Builder
-public class VerificationToken {
+public class Ledger {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	private TransactionType transactionType;
+	private TransactionDomain transactionDomain;
+	private int amount;
+	private LocalDateTime transactionTime;
 
-	private String token;
+	@ManyToOne
+	@JoinColumn(name = "order_id", referencedColumnName = "id")
+	@JsonIgnore
+	private Order order;
 
-	private LocalDateTime expiryDate;
+	@ManyToOne
+	@JoinColumn(name = "expense_id", referencedColumnName = "id")
+	@JsonIgnore
+	private Expense expense;
 
-	private Boolean isUsed;
-
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "account_id", referencedColumnName = "id")
 	@JsonIgnore
 	private Account account;

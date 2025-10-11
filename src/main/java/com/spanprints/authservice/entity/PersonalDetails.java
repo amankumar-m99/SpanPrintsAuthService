@@ -18,12 +18,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
-@Entity
 public class PersonalDetails {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +31,7 @@ public class PersonalDetails {
 	private String name;
 	private LocalDate birthday;
 	private Gender gender;
-	
+
 	@OneToOne
 	@JoinColumn(name = "account_id", referencedColumnName = "id")
 	@JsonIgnore
