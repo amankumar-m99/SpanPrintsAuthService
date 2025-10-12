@@ -32,12 +32,12 @@ public class FileAttachment {
 //	private byte[] data; // Actual file content
 
 	@ManyToOne
-	@JoinColumn(name = "order_id", referencedColumnName = "id")
+	@JoinColumn(name = "printjob_id", referencedColumnName = "id")
 	@JsonIgnore
-	private Order order;
+	private PrintJob printJob;
 
-	@JsonProperty("orderId") // will be included in JSON
-	public Long getOrderId() {
-		return order != null ? order.getId() : null;
+	@JsonProperty("printJobId") // will be included in JSON
+	public Long getPrintJobId() {
+		return printJob != null ? printJob.getId() : null;
 	}
 }

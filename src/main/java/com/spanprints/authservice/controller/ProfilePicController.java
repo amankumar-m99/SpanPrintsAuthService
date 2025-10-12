@@ -49,12 +49,6 @@ public class ProfilePicController {
 	public ResponseEntity<?> saveUserProfilePic(HttpServletRequest request,
 			@RequestParam("profile-pic") MultipartFile multipartFile,
 			@AuthenticationPrincipal UserDetails userDetails) {
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 //		String type = multipartFile.getContentType().toLowerCase();
 		String type = multipartFile.getOriginalFilename().toLowerCase();
 		if (!(type.endsWith("jpeg") || type.endsWith("jpg") || type.endsWith("png"))) {

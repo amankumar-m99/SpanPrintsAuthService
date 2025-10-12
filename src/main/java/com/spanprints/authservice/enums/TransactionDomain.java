@@ -1,5 +1,5 @@
 package com.spanprints.authservice.enums;
 
 public enum TransactionDomain {
-	ORDER, EXPENSE;
+	PRINT_JOB, EXPENSE;
 }

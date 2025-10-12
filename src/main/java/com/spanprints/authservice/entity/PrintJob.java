@@ -28,13 +28,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Order {
+public class PrintJob {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private String customrtName;
+	private String customerName;
 	private String phone;
 	private String address;
 
@@ -53,7 +53,7 @@ public class Order {
 
 	private String note;
 
-	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "printJob", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<FileAttachment> attachments;
 
@@ -66,7 +66,7 @@ public class Order {
 		return ids;
 	}
 
-	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "printJob", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Ledger> ledgers;
 

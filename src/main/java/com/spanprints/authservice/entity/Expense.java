@@ -1,6 +1,7 @@
 package com.spanprints.authservice.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,9 +36,10 @@ public class Expense {
 	private Long id;
 
 	private ExpenseType expenseType;
-	private LocalDate dateOfExpense;
 	private int amount;
 	private String description;
+	private LocalDate dateOfExpense;
+	private LocalDateTime dateAdded;
 
 	@OneToMany(mappedBy = "expense", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore

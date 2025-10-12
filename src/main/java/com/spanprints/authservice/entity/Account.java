@@ -102,14 +102,14 @@ public class Account implements UserDetails {
 
 	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
-	private List<Order> orders;
+	private List<PrintJob> printJobs;
 
-	@JsonProperty("orderIds")
-	public List<Long> getOrderIds() {
-		if (orders == null) {
+	@JsonProperty("printJobIds")
+	public List<Long> getPrintJobIds() {
+		if (printJobs == null) {
 			return Collections.emptyList();
 		}
-		List<Long> ids = orders.stream().map(o -> o.getId()).collect(Collectors.toList());
+		List<Long> ids = printJobs.stream().map(o -> o.getId()).collect(Collectors.toList());
 		return ids;
 	}
 

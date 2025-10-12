@@ -1,5 +1,6 @@
 package com.spanprints.authservice.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -14,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,19 +25,21 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Ledger {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	private int amount;
 	private TransactionType transactionType;
 	private TransactionDomain transactionDomain;
-	private int amount;
+	private LocalDate transactionDate;
 	private LocalDateTime transactionTime;
 
 	@ManyToOne
-	@JoinColumn(name = "order_id", referencedColumnName = "id")
+	@JoinColumn(name = "printjob_id", referencedColumnName = "id")
 	@JsonIgnore
-	private Order order;
+	private PrintJob printJob;
 
 	@ManyToOne
 	@JoinColumn(name = "expense_id", referencedColumnName = "id")
