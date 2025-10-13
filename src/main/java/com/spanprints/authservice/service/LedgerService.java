@@ -1,5 +1,6 @@
 package com.spanprints.authservice.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,13 @@ public class LedgerService {
 		Ledger ledger = Ledger.builder().amount(expense.getAmount()).transactionType(TransactionType.DEBIT)
 				.transactionDomain(TransactionDomain.EXPENSE).transactionDate(expense.getDateOfExpense()).printJob(null)
 				.expense(expense).account(expense.getAccount()).build();
+		return ledgerRepository.save(ledger);
+	}
+
+	public Ledger addTransaction(PrintJob printJob) {
+		Ledger ledger = Ledger.builder().amount(printJob.getTotalAmount()).transactionType(TransactionType.CREDIT)
+				.transactionDomain(TransactionDomain.PRINT_JOB).transactionDate(LocalDate.now()).printJob(printJob)
+				.expense(null).account(printJob.getAccount()).build();
 		return ledgerRepository.save(ledger);
 	}
 

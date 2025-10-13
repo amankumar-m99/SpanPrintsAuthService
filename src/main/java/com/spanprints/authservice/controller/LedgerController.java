@@ -8,13 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.spanprints.authservice.dto.RoleSaveDto;
 import com.spanprints.authservice.dto.RoleUpdateDto;
 import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.dto.TransactionDto;
@@ -32,11 +30,6 @@ public class LedgerController {
 
 	@Autowired
 	private LedgerService ledgerService;
-
-	@PostMapping("")
-	public ResponseEntity<Ledger> addRole(@Valid @RequestBody RoleSaveDto role) {
-		return new ResponseEntity<>(ledgerService.addTransaction(null), HttpStatus.CREATED);
-	}
 
 	@GetMapping("/{transactionId}")
 	public ResponseEntity<TransactionDto> getTransaction(

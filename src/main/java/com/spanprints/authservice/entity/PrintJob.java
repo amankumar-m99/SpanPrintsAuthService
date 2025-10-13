@@ -1,5 +1,6 @@
 package com.spanprints.authservice.entity;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,6 +30,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class PrintJob {
 
 	@Id
@@ -42,7 +45,7 @@ public class PrintJob {
 	private int count;
 	private int bookNumber;
 	private int wBookNumber;
-	private int dateOfDelivery;
+	private LocalDate dateOfDelivery;
 	private String description;
 
 	private int totalAmount;
