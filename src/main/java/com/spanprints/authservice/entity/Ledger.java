@@ -41,10 +41,20 @@ public class Ledger {
 	@JsonIgnore
 	private PrintJob printJob;
 
+	@JsonProperty("printJobId") // will be included in JSON
+	public Long getPrintJobId() {
+		return printJob != null ? printJob.getId() : null;
+	}
+
 	@ManyToOne
 	@JoinColumn(name = "expense_id", referencedColumnName = "id")
 	@JsonIgnore
 	private Expense expense;
+
+	@JsonProperty("expenseId") // will be included in JSON
+	public Long getExpenseId() {
+		return expense != null ? expense.getId() : null;
+	}
 
 	@ManyToOne
 	@JoinColumn(name = "account_id", referencedColumnName = "id")

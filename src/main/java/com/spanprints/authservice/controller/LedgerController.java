@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.spanprints.authservice.dto.RoleSaveDto;
 import com.spanprints.authservice.dto.RoleUpdateDto;
 import com.spanprints.authservice.dto.SuccessResponseDto;
+import com.spanprints.authservice.dto.TransactionDto;
 import com.spanprints.authservice.entity.Ledger;
 import com.spanprints.authservice.service.LedgerService;
 
@@ -38,13 +39,14 @@ public class LedgerController {
 	}
 
 	@GetMapping("/{transactionId}")
-	public ResponseEntity<Ledger> getTransaction(@PathVariable("transactionId") @NotNull @Positive @Min(1) Long id) {
-		return new ResponseEntity<>(ledgerService.getTransactionById(id), HttpStatus.OK);
+	public ResponseEntity<TransactionDto> getTransaction(
+			@PathVariable("transactionId") @NotNull @Positive @Min(1) Long id) {
+		return new ResponseEntity<>(ledgerService.getTransactionDtoById(id), HttpStatus.OK);
 	}
 
 	@GetMapping("")
-	public ResponseEntity<List<Ledger>> getAllTransactions() {
-		return new ResponseEntity<>(ledgerService.getAllTransactions(), HttpStatus.OK);
+	public ResponseEntity<List<TransactionDto>> getAllTransactions() {
+		return new ResponseEntity<>(ledgerService.getAllTransactionsDto(), HttpStatus.OK);
 	}
 
 	@PutMapping("")
@@ -53,7 +55,8 @@ public class LedgerController {
 	}
 
 	@DeleteMapping("/{transactionId}")
-	public ResponseEntity<SuccessResponseDto> deleteRole(@PathVariable("transactionId") @NotNull @Positive @Min(1) Long id) {
+	public ResponseEntity<SuccessResponseDto> deleteRole(
+			@PathVariable("transactionId") @NotNull @Positive @Min(1) Long id) {
 		SuccessResponseDto responseDto = ledgerService.deleteTransactionById(id);
 		return new ResponseEntity<>(responseDto, responseDto.getStatus());
 	}
