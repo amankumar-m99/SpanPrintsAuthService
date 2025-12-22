@@ -29,6 +29,10 @@ public class PrintJobController {
 	@Autowired
 	private SecurityUtils securityUtils;
 
+	public void addPrintJobType(@Valid @RequestBody String name) {
+		
+	}
+
 	@PostMapping("")
 	public PrintJob addExpense(@Valid @RequestBody PrintJobRequestDto dto) {
 		Account account = securityUtils.getActiveAccount();

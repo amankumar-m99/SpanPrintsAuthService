@@ -91,4 +91,14 @@ public class PrintJob {
 	public Long getAccountId() {
 		return account != null ? account.getId() : null;
 	}
+
+	@ManyToOne
+	@JoinColumn(name = "customer_id", referencedColumnName = "id")
+	@JsonIgnore
+	private Customer customer;
+
+	@JsonProperty("customerId") // will be included in JSON
+	public Long getCustomerId() {
+		return customer != null ? customer.getId() : null;
+	}
 }
