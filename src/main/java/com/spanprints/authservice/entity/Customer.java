@@ -16,8 +16,11 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,12 +30,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Customer {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
 	private String uuid;
 	private String email;
 	private String name;
@@ -40,6 +43,16 @@ public class Customer {
 	private String alternatePhoneNumber;
 	@CreatedDate
 	private LocalDateTime dateAdded;
+
+	@ManyToOne
+	@JoinColumn(name = "added by account_id", referencedColumnName = "id")
+	@JsonIgnore
+	private Account addedBy;
+
+	@JsonProperty("addedByAccountId")
+	public Long getAccountId() {
+		return addedBy != null ? addedBy.getId() : null;
+	}
 
 	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
