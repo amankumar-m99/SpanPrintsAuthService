@@ -18,7 +18,7 @@ public class SecurityUtils {
 		this.accountService = accountService;
 	}
 
-	public Account getActiveAccount() {
+	public Account getRequestingAccount() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             Object principal = authentication.getPrincipal();

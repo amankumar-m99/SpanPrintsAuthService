@@ -35,7 +35,7 @@ public class PrintJobController {
 
 	@PostMapping("")
 	public PrintJob addExpense(@Valid @RequestBody PrintJobRequestDto dto) {
-		Account account = securityUtils.getActiveAccount();
+		Account account = securityUtils.getRequestingAccount();
 		PrintJob printJob = printJobService.addPrintJob(dto, account);
 		ledgerService.addTransaction(printJob);
 		return printJob;

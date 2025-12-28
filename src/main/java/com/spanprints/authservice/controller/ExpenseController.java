@@ -31,7 +31,7 @@ public class ExpenseController {
 
 	@PostMapping("")
 	public Expense addExpense(@Valid @RequestBody ExpenseDto dto) {
-		Account account = securityUtils.getActiveAccount();
+		Account account = securityUtils.getRequestingAccount();
 		Expense expense = expenseService.addExpense(dto, account);
 		ledgerService.addTransaction(expense);
 		return expense;

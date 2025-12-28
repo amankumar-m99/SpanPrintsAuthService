@@ -13,7 +13,7 @@ import lombok.Setter;
 public class AddCustomerRequestDto {
 
 	@NotBlank(message = "Customer name is required")
-	private String name;
+	private String username;
 	private String email;
 	private String primaryPhoneNumber;
 	private String alternatePhoneNumber;

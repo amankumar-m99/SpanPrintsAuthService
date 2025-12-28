@@ -38,7 +38,7 @@ public class Customer {
 	private Long id;
 	private String uuid;
 	private String email;
-	private String name;
+	private String username;
 	private String primaryPhoneNumber;
 	private String alternatePhoneNumber;
 	@CreatedDate
@@ -52,6 +52,11 @@ public class Customer {
 	@JsonProperty("addedByAccountId")
 	public Long getAccountId() {
 		return addedBy != null ? addedBy.getId() : null;
+	}
+
+	@JsonProperty("addedBy")
+	public String getAddedBy() {
+		return addedBy != null ? addedBy.getUsername() : null;
 	}
 
 	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
