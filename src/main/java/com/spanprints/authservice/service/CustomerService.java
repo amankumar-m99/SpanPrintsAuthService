@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.spanprints.authservice.dto.CustomerRequestDto;
 import com.spanprints.authservice.dto.SuccessResponseDto;
-import com.spanprints.authservice.dto.UpdateCustomerRequestDto;
+import com.spanprints.authservice.dto.customer.AddCustomerRequestDto;
+import com.spanprints.authservice.dto.customer.UpdateCustomerRequestDto;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.Customer;
 import com.spanprints.authservice.exception.customer.CustomerAlreadyExistsException;
@@ -27,7 +27,7 @@ public class CustomerService {
 	@Autowired
 	private SecurityUtils securityUtils;
 
-	public Customer createCustomer(CustomerRequestDto dto) {
+	public Customer createCustomer(AddCustomerRequestDto dto) {
 		throwIfNameAlreadyExists(dto.getName());
 		Account account = securityUtils.getRequestingAccount();
 		Customer customer = Customer.builder().id(null).uuid(UUID.randomUUID().toString()).name(dto.getName())

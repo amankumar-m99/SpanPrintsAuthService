@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.spanprints.authservice.dto.CustomerRequestDto;
 import com.spanprints.authservice.dto.SuccessResponseDto;
-import com.spanprints.authservice.dto.UpdateCustomerRequestDto;
+import com.spanprints.authservice.dto.customer.AddCustomerRequestDto;
+import com.spanprints.authservice.dto.customer.UpdateCustomerRequestDto;
 import com.spanprints.authservice.entity.Customer;
 import com.spanprints.authservice.service.CustomerService;
 
@@ -33,7 +33,7 @@ public class CustomerController {
 	private CustomerService customerService;
 
 	@PostMapping("/customer")
-	public ResponseEntity<Customer> addCustomer(@Valid @RequestBody CustomerRequestDto dto) {
+	public ResponseEntity<Customer> addCustomer(@Valid @RequestBody AddCustomerRequestDto dto) {
 		return new ResponseEntity<>(customerService.createCustomer(dto), HttpStatus.CREATED);
 	}
 

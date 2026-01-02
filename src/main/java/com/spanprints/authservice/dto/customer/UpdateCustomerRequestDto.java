@@ -1,4 +1,4 @@
-package com.spanprints.authservice.dto;
+package com.spanprints.authservice.dto.customer;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package com.spanprints.authservice.dto;
+package com.spanprints.authservice.dto.customer;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CustomerRequestDto {
+public class AddCustomerRequestDto {
 
 	@NotBlank(message = "Customer name is required")
 	private String name;
