@@ -152,6 +152,19 @@ public class Account implements UserDetails {
 		return ids;
 	}
 
+	@OneToMany(mappedBy = "addedBy", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JsonIgnore
+	private List<Vendor> vendors;
+
+	@JsonProperty("addedVendorIds")
+	public List<Long> getVendorIds() {
+		if (vendors == null) {
+			return Collections.emptyList();
+		}
+		List<Long> ids = vendors.stream().map(o -> o.getId()).collect(Collectors.toList());
+		return ids;
+	}
+
 	@Override
 	public boolean isAccountNonExpired() {
 		return !(getIsAccountExpired());
