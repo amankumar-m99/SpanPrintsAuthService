@@ -38,7 +38,7 @@ public class Customer {
 	private Long id;
 	private String uuid;
 	private String email;
-	private String username;
+	private String name;
 	private String primaryPhoneNumber;
 	private String alternatePhoneNumber;
 	@CreatedDate

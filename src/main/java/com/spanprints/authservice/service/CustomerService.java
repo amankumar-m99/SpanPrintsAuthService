@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.spanprints.authservice.dto.AddCustomerRequestDto;
+import com.spanprints.authservice.dto.CustomerRequestDto;
 import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.dto.UpdateCustomerRequestDto;
 import com.spanprints.authservice.entity.Account;
@@ -27,10 +27,10 @@ public class CustomerService {
 	@Autowired
 	private SecurityUtils securityUtils;
 
-	public Customer createCustomer(AddCustomerRequestDto dto) {
-		throwIfNameAlreadyExists(dto.getUsername());
+	public Customer createCustomer(CustomerRequestDto dto) {
+		throwIfNameAlreadyExists(dto.getName());
 		Account account = securityUtils.getRequestingAccount();
-		Customer customer = Customer.builder().id(null).uuid(UUID.randomUUID().toString()).username(dto.getUsername())
+		Customer customer = Customer.builder().id(null).uuid(UUID.randomUUID().toString()).name(dto.getName())
 				.email(dto.getEmail()).primaryPhoneNumber(dto.getPrimaryPhoneNumber())
 				.alternatePhoneNumber(dto.getAlternatePhoneNumber()).addedBy(account).dateAdded(LocalDateTime.now())
 				.build();
@@ -55,7 +55,7 @@ public class CustomerService {
 	}
 
 	public Customer getCustomerByName(String name) {
-		return customerRepository.findByUsername(name).orElseThrow(() -> new CustomerNotFoundException("name", name));
+		return customerRepository.findByName(name).orElseThrow(() -> new CustomerNotFoundException("name", name));
 	}
 
 	public List<Customer> getCustomerByPrimaryPhoneNumber(String primaryPhoneNumber) {
@@ -64,7 +64,7 @@ public class CustomerService {
 	}
 
 	private void throwIfNameAlreadyExists(String name) {
-		if (!customerRepository.findByUsername(name).isEmpty()) {
+		if (!customerRepository.findByName(name).isEmpty()) {
 			throw new CustomerAlreadyExistsException("A customer already exists with the name " + name);
 		}
 	}
@@ -72,7 +72,7 @@ public class CustomerService {
 	public Customer updateCustomer(UpdateCustomerRequestDto dto) {
 		Customer customer = getCustomerById(dto.getId());
 		customer.setEmail(dto.getEmail());
-		customer.setUsername(dto.getName());
+		customer.setName(dto.getName());
 		customer.setPrimaryPhoneNumber(dto.getPrimaryPhoneNumber());
 		customer.setAlternatePhoneNumber(dto.getAlternatePhoneNumber());
 		return customerRepository.save(customer);
@@ -92,11 +92,11 @@ public class CustomerService {
 
 	public SuccessResponseDto deleteCustomerByUuid(String uuid) {
 		customerRepository.delete(getCustomerByUuid(uuid));
-		return new SuccessResponseDto(HttpStatus.OK, String.format("Deleted customer by UUID `%d`", uuid));
+		return new SuccessResponseDto(HttpStatus.OK, String.format("Deleted customer by UUID `%s`", uuid));
 	}
 
 	public SuccessResponseDto deleteCustomerByName(String name) {
 		customerRepository.delete(getCustomerByName(name));
-		return new SuccessResponseDto(HttpStatus.OK, String.format("Deleted customer by name `%d`", name));
+		return new SuccessResponseDto(HttpStatus.OK, String.format("Deleted customer by name `%s`", name));
 	}
 }

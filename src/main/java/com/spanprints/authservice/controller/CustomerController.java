@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.spanprints.authservice.dto.AddCustomerRequestDto;
+import com.spanprints.authservice.dto.CustomerRequestDto;
 import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.dto.UpdateCustomerRequestDto;
 import com.spanprints.authservice.entity.Customer;
@@ -33,13 +33,18 @@ public class CustomerController {
 	private CustomerService customerService;
 
 	@PostMapping("/customer")
-	public ResponseEntity<Customer> addCustomer(@Valid @RequestBody AddCustomerRequestDto dto) {
+	public ResponseEntity<Customer> addCustomer(@Valid @RequestBody CustomerRequestDto dto) {
 		return new ResponseEntity<>(customerService.createCustomer(dto), HttpStatus.CREATED);
 	}
 
-	@GetMapping("/customer/{customerId}")
-	public ResponseEntity<Customer> getCustomer(@PathVariable("customerId") @NotNull @Positive @Min(1) Long id) {
+	@GetMapping("/customer/id/{customerId}")
+	public ResponseEntity<Customer> getCustomerById(@PathVariable("customerId") @NotNull @Positive @Min(1) Long id) {
 		return new ResponseEntity<>(customerService.getCustomerById(id), HttpStatus.OK);
+	}
+
+	@GetMapping("/customer/uuid/{customerUuid}")
+	public ResponseEntity<Customer> getCustomerByUuid(@PathVariable("customerUuid") @NotNull String uuid) {
+		return new ResponseEntity<>(customerService.getCustomerByUuid(uuid), HttpStatus.OK);
 	}
 
 	@GetMapping("/customers")

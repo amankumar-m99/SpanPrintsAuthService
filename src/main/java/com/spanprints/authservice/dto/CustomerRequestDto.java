@@ -10,12 +10,11 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AddCustomerRequestDto {
+public class CustomerRequestDto {
 
 	@NotBlank(message = "Customer name is required")
-	private String username;
+	private String name;
 	private String email;
 	private String primaryPhoneNumber;
 	private String alternatePhoneNumber;
-	
 }
