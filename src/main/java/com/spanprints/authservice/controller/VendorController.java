@@ -57,10 +57,17 @@ public class VendorController {
 		return new ResponseEntity<>(vendorService.updateVendor(dto), HttpStatus.OK);
 	}
 
-	@DeleteMapping("/vendor/{vendorId}")
-	public ResponseEntity<SuccessResponseDto> deleteVendor(
+	@DeleteMapping("/vendor/id/{vendorId}")
+	public ResponseEntity<SuccessResponseDto> deleteVendorById(
 			@PathVariable("vendorId") @NotNull @Positive @Min(1) Long id) {
 		SuccessResponseDto responseDto = vendorService.deleteVendorById(id);
+		return new ResponseEntity<>(responseDto, responseDto.getStatus());
+	}
+
+	@DeleteMapping("/vendor/uuid/{vendorId}")
+	public ResponseEntity<SuccessResponseDto> deleteVendorByUuid(
+			@PathVariable("vendorId") @NotNull String uuid) {
+		SuccessResponseDto responseDto = vendorService.deleteVendorByUuid(uuid);
 		return new ResponseEntity<>(responseDto, responseDto.getStatus());
 	}
 

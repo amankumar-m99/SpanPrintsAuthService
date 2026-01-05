@@ -57,10 +57,17 @@ public class CustomerController {
 		return new ResponseEntity<>(customerService.updateCustomer(dto), HttpStatus.OK);
 	}
 
-	@DeleteMapping("/customer/{customerId}")
-	public ResponseEntity<SuccessResponseDto> deleteCustomer(
+	@DeleteMapping("/customer/id/{customerId}")
+	public ResponseEntity<SuccessResponseDto> deleteCustomerById(
 			@PathVariable("customerId") @NotNull @Positive @Min(1) Long id) {
 		SuccessResponseDto responseDto = customerService.deleteCustomerById(id);
+		return new ResponseEntity<>(responseDto, responseDto.getStatus());
+	}
+
+	@DeleteMapping("/customer/uuid/{customerId}")
+	public ResponseEntity<SuccessResponseDto> deleteCustomerByUuid(
+			@PathVariable("customerId") @NotNull String uuid) {
+		SuccessResponseDto responseDto = customerService.deleteCustomerByUuid(uuid);
 		return new ResponseEntity<>(responseDto, responseDto.getStatus());
 	}
 
