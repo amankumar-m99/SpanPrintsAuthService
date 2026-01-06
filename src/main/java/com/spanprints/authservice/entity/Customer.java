@@ -2,7 +2,6 @@ package com.spanprints.authservice.entity;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.data.annotation.CreatedDate;
 
@@ -37,26 +36,27 @@ public class Customer {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String uuid;
-	private String email;
 	private String name;
+	private String email;
+	private String address;
 	private String primaryPhoneNumber;
 	private String alternatePhoneNumber;
 	@CreatedDate
-	private LocalDateTime dateAdded;
+	private LocalDateTime createdAt;
 
 	@ManyToOne
-	@JoinColumn(name = "added by account_id", referencedColumnName = "id")
+	@JoinColumn(name = "created_by_account_id", referencedColumnName = "id")
 	@JsonIgnore
-	private Account addedBy;
+	private Account createdBy;
 
-	@JsonProperty("addedByAccountId")
-	public Long getAccountId() {
-		return addedBy != null ? addedBy.getId() : null;
+	@JsonProperty("createdBy")
+	public String getCreatedBy() {
+		return createdBy != null ? createdBy.getUsername() : null;
 	}
 
-	@JsonProperty("addedBy")
-	public String getAddedBy() {
-		return addedBy != null ? addedBy.getUsername() : null;
+	@JsonProperty("createdByAccountId")
+	public Long getAccountId() {
+		return createdBy != null ? createdBy.getId() : null;
 	}
 
 	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -68,7 +68,6 @@ public class Customer {
 		if (printJobs == null) {
 			return Collections.emptyList();
 		}
-		List<Long> ids = printJobs.stream().map(o -> o.getId()).collect(Collectors.toList());
-		return ids;
+		return printJobs.stream().map(o -> o.getId()).toList();
 	}
 }

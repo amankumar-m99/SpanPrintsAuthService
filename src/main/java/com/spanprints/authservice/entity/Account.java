@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.security.core.GrantedAuthority;
@@ -67,9 +66,7 @@ public class Account implements UserDetails {
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		Set<GrantedAuthority> authorities = new HashSet<>();
-		getRoles().forEach(role -> {
-			authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRoleName()));
-		});
+		getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRoleName())));
 		return authorities;
 	}
 
@@ -109,8 +106,7 @@ public class Account implements UserDetails {
 		if (printJobs == null) {
 			return Collections.emptyList();
 		}
-		List<Long> ids = printJobs.stream().map(o -> o.getId()).collect(Collectors.toList());
-		return ids;
+		return printJobs.stream().map(o -> o.getId()).toList();
 	}
 
 	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -122,8 +118,7 @@ public class Account implements UserDetails {
 		if (expenses == null) {
 			return Collections.emptyList();
 		}
-		List<Long> ids = expenses.stream().map(o -> o.getId()).collect(Collectors.toList());
-		return ids;
+		return expenses.stream().map(Expense::getId).toList();
 	}
 
 	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -135,34 +130,31 @@ public class Account implements UserDetails {
 		if (ledger == null) {
 			return Collections.emptyList();
 		}
-		List<Long> ids = ledger.stream().map(o -> o.getId()).collect(Collectors.toList());
-		return ids;
+		return ledger.stream().map(Ledger::getId).toList();
 	}
 
-	@OneToMany(mappedBy = "addedBy", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Customer> customers;
 
-	@JsonProperty("addedCustomerIds")
+	@JsonProperty("createdCustomerIds")
 	public List<Long> getCustomerIds() {
 		if (customers == null) {
 			return Collections.emptyList();
 		}
-		List<Long> ids = customers.stream().map(o -> o.getId()).collect(Collectors.toList());
-		return ids;
+		return customers.stream().map(o -> o.getId()).toList();
 	}
 
-	@OneToMany(mappedBy = "addedBy", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Vendor> vendors;
 
-	@JsonProperty("addedVendorIds")
+	@JsonProperty("createdVendorIds")
 	public List<Long> getVendorIds() {
 		if (vendors == null) {
 			return Collections.emptyList();
 		}
-		List<Long> ids = vendors.stream().map(o -> o.getId()).collect(Collectors.toList());
-		return ids;
+		return vendors.stream().map(Vendor::getId).toList();
 	}
 
 	@Override

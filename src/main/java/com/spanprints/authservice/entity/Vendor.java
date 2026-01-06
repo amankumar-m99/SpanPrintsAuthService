@@ -33,25 +33,24 @@ public class Vendor {
 	private String uuid;
 	private String email;
 	private String name;
+	private String address;
 	private String primaryPhoneNumber;
 	private String alternatePhoneNumber;
-	private String address;
 	@CreatedDate
-	private LocalDateTime dateAdded;
+	private LocalDateTime createdAt;
 
 	@ManyToOne
-	@JoinColumn(name = "added by account_id", referencedColumnName = "id")
+	@JoinColumn(name = "created_by_account_id", referencedColumnName = "id")
 	@JsonIgnore
-	private Account addedBy;
+	private Account createdBy;
 
-	@JsonProperty("addedByAccountId")
-	public Long getAccountId() {
-		return addedBy != null ? addedBy.getId() : null;
-	}
-
-	@JsonProperty("addedBy")
+	@JsonProperty("createdBy")
 	public String getAddedBy() {
-		return addedBy != null ? addedBy.getUsername() : null;
+		return createdBy != null ? createdBy.getUsername() : null;
 	}
 
+	@JsonProperty("createdByAccountId")
+	public Long getAccountId() {
+		return createdBy != null ? createdBy.getId() : null;
+	}
 }

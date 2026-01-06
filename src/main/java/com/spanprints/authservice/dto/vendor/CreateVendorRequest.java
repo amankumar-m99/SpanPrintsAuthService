@@ -1,4 +1,4 @@
-package com.spanprints.authservice.dto.customer;
+package com.spanprints.authservice.dto.vendor;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -10,11 +10,12 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AddCustomerRequestDto {
+public class CreateVendorRequest {
 
-	@NotBlank(message = "Customer name is required")
+	@NotBlank(message = "Vendor name is required")
 	private String name;
 	private String email;
+	private String address;
 	private String primaryPhoneNumber;
 	private String alternatePhoneNumber;
 }

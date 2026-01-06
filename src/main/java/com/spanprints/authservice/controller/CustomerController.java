@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spanprints.authservice.dto.SuccessResponseDto;
-import com.spanprints.authservice.dto.customer.AddCustomerRequestDto;
-import com.spanprints.authservice.dto.customer.UpdateCustomerRequestDto;
+import com.spanprints.authservice.dto.customer.CreateCustomerRequest;
+import com.spanprints.authservice.dto.customer.UpdateCustomerRequest;
 import com.spanprints.authservice.entity.Customer;
 import com.spanprints.authservice.service.CustomerService;
 
@@ -33,8 +33,13 @@ public class CustomerController {
 	private CustomerService customerService;
 
 	@PostMapping("/customer")
-	public ResponseEntity<Customer> addCustomer(@Valid @RequestBody AddCustomerRequestDto dto) {
-		return new ResponseEntity<>(customerService.createCustomer(dto), HttpStatus.CREATED);
+	public ResponseEntity<Customer> createCustomer(@Valid @RequestBody CreateCustomerRequest request) {
+		return new ResponseEntity<>(customerService.createCustomer(request), HttpStatus.CREATED);
+	}
+
+	@PutMapping("/customer")
+	public ResponseEntity<Customer> updateCustomer(@Valid @RequestBody UpdateCustomerRequest request) {
+		return new ResponseEntity<>(customerService.updateCustomer(request), HttpStatus.OK);
 	}
 
 	@GetMapping("/customer/id/{customerId}")
@@ -52,11 +57,6 @@ public class CustomerController {
 		return new ResponseEntity<>(customerService.getAllCustomers(), HttpStatus.OK);
 	}
 
-	@PutMapping("/customer")
-	public ResponseEntity<Customer> updateCustomer(@Valid @RequestBody UpdateCustomerRequestDto dto) {
-		return new ResponseEntity<>(customerService.updateCustomer(dto), HttpStatus.OK);
-	}
-
 	@DeleteMapping("/customer/id/{customerId}")
 	public ResponseEntity<SuccessResponseDto> deleteCustomerById(
 			@PathVariable("customerId") @NotNull @Positive @Min(1) Long id) {
@@ -65,8 +65,7 @@ public class CustomerController {
 	}
 
 	@DeleteMapping("/customer/uuid/{customerId}")
-	public ResponseEntity<SuccessResponseDto> deleteCustomerByUuid(
-			@PathVariable("customerId") @NotNull String uuid) {
+	public ResponseEntity<SuccessResponseDto> deleteCustomerByUuid(@PathVariable("customerId") @NotNull String uuid) {
 		SuccessResponseDto responseDto = customerService.deleteCustomerByUuid(uuid);
 		return new ResponseEntity<>(responseDto, responseDto.getStatus());
 	}

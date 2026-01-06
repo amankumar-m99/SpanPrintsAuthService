@@ -9,8 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.spanprints.authservice.dto.SuccessResponseDto;
-import com.spanprints.authservice.dto.vendor.AddVendorRequestDto;
-import com.spanprints.authservice.dto.vendor.UpdateVendorRequestDto;
+import com.spanprints.authservice.dto.vendor.CreateVendorRequest;
+import com.spanprints.authservice.dto.vendor.UpdateVendorRequest;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.Vendor;
 import com.spanprints.authservice.exception.vendor.VendorAlreadyExistsException;
@@ -27,13 +27,22 @@ public class VendorService {
 	@Autowired
 	private SecurityUtils securityUtils;
 
-	public Vendor createVendor(AddVendorRequestDto dto) {
-		throwIfNameAlreadyExists(dto.getName());
+	public Vendor createVendor(CreateVendorRequest request) {
+		throwIfNameAlreadyExists(request.getName());
 		Account account = securityUtils.getRequestingAccount();
-		Vendor vendor = Vendor.builder().id(null).uuid(UUID.randomUUID().toString()).name(dto.getName())
-				.email(dto.getEmail()).primaryPhoneNumber(dto.getPrimaryPhoneNumber()).address(dto.getAddress())
-				.alternatePhoneNumber(dto.getAlternatePhoneNumber()).addedBy(account).dateAdded(LocalDateTime.now())
-				.build();
+		Vendor vendor = Vendor.builder().id(null).uuid(UUID.randomUUID().toString()).name(request.getName())
+				.email(request.getEmail()).primaryPhoneNumber(request.getPrimaryPhoneNumber())
+				.address(request.getAddress()).alternatePhoneNumber(request.getAlternatePhoneNumber())
+				.createdBy(account).createdAt(LocalDateTime.now()).build();
+		return vendorRepository.save(vendor);
+	}
+
+	public Vendor updateVendor(UpdateVendorRequest request) {
+		Vendor vendor = getVendorById(request.getId());
+		vendor.setEmail(request.getEmail());
+		vendor.setName(request.getName());
+		vendor.setPrimaryPhoneNumber(request.getPrimaryPhoneNumber());
+		vendor.setAlternatePhoneNumber(request.getAlternatePhoneNumber());
 		return vendorRepository.save(vendor);
 	}
 
@@ -68,25 +77,14 @@ public class VendorService {
 		}
 	}
 
-	public Vendor updateVendor(UpdateVendorRequestDto dto) {
-		Vendor vendor = getVendorById(dto.getId());
-		vendor.setEmail(dto.getEmail());
-		vendor.setName(dto.getName());
-		vendor.setPrimaryPhoneNumber(dto.getPrimaryPhoneNumber());
-		vendor.setAlternatePhoneNumber(dto.getAlternatePhoneNumber());
-		return vendorRepository.save(vendor);
-	}
-
 	public SuccessResponseDto deleteAllVendors() {
 		vendorRepository.deleteAll();
-		return new SuccessResponseDto(HttpStatus.OK, String.format("Deleted all vendors"));
-
+		return new SuccessResponseDto(HttpStatus.OK, "Deleted all vendors");
 	}
 
 	public SuccessResponseDto deleteVendorById(Long id) {
 		vendorRepository.delete(getVendorById(id));
 		return new SuccessResponseDto(HttpStatus.OK, String.format("Deleted vendor by id `%d`", id));
-
 	}
 
 	public SuccessResponseDto deleteVendorByUuid(String uuid) {

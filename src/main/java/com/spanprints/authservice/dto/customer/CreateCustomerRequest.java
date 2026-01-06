@@ -10,14 +10,12 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateCustomerRequestDto {
-	@NotBlank(message = "Customer id is required")
-	private Long id;
-	@NotBlank(message = "Customer UUID is required")
-	private String uuid;
+public class CreateCustomerRequest {
+
 	@NotBlank(message = "Customer name is required")
 	private String name;
 	private String email;
+	private String address;
 	private String primaryPhoneNumber;
 	private String alternatePhoneNumber;
 }

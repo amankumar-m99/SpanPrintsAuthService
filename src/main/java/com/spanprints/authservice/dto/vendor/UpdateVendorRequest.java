@@ -10,11 +10,14 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AddVendorRequestDto {
-	@NotBlank(message = "Vendor name is required")
+public class UpdateVendorRequest {
+
+	@NotBlank(message = "Vendor id is required")
+	private Long id;
+	@NotBlank(message = "Customer name is required")
 	private String name;
 	private String email;
+	private String address;
 	private String primaryPhoneNumber;
 	private String alternatePhoneNumber;
-	private String address;
 }

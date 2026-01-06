@@ -9,8 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.spanprints.authservice.dto.SuccessResponseDto;
-import com.spanprints.authservice.dto.customer.AddCustomerRequestDto;
-import com.spanprints.authservice.dto.customer.UpdateCustomerRequestDto;
+import com.spanprints.authservice.dto.customer.CreateCustomerRequest;
+import com.spanprints.authservice.dto.customer.UpdateCustomerRequest;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.Customer;
 import com.spanprints.authservice.exception.customer.CustomerAlreadyExistsException;
@@ -27,13 +27,23 @@ public class CustomerService {
 	@Autowired
 	private SecurityUtils securityUtils;
 
-	public Customer createCustomer(AddCustomerRequestDto dto) {
-		throwIfNameAlreadyExists(dto.getName());
+	public Customer createCustomer(CreateCustomerRequest request) {
+		throwIfNameAlreadyExists(request.getName());
 		Account account = securityUtils.getRequestingAccount();
-		Customer customer = Customer.builder().id(null).uuid(UUID.randomUUID().toString()).name(dto.getName())
-				.email(dto.getEmail()).primaryPhoneNumber(dto.getPrimaryPhoneNumber())
-				.alternatePhoneNumber(dto.getAlternatePhoneNumber()).addedBy(account).dateAdded(LocalDateTime.now())
-				.build();
+		Customer customer = Customer.builder().id(null).uuid(UUID.randomUUID().toString()).name(request.getName())
+				.email(request.getEmail()).primaryPhoneNumber(request.getPrimaryPhoneNumber())
+				.alternatePhoneNumber(request.getAlternatePhoneNumber()).address(request.getAddress()).createdBy(account)
+				.createdAt(LocalDateTime.now()).build();
+		return customerRepository.save(customer);
+	}
+
+	public Customer updateCustomer(UpdateCustomerRequest request) {
+		Customer customer = getCustomerById(request.getId());
+		customer.setEmail(request.getEmail());
+		customer.setName(request.getName());
+		customer.setPrimaryPhoneNumber(request.getPrimaryPhoneNumber());
+		customer.setAlternatePhoneNumber(request.getAlternatePhoneNumber());
+		customer.setAddress(request.getAddress());
 		return customerRepository.save(customer);
 	}
 
@@ -69,18 +79,9 @@ public class CustomerService {
 		}
 	}
 
-	public Customer updateCustomer(UpdateCustomerRequestDto dto) {
-		Customer customer = getCustomerById(dto.getId());
-		customer.setEmail(dto.getEmail());
-		customer.setName(dto.getName());
-		customer.setPrimaryPhoneNumber(dto.getPrimaryPhoneNumber());
-		customer.setAlternatePhoneNumber(dto.getAlternatePhoneNumber());
-		return customerRepository.save(customer);
-	}
-
 	public SuccessResponseDto deleteAllCustomers() {
 		customerRepository.deleteAll();
-		return new SuccessResponseDto(HttpStatus.OK, String.format("Deleted all customers"));
+		return new SuccessResponseDto(HttpStatus.OK, "Deleted all customers");
 
 	}
 

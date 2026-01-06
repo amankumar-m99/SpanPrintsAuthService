@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spanprints.authservice.dto.SuccessResponseDto;
-import com.spanprints.authservice.dto.vendor.AddVendorRequestDto;
-import com.spanprints.authservice.dto.vendor.UpdateVendorRequestDto;
+import com.spanprints.authservice.dto.vendor.CreateVendorRequest;
+import com.spanprints.authservice.dto.vendor.UpdateVendorRequest;
 import com.spanprints.authservice.entity.Vendor;
 import com.spanprints.authservice.service.VendorService;
 
@@ -33,8 +33,13 @@ public class VendorController {
 	private VendorService vendorService;
 
 	@PostMapping("/vendor")
-	public ResponseEntity<Vendor> addVendor(@Valid @RequestBody AddVendorRequestDto dto) {
-		return new ResponseEntity<>(vendorService.createVendor(dto), HttpStatus.CREATED);
+	public ResponseEntity<Vendor> addVendor(@Valid @RequestBody CreateVendorRequest request) {
+		return new ResponseEntity<>(vendorService.createVendor(request), HttpStatus.CREATED);
+	}
+
+	@PutMapping("/vendor")
+	public ResponseEntity<Vendor> updateVendor(@Valid @RequestBody UpdateVendorRequest request) {
+		return new ResponseEntity<>(vendorService.updateVendor(request), HttpStatus.OK);
 	}
 
 	@GetMapping("/vendor/id/{vendorId}")
@@ -52,11 +57,6 @@ public class VendorController {
 		return new ResponseEntity<>(vendorService.getAllVendors(), HttpStatus.OK);
 	}
 
-	@PutMapping("/vendor")
-	public ResponseEntity<Vendor> updateVendor(@Valid @RequestBody UpdateVendorRequestDto dto) {
-		return new ResponseEntity<>(vendorService.updateVendor(dto), HttpStatus.OK);
-	}
-
 	@DeleteMapping("/vendor/id/{vendorId}")
 	public ResponseEntity<SuccessResponseDto> deleteVendorById(
 			@PathVariable("vendorId") @NotNull @Positive @Min(1) Long id) {
@@ -65,8 +65,7 @@ public class VendorController {
 	}
 
 	@DeleteMapping("/vendor/uuid/{vendorId}")
-	public ResponseEntity<SuccessResponseDto> deleteVendorByUuid(
-			@PathVariable("vendorId") @NotNull String uuid) {
+	public ResponseEntity<SuccessResponseDto> deleteVendorByUuid(@PathVariable("vendorId") @NotNull String uuid) {
 		SuccessResponseDto responseDto = vendorService.deleteVendorByUuid(uuid);
 		return new ResponseEntity<>(responseDto, responseDto.getStatus());
 	}
