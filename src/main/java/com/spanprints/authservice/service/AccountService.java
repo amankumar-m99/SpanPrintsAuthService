@@ -52,15 +52,16 @@ public class AccountService {
 	}
 
 	@Transactional
-	public String createAccount(CreateAccountRequest request) {
+	public String createAccount(CreateAccountRequest request, String frontendBaseUrl) {
 		// 1. Create and save the user (disabled)
 		Account account = createAccountFromRequest(request);
 
 		// 2. Generate and save verification token
 		TokenResponseDto tokenResponse = verificationTokenService.getTokenResponseForAccount(account);
 
-		// 3. Send verification email (outside transaction � discussed below)
-		publisher.publishEvent(new AccountRegisteredEvent(request.getEmail(), request.getUsername(), tokenResponse));
+		// 3. Send verification email (outside transaction discussed below)
+		publisher.publishEvent(
+				new AccountRegisteredEvent(request.getEmail(), request.getUsername(), frontendBaseUrl, tokenResponse));
 
 		return BasicUtils.maskEmail(request.getEmail());
 	}

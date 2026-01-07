@@ -15,6 +15,7 @@ public class AccountRegisteredEvent {
 
 	private String email;
 	private String username;
+	private String frontendBaseUrl;
 	private TokenResponseDto tokenResponseDto;
 
 }

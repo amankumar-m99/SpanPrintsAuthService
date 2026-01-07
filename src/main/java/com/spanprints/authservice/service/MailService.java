@@ -25,8 +25,8 @@ public class MailService {
 	@Value("${api-gateway.service-id:SpanPrintsApiGateway}")
 	private String apiGatewayServiceId;
 
-	@Value("${verify-token-url}")
-	private String verifyTokenUrl;
+	@Value("${verify-token-query-key}")
+	private String verifyTokenQueryKey;
 
 	private JavaMailSender mailSender;
 
@@ -40,14 +40,15 @@ public class MailService {
 	@Async()
 	// Use @Async("emailExecutor") if you want a custom configuration for
 	// executer-service
-	public void sendVerificationMail(String toEmailAddress, String username, TokenResponseDto tokenResponse) {
+	public void sendVerificationMail(String toEmailAddress, String username, String frontendBaseUrl,
+			TokenResponseDto tokenResponse) {
 		try {
 			MimeMessage mimeMessage = mailSender.createMimeMessage();
 			MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false);
 			mimeMessageHelper.setFrom("no-reply@" + appName.toLowerCase() + ".com");
 			mimeMessageHelper.setTo(toEmailAddress);
 			mimeMessageHelper.setSubject("Verification mail for " + username);
-			String link = generateLink(tokenResponse.getToken());
+			String link = generateLink(frontendBaseUrl, tokenResponse.getToken());
 			String mailContenText = VerificationLinkMailTemplate.buildHtmlContent(appName, supportEmailAddress, link,
 					tokenResponse.getExpiry(), username);
 			mimeMessageHelper.setText(mailContenText, true);
@@ -57,10 +58,10 @@ public class MailService {
 
 	}
 
-	private String generateLink(String token) {
+	private String generateLink(String frontendBaseUrl, String token) {
 //		ServiceInstance si = loadBalancerClient.choose(apiGatewayServiceId);
 //		return String.format("http://%s:%s/auth/verify?token=%s", si.getHost(), si.getPort(), token);
-		return String.format("%s?token=%s", verifyTokenUrl, token);
+		return String.format("%s?token=%s", frontendBaseUrl + verifyTokenQueryKey, token);
 	}
 
 	public boolean send(String[] to, String subject, String text, String[] cc, String[] bcc, Resource resource) {

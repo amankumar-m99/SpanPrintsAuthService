@@ -20,6 +20,7 @@ import com.spanprints.authservice.dto.account.UpdateAccountRequest;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.service.AccountService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -33,8 +34,11 @@ public class AccountController {
 	private AccountService accountService;
 
 	@PostMapping({ "/account", "/register" })
-	public ResponseEntity<SuccessResponseDto> register(@Valid @RequestBody CreateAccountRequest request) {
-		String email = accountService.createAccount(request);
+	public ResponseEntity<SuccessResponseDto> register(@Valid @RequestBody CreateAccountRequest request,
+			HttpServletRequest httpServletRequest) {
+		String whole = httpServletRequest.getRequestURL().toString();
+		String frontendBaseUrl = whole.substring(0, whole.indexOf(httpServletRequest.getRequestURI()));
+		String email = accountService.createAccount(request, frontendBaseUrl);
 		String message = String.format(
 				"Account created sucessfully. Verification link sent to your registered e-mail address `%s`", email);
 		SuccessResponseDto responseDto = new SuccessResponseDto(HttpStatus.CREATED, message);
