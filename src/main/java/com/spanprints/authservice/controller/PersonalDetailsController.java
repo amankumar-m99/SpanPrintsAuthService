@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.spanprints.authservice.dto.PersonalDetailsDto;
 import com.spanprints.authservice.dto.SuccessResponseDto;
+import com.spanprints.authservice.dto.personaldetails.CreatePersonalDetailsRequest;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.PersonalDetails;
 import com.spanprints.authservice.service.AccountService;
@@ -39,10 +39,18 @@ public class PersonalDetailsController {
 	private AccountService accountService;
 
 	@PostMapping("/personal-detail")
-	public ResponseEntity<PersonalDetails> addRole(@Valid @RequestBody PersonalDetailsDto dto,
+	public ResponseEntity<PersonalDetails> createPersonalDetails(
+			@Valid @RequestBody CreatePersonalDetailsRequest request,
 			@AuthenticationPrincipal UserDetails userDetails) {
 		Account account = getAccount(userDetails);
-		return new ResponseEntity<>(personalDetailsService.addPersonalDetail(dto, account), HttpStatus.CREATED);
+		return new ResponseEntity<>(personalDetailsService.createPersonalDetail(request, account), HttpStatus.CREATED);
+	}
+
+	@PutMapping("/personal-detail")
+	public ResponseEntity<PersonalDetails> updateRole(@Valid @RequestBody CreatePersonalDetailsRequest request,
+			@AuthenticationPrincipal UserDetails userDetails) {
+		Account account = getAccount(userDetails);
+		return new ResponseEntity<>(personalDetailsService.createPersonalDetail(request, account), HttpStatus.CREATED);
 	}
 
 	@GetMapping("/personal-detail/{personalDetailsId}")
@@ -54,13 +62,6 @@ public class PersonalDetailsController {
 	@GetMapping("/personal-details")
 	public ResponseEntity<List<PersonalDetails>> getAllDetails() {
 		return new ResponseEntity<>(personalDetailsService.getAll(), HttpStatus.OK);
-	}
-
-	@PutMapping("/personal-detail")
-	public ResponseEntity<PersonalDetails> updateRole(@Valid @RequestBody PersonalDetailsDto dto,
-			@AuthenticationPrincipal UserDetails userDetails) {
-		Account account = getAccount(userDetails);
-		return new ResponseEntity<>(personalDetailsService.addPersonalDetail(dto, account), HttpStatus.CREATED);
 	}
 
 	@DeleteMapping("/personal-detail/{personalDetailsId}")

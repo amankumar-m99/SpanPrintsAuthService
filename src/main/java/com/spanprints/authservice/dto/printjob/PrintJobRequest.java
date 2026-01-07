@@ -1,10 +1,11 @@
 package com.spanprints.authservice.dto.printjob;
 
-import java.time.LocalDate;
+import java.time.Instant;
 
 import com.spanprints.authservice.enums.JobType;
 import com.spanprints.authservice.enums.PaymentStatus;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,19 +17,16 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class PrintJobRequestDto {
+public class PrintJobRequest {
 
-	private String customerName;
-	private String phone;
-	private String address;
+	@NotBlank(message = "Customer id is required")
+	private Long customerId;
 	private JobType jobType;
 	private int count;
-	private LocalDate dateOfDelivery;
+	private Instant dateOfDelivery;
 	private int totalAmount;
 	private int depositAmount;
 	private String note;
-	
-	
 	private int bookNumber;
 	private int wBookNumber;
 	private String description;

@@ -1,8 +1,7 @@
 package com.spanprints.authservice.entity;
 
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -37,15 +36,11 @@ public class PrintJob {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private String customerName;
-	private String phone;
-	private String address;
-
 	private JobType jobType;
 	private int count;
 	private int bookNumber;
 	private int wBookNumber;
-	private LocalDate dateOfDelivery;
+	private Instant dateOfDelivery;
 	private String description;
 
 	private int totalAmount;
@@ -55,6 +50,8 @@ public class PrintJob {
 	private PaymentStatus paymentStatus;
 
 	private String note;
+	private Instant createdAt;
+	private Instant updateAt;
 
 	@OneToMany(mappedBy = "printJob", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
@@ -65,8 +62,7 @@ public class PrintJob {
 		if (attachments == null) {
 			return Collections.emptyList();
 		}
-		List<Long> ids = attachments.stream().map(o -> o.getId()).collect(Collectors.toList());
-		return ids;
+		return attachments.stream().map(FileAttachment::getId).toList();
 	}
 
 	@OneToMany(mappedBy = "printJob", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -78,8 +74,7 @@ public class PrintJob {
 		if (ledgers == null) {
 			return Collections.emptyList();
 		}
-		List<Long> ids = ledgers.stream().map(o -> o.getId()).collect(Collectors.toList());
-		return ids;
+		return ledgers.stream().map(Ledger::getId).toList();
 	}
 
 	@ManyToOne
@@ -87,7 +82,7 @@ public class PrintJob {
 	@JsonIgnore
 	private Account account;
 
-	@JsonProperty("accountId") // will be included in JSON
+	@JsonProperty("accountId")
 	public Long getAccountId() {
 		return account != null ? account.getId() : null;
 	}
@@ -97,7 +92,7 @@ public class PrintJob {
 	@JsonIgnore
 	private Customer customer;
 
-	@JsonProperty("customerId") // will be included in JSON
+	@JsonProperty("customerId")
 	public Long getCustomerId() {
 		return customer != null ? customer.getId() : null;
 	}

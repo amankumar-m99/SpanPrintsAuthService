@@ -1,5 +1,7 @@
 package com.spanprints.authservice.entity;
 
+import java.time.Instant;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -27,6 +29,8 @@ public class FileAttachment {
 
 	private String fileName;
 	private String fileType;
+	private Instant createdAt;
+	private Instant updatedAt;
 
 //	@Lob
 //	private byte[] data; // Actual file content
@@ -36,7 +40,7 @@ public class FileAttachment {
 	@JsonIgnore
 	private PrintJob printJob;
 
-	@JsonProperty("printJobId") // will be included in JSON
+	@JsonProperty("printJobId")
 	public Long getPrintJobId() {
 		return printJob != null ? printJob.getId() : null;
 	}

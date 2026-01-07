@@ -1,6 +1,6 @@
 package com.spanprints.authservice.entity;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -42,32 +42,32 @@ public class Customer {
 	private String primaryPhoneNumber;
 	private String alternatePhoneNumber;
 	@CreatedDate
-	private LocalDateTime createdAt;
+	private Instant createdAt;
+	private Instant updatedAt;
 
 	@ManyToOne
-	@JoinColumn(name = "created_by_account_id", referencedColumnName = "id")
+	@JoinColumn(name = "account_id", referencedColumnName = "id")
 	@JsonIgnore
-	private Account createdBy;
+	private Account account;
 
 	@JsonProperty("createdBy")
-	public String getCreatedBy() {
-		return createdBy != null ? createdBy.getUsername() : null;
+	public String getAccountUsername() {
+		return account != null ? account.getUsername() : null;
 	}
 
-	@JsonProperty("createdByAccountId")
+	@JsonProperty("createdById")
 	public Long getAccountId() {
-		return createdBy != null ? createdBy.getId() : null;
+		return account != null ? account.getId() : null;
 	}
 
 	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<PrintJob> printJobs;
-
 	@JsonProperty("printJobIds")
 	public List<Long> getPrintJobIds() {
 		if (printJobs == null) {
 			return Collections.emptyList();
 		}
-		return printJobs.stream().map(o -> o.getId()).toList();
+		return printJobs.stream().map(PrintJob::getId).toList();
 	}
 }

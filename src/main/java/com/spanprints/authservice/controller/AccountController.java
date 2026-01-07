@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.spanprints.authservice.dto.RegisterRequestDto;
 import com.spanprints.authservice.dto.SuccessResponseDto;
+import com.spanprints.authservice.dto.account.CreateAccountRequest;
+import com.spanprints.authservice.dto.account.UpdateAccountRequest;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.service.AccountService;
 
@@ -32,8 +33,8 @@ public class AccountController {
 	private AccountService accountService;
 
 	@PostMapping({ "/account", "/register" })
-	public ResponseEntity<SuccessResponseDto> register(@Valid @RequestBody RegisterRequestDto request) {
-		String email = accountService.register(request);
+	public ResponseEntity<SuccessResponseDto> register(@Valid @RequestBody CreateAccountRequest request) {
+		String email = accountService.createAccount(request);
 		String message = String.format(
 				"Account created sucessfully. Verification link sent to your registered e-mail address `%s`", email);
 		SuccessResponseDto responseDto = new SuccessResponseDto(HttpStatus.CREATED, message);
@@ -53,7 +54,7 @@ public class AccountController {
 	}
 
 	@PutMapping("/account")
-	public ResponseEntity<String> updateAccount(@Valid @RequestBody RegisterRequestDto request) {
+	public ResponseEntity<String> updateAccount(@Valid @RequestBody UpdateAccountRequest request) {
 		return new ResponseEntity<>("Functionality not implemented yet.", HttpStatus.NOT_IMPLEMENTED);
 	}
 

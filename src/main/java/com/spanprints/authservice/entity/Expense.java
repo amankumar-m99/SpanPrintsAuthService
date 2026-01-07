@@ -1,9 +1,7 @@
 package com.spanprints.authservice.entity;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -20,6 +18,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,17 +28,18 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Expense {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
 	private ExpenseType expenseType;
-	private int amount;
+	private double amount;
 	private String description;
-	private LocalDate dateOfExpense;
-	private LocalDateTime dateAdded;
+	private Instant dateOfExpense;
+	private Instant createdAt;
+	private Instant updatedAt;
 
 	@OneToMany(mappedBy = "expense", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
@@ -50,8 +50,7 @@ public class Expense {
 		if (ledgers == null) {
 			return Collections.emptyList();
 		}
-		List<Long> ids = ledgers.stream().map(o -> o.getId()).collect(Collectors.toList());
-		return ids;
+		return ledgers.stream().map(Ledger::getId).toList();
 	}
 
 	@ManyToOne
@@ -59,8 +58,14 @@ public class Expense {
 	@JsonIgnore
 	private Account account;
 
-	@JsonProperty("accountId") // will be included in JSON
+	@JsonProperty("addedBy")
+	public String getAddedBy() {
+		return account != null ? account.getUsername() : null;
+	}
+
+	@JsonProperty("addedById")
 	public Long getAccountId() {
 		return account != null ? account.getId() : null;
 	}
+
 }

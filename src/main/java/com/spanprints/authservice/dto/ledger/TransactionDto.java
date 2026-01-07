@@ -1,7 +1,6 @@
-package com.spanprints.authservice.dto;
+package com.spanprints.authservice.dto.ledger;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import com.spanprints.authservice.enums.TransactionDomain;
 import com.spanprints.authservice.enums.TransactionType;
@@ -20,13 +19,14 @@ import lombok.Setter;
 public class TransactionDto {
 
 	private Long id;
-	private Integer amount;
+	private Double amount;
 	private TransactionType transactionType;
 	private TransactionDomain transactionDomain;
-	private LocalDate transactionDate;
-	private LocalDateTime transactionTime;
+	private Instant transactionTime;
 	private Long expenseId;
 	private Long printJobId;
 	private String description;
+	private Instant createdAt;
+	private Instant updatedAt;
 
 }

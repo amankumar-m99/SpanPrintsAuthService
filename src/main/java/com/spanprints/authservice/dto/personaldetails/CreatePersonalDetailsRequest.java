@@ -1,6 +1,6 @@
-package com.spanprints.authservice.dto;
+package com.spanprints.authservice.dto.personaldetails;
 
-import java.time.LocalDate;
+import java.time.Instant;
 
 import com.spanprints.authservice.enums.Gender;
 
@@ -11,10 +11,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PersonalDetailsDto {
+public class CreatePersonalDetailsRequest {
 
 	private String name;
 	private Gender gender;
-	private LocalDate birthday;
+	private Instant birthday;
 
 }

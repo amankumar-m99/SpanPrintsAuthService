@@ -1,7 +1,6 @@
 package com.spanprints.authservice.entity;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -30,18 +29,20 @@ public class Ledger {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private int amount;
+	private double amount;
 	private TransactionType transactionType;
 	private TransactionDomain transactionDomain;
-	private LocalDate transactionDate;
-	private LocalDateTime transactionTime;
+	private Instant transactionDate;
+	private Instant transactionTime;
+	private Instant createdAt;
+	private Instant updatedAt;
 
 	@ManyToOne
 	@JoinColumn(name = "printjob_id", referencedColumnName = "id")
 	@JsonIgnore
 	private PrintJob printJob;
 
-	@JsonProperty("printJobId") // will be included in JSON
+	@JsonProperty("printJobId")
 	public Long getPrintJobId() {
 		return printJob != null ? printJob.getId() : null;
 	}
@@ -51,7 +52,7 @@ public class Ledger {
 	@JsonIgnore
 	private Expense expense;
 
-	@JsonProperty("expenseId") // will be included in JSON
+	@JsonProperty("expenseId")
 	public Long getExpenseId() {
 		return expense != null ? expense.getId() : null;
 	}
@@ -61,9 +62,13 @@ public class Ledger {
 	@JsonIgnore
 	private Account account;
 
-	@JsonProperty("accountId") // will be included in JSON
+	@JsonProperty("addedBy")
+	public String getAddedBy() {
+		return account != null ? account.getUsername() : null;
+	}
+
+	@JsonProperty("addedById")
 	public Long getAccountId() {
 		return account != null ? account.getId() : null;
 	}
-
 }

@@ -1,14 +1,15 @@
 package com.spanprints.authservice.service;
 
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.spanprints.authservice.dto.SuccessResponseDto;
-import com.spanprints.authservice.dto.TransactionDto;
+import com.spanprints.authservice.dto.ledger.TransactionDto;
 import com.spanprints.authservice.entity.Expense;
 import com.spanprints.authservice.entity.Ledger;
 import com.spanprints.authservice.entity.PrintJob;
@@ -26,14 +27,16 @@ public class LedgerService {
 	public Ledger addTransaction(Expense expense) {
 		Ledger ledger = Ledger.builder().amount(expense.getAmount()).transactionType(TransactionType.DEBIT)
 				.transactionDomain(TransactionDomain.EXPENSE).transactionDate(expense.getDateOfExpense()).printJob(null)
-				.expense(expense).account(expense.getAccount()).build();
+				.expense(expense).createdAt(expense.getCreatedAt()).updatedAt(expense.getUpdatedAt())
+				.account(expense.getAccount()).build();
 		return ledgerRepository.save(ledger);
 	}
 
 	public Ledger addTransaction(PrintJob printJob) {
 		Ledger ledger = Ledger.builder().amount(printJob.getTotalAmount()).transactionType(TransactionType.CREDIT)
-				.transactionDomain(TransactionDomain.PRINT_JOB).transactionDate(LocalDate.now()).printJob(printJob)
-				.expense(null).account(printJob.getAccount()).build();
+				.transactionDomain(TransactionDomain.PRINT_JOB).transactionDate(Instant.now()).printJob(printJob)
+				.expense(null).createdAt(printJob.getCreatedAt()).updatedAt(printJob.getUpdateAt())
+				.account(printJob.getAccount()).build();
 		return ledgerRepository.save(ledger);
 	}
 
@@ -55,8 +58,8 @@ public class LedgerService {
 		return ledgerRepository.findAll().stream().map(e -> convertLedgerTransactionToDto(e)).toList();
 	}
 
-	public Ledger updateTransaction() {
-		return null;
+	public ResponseEntity<String> updateTransaction() {
+		return new ResponseEntity<>("Functionality not implemented yet.", HttpStatus.NOT_IMPLEMENTED);
 	}
 
 	public void deleteTransaction(Ledger ledger) {
@@ -86,8 +89,9 @@ public class LedgerService {
 		}
 		return TransactionDto.builder().id(ledger.getId()).amount(ledger.getAmount())
 				.transactionType(ledger.getTransactionType()).transactionDomain(ledger.getTransactionDomain())
-				.transactionDate(ledger.getTransactionDate()).transactionTime(ledger.getTransactionTime())
-				.expenseId(ledger.getExpenseId()).printJobId(ledger.getPrintJobId()).description(description).build();
+				.transactionTime(ledger.getTransactionTime()).expenseId(ledger.getExpenseId())
+				.createdAt(ledger.getCreatedAt()).updatedAt(ledger.getUpdatedAt()).printJobId(ledger.getPrintJobId())
+				.description(description).build();
 	}
 
 }

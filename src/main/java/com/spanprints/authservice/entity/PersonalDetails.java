@@ -1,6 +1,6 @@
 package com.spanprints.authservice.entity;
 
-import java.time.LocalDate;
+import java.time.Instant;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -29,7 +29,7 @@ public class PersonalDetails {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
-	private LocalDate birthday;
+	private Instant birthday;
 	private Gender gender;
 
 	@OneToOne
@@ -37,7 +37,7 @@ public class PersonalDetails {
 	@JsonIgnore
 	private Account account;
 
-	@JsonProperty("accountId") // will be included in JSON
+	@JsonProperty("accountId")
 	public Long getAccountId() {
 		return account != null ? account.getId() : null;
 	}

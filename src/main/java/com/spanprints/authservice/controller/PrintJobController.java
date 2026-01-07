@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.spanprints.authservice.dto.printjob.PrintJobRequestDto;
+import com.spanprints.authservice.dto.printjob.PrintJobRequest;
 import com.spanprints.authservice.entity.Account;
+import com.spanprints.authservice.entity.Customer;
 import com.spanprints.authservice.entity.PrintJob;
+import com.spanprints.authservice.service.CustomerService;
 import com.spanprints.authservice.service.LedgerService;
 import com.spanprints.authservice.service.PrintJobService;
 import com.spanprints.authservice.util.SecurityUtils;
@@ -28,15 +30,14 @@ public class PrintJobController {
 	private LedgerService ledgerService;
 	@Autowired
 	private SecurityUtils securityUtils;
-
-	public void addPrintJobType(@Valid @RequestBody String name) {
-		
-	}
+	@Autowired
+	private CustomerService customerService;
 
 	@PostMapping("")
-	public PrintJob addExpense(@Valid @RequestBody PrintJobRequestDto dto) {
+	public PrintJob createPrintJob(@Valid @RequestBody PrintJobRequest request) {
 		Account account = securityUtils.getRequestingAccount();
-		PrintJob printJob = printJobService.addPrintJob(dto, account);
+		Customer customer = customerService.getCustomerById(request.getCustomerId());
+		PrintJob printJob = printJobService.addPrintJob(request, account, customer);
 		ledgerService.addTransaction(printJob);
 		return printJob;
 	}

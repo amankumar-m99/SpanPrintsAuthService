@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.spanprints.authservice.dto.PersonalDetailsDto;
 import com.spanprints.authservice.dto.SuccessResponseDto;
+import com.spanprints.authservice.dto.personaldetails.CreatePersonalDetailsRequest;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.PersonalDetails;
 import com.spanprints.authservice.exception.personaldetails.PersonalDetailsFoundException;
@@ -19,26 +19,26 @@ public class PersonalDetailsService {
 	@Autowired
 	private PersonalDetailsRepository personalDetailsRepository;
 
-	public PersonalDetails addPersonalDetail(PersonalDetailsDto dto, Account account) {
+	public PersonalDetails createPersonalDetail(CreatePersonalDetailsRequest request, Account account) {
 		PersonalDetails personDetails = account.getPersonalDetails();
 		if (personDetails != null) {
-			updatePersonDetails(personDetails, dto);
+			updatePersonDetails(personDetails, request);
 		} else {
-			personDetails = createPersonDetails(dto);
+			personDetails = buildPersonDetailsFromDto(request);
 		}
 		personDetails.setAccount(account);
 		return personalDetailsRepository.save(personDetails);
 	}
 
-	private PersonalDetails createPersonDetails(PersonalDetailsDto dto) {
-		return PersonalDetails.builder().name(dto.getName()).gender(dto.getGender()).birthday(dto.getBirthday())
-				.build();
+	private PersonalDetails buildPersonDetailsFromDto(CreatePersonalDetailsRequest request) {
+		return PersonalDetails.builder().name(request.getName()).gender(request.getGender())
+				.birthday(request.getBirthday()).build();
 	}
 
-	private PersonalDetails updatePersonDetails(PersonalDetails details, PersonalDetailsDto dto) {
-		details.setName(dto.getName());
-		details.setGender(dto.getGender());
-		details.setBirthday(dto.getBirthday());
+	private PersonalDetails updatePersonDetails(PersonalDetails details, CreatePersonalDetailsRequest request) {
+		details.setName(request.getName());
+		details.setGender(request.getGender());
+		details.setBirthday(request.getBirthday());
 		return details;
 	}
 

@@ -1,5 +1,6 @@
 package com.spanprints.authservice.entity;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
@@ -41,7 +42,6 @@ import lombok.Setter;
 public class Account implements UserDetails {
 
 	private static final long serialVersionUID = 2409871067906954451L;
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -57,11 +57,12 @@ public class Account implements UserDetails {
 	@CreatedDate
 //    @Column(nullable = false, updatable = false)
 	private LocalDateTime createdAt;
+	private Instant updatedAt;
 
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-	@JoinTable(name = "ACCOUNT_ROLE", joinColumns = { @JoinColumn(name = "ACCOUNT_ID") }, inverseJoinColumns = {
-			@JoinColumn(name = "ROLE_ID") })
-	private Set<Role> roles;
+	@JoinTable(name = "account_role", joinColumns = { @JoinColumn(name = "account_id") }, inverseJoinColumns = {
+			@JoinColumn(name = "role_id") })
+	private transient Set<Role> roles;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -72,8 +73,7 @@ public class Account implements UserDetails {
 
 	@OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
-	private VerificationToken verificationToken;
-
+	private transient VerificationToken verificationToken;
 	@JsonProperty("verificationTokenId")
 	public Long getVerificationTokenId() {
 		return verificationToken != null ? verificationToken.getId() : null;
@@ -81,8 +81,7 @@ public class Account implements UserDetails {
 
 	@OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
-	private PersonalDetails personalDetails;
-
+	private transient PersonalDetails personalDetails;
 	@JsonProperty("personalDetailsId")
 	public Long getPersonalDetailsId() {
 		return personalDetails != null ? personalDetails.getId() : null;
@@ -90,8 +89,7 @@ public class Account implements UserDetails {
 
 	@OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
-	private ProfilePic profilePic;
-
+	private transient ProfilePic profilePic;
 	@JsonProperty("profilePicId")
 	public Long getProfilePicId() {
 		return profilePic != null ? profilePic.getId() : null;
@@ -99,8 +97,7 @@ public class Account implements UserDetails {
 
 	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
-	private List<PrintJob> printJobs;
-
+	private transient List<PrintJob> printJobs;
 	@JsonProperty("printJobIds")
 	public List<Long> getPrintJobIds() {
 		if (printJobs == null) {
@@ -111,8 +108,7 @@ public class Account implements UserDetails {
 
 	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
-	private List<Expense> expenses;
-
+	private transient List<Expense> expenses;
 	@JsonProperty("expenseIds")
 	public List<Long> getExpenseIds() {
 		if (expenses == null) {
@@ -123,8 +119,7 @@ public class Account implements UserDetails {
 
 	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
-	private List<Ledger> ledger;
-
+	private transient List<Ledger> ledger;
 	@JsonProperty("ledgerIds")
 	public List<Long> getLedgerIds() {
 		if (ledger == null) {
@@ -133,11 +128,10 @@ public class Account implements UserDetails {
 		return ledger.stream().map(Ledger::getId).toList();
 	}
 
-	@OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
-	private List<Customer> customers;
-
-	@JsonProperty("createdCustomerIds")
+	private transient List<Customer> customers;
+	@JsonProperty("customerIds")
 	public List<Long> getCustomerIds() {
 		if (customers == null) {
 			return Collections.emptyList();
@@ -145,11 +139,10 @@ public class Account implements UserDetails {
 		return customers.stream().map(o -> o.getId()).toList();
 	}
 
-	@OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
-	private List<Vendor> vendors;
-
-	@JsonProperty("createdVendorIds")
+	private transient List<Vendor> vendors;
+	@JsonProperty("vendorIds")
 	public List<Long> getVendorIds() {
 		if (vendors == null) {
 			return Collections.emptyList();

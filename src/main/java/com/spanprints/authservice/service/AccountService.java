@@ -1,5 +1,6 @@
 package com.spanprints.authservice.service;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashSet;
@@ -13,9 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.spanprints.authservice.dto.RegisterRequestDto;
 import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.dto.TokenResponseDto;
+import com.spanprints.authservice.dto.account.CreateAccountRequest;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.Role;
 import com.spanprints.authservice.event.AccountRegisteredEvent;
@@ -51,9 +52,9 @@ public class AccountService {
 	}
 
 	@Transactional
-	public String register(RegisterRequestDto request) {
+	public String createAccount(CreateAccountRequest request) {
 		// 1. Create and save the user (disabled)
-		Account account = createAccount(request);
+		Account account = createAccountFromRequest(request);
 
 		// 2. Generate and save verification token
 		TokenResponseDto tokenResponse = verificationTokenService.getTokenResponseForAccount(account);
@@ -64,11 +65,11 @@ public class AccountService {
 		return BasicUtils.maskEmail(request.getEmail());
 	}
 
-	private Account createAccount(RegisterRequestDto request) {
+	private Account createAccountFromRequest(CreateAccountRequest request) {
 		throwIfEmailAlreadyExists(request.getEmail());
 		throwIfUsernameAlreadyExists(request.getUsername());
 		Account account = Account.builder().uuid(UUID.randomUUID().toString()).email(request.getEmail())
-				.createdAt(LocalDateTime.now()).username(request.getUsername())
+				.createdAt(LocalDateTime.now()).updatedAt(Instant.now()).username(request.getUsername())
 				.password(passwordEncoder.encode(request.getPassword())).isLocked(false).isEnabled(false)
 				.isAccountExpired(false).isCredentialExpired(false).build();
 		if (request.getRoles() == null) {
@@ -103,8 +104,8 @@ public class AccountService {
 	}
 
 	public Account getAccountByUuid(String uuid) {
-		return accountRepository.findByUuid(uuid)
-				.orElseThrow(() -> new AccountNotFoundException(String.format("No account found with uuid `%d`", uuid)));
+		return accountRepository.findByUuid(uuid).orElseThrow(
+				() -> new AccountNotFoundException(String.format("No account found with uuid `%d`", uuid)));
 	}
 
 	public Account getAccountByUsername(String username) {

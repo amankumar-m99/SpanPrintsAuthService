@@ -9,17 +9,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.spanprints.authservice.dto.RoleUpdateDto;
 import com.spanprints.authservice.dto.SuccessResponseDto;
-import com.spanprints.authservice.dto.TransactionDto;
-import com.spanprints.authservice.entity.Ledger;
+import com.spanprints.authservice.dto.ledger.TransactionDto;
 import com.spanprints.authservice.service.LedgerService;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -43,8 +39,8 @@ public class LedgerController {
 	}
 
 	@PutMapping("")
-	public ResponseEntity<Ledger> updateRole(@Valid @RequestBody RoleUpdateDto role) {
-		return new ResponseEntity<>(ledgerService.updateTransaction(), HttpStatus.OK);
+	public ResponseEntity<String> updateLedger() {
+		return ledgerService.updateTransaction();
 	}
 
 	@DeleteMapping("/{transactionId}")

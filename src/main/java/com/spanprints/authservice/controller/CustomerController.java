@@ -42,6 +42,11 @@ public class CustomerController {
 		return new ResponseEntity<>(customerService.updateCustomer(request), HttpStatus.OK);
 	}
 
+	@GetMapping("/customers")
+	public ResponseEntity<List<Customer>> getAllCustomers() {
+		return new ResponseEntity<>(customerService.getAllCustomers(), HttpStatus.OK);
+	}
+
 	@GetMapping("/customer/id/{customerId}")
 	public ResponseEntity<Customer> getCustomerById(@PathVariable("customerId") @NotNull @Positive @Min(1) Long id) {
 		return new ResponseEntity<>(customerService.getCustomerById(id), HttpStatus.OK);
@@ -50,11 +55,6 @@ public class CustomerController {
 	@GetMapping("/customer/uuid/{customerUuid}")
 	public ResponseEntity<Customer> getCustomerByUuid(@PathVariable("customerUuid") @NotNull String uuid) {
 		return new ResponseEntity<>(customerService.getCustomerByUuid(uuid), HttpStatus.OK);
-	}
-
-	@GetMapping("/customers")
-	public ResponseEntity<List<Customer>> getAllCustomers() {
-		return new ResponseEntity<>(customerService.getAllCustomers(), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/customer/id/{customerId}")

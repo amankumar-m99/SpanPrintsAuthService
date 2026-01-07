@@ -30,13 +30,13 @@ public class ProfilePic {
 	private Long id;
 	private String name;
 	private LocalDateTime lastUpdated;
-	
+
 	@OneToOne
 	@JoinColumn(name = "account_id", referencedColumnName = "id")
 	@JsonIgnore
 	private Account account;
 
-	@JsonProperty("accountId") // will be included in JSON
+	@JsonProperty("accountId")
 	public Long getAccountId() {
 		return account != null ? account.getId() : null;
 	}

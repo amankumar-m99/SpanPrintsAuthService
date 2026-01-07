@@ -1,6 +1,6 @@
 package com.spanprints.authservice.service;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,8 +32,8 @@ public class CustomerService {
 		Account account = securityUtils.getRequestingAccount();
 		Customer customer = Customer.builder().id(null).uuid(UUID.randomUUID().toString()).name(request.getName())
 				.email(request.getEmail()).primaryPhoneNumber(request.getPrimaryPhoneNumber())
-				.alternatePhoneNumber(request.getAlternatePhoneNumber()).address(request.getAddress()).createdBy(account)
-				.createdAt(LocalDateTime.now()).build();
+				.alternatePhoneNumber(request.getAlternatePhoneNumber()).address(request.getAddress()).account(account)
+				.createdAt(Instant.now()).updatedAt(Instant.now()).build();
 		return customerRepository.save(customer);
 	}
 
@@ -44,6 +44,7 @@ public class CustomerService {
 		customer.setPrimaryPhoneNumber(request.getPrimaryPhoneNumber());
 		customer.setAlternatePhoneNumber(request.getAlternatePhoneNumber());
 		customer.setAddress(request.getAddress());
+		customer.setUpdatedAt(Instant.now());
 		return customerRepository.save(customer);
 	}
 

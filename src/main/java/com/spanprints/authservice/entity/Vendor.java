@@ -1,6 +1,6 @@
 package com.spanprints.authservice.entity;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import org.springframework.data.annotation.CreatedDate;
 
@@ -37,20 +37,21 @@ public class Vendor {
 	private String primaryPhoneNumber;
 	private String alternatePhoneNumber;
 	@CreatedDate
-	private LocalDateTime createdAt;
+	private Instant createdAt;
+	private Instant updatedAt;
 
 	@ManyToOne
-	@JoinColumn(name = "created_by_account_id", referencedColumnName = "id")
+	@JoinColumn(name = "account_id", referencedColumnName = "id")
 	@JsonIgnore
-	private Account createdBy;
+	private Account account;
 
 	@JsonProperty("createdBy")
-	public String getAddedBy() {
-		return createdBy != null ? createdBy.getUsername() : null;
+	public String getAccountUsername() {
+		return account != null ? account.getUsername() : null;
 	}
 
-	@JsonProperty("createdByAccountId")
+	@JsonProperty("createdById")
 	public Long getAccountId() {
-		return createdBy != null ? createdBy.getId() : null;
+		return account != null ? account.getId() : null;
 	}
 }

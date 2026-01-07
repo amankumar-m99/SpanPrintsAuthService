@@ -8,8 +8,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class UpdateCustomerRequest {
 
 	@NotBlank(message = "Customer id is required")
@@ -18,6 +18,8 @@ public class UpdateCustomerRequest {
 	private String name;
 	private String email;
 	private String address;
+	@NotBlank(message = "Primary phone number is required")
 	private String primaryPhoneNumber;
 	private String alternatePhoneNumber;
+
 }
