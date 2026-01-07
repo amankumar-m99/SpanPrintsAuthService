@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,7 +21,6 @@ import com.spanprints.authservice.dto.account.UpdateAccountRequest;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.service.AccountService;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -35,9 +35,7 @@ public class AccountController {
 
 	@PostMapping({ "/account", "/register" })
 	public ResponseEntity<SuccessResponseDto> register(@Valid @RequestBody CreateAccountRequest request,
-			HttpServletRequest httpServletRequest) {
-		String whole = httpServletRequest.getRequestURL().toString();
-		String frontendBaseUrl = whole.substring(0, whole.indexOf(httpServletRequest.getRequestURI()));
+			@RequestHeader(value = "Origin", required = false) String frontendBaseUrl) {
 		String email = accountService.createAccount(request, frontendBaseUrl);
 		String message = String.format(
 				"Account created sucessfully. Verification link sent to your registered e-mail address `%s`", email);
