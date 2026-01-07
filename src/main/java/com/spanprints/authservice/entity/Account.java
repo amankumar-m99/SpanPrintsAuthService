@@ -62,7 +62,7 @@ public class Account implements UserDetails {
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
 	@JoinTable(name = "account_role", joinColumns = { @JoinColumn(name = "account_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "role_id") })
-	private transient Set<Role> roles;
+	private Set<Role> roles;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -73,7 +73,7 @@ public class Account implements UserDetails {
 
 	@OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
-	private transient VerificationToken verificationToken;
+	private VerificationToken verificationToken;
 	@JsonProperty("verificationTokenId")
 	public Long getVerificationTokenId() {
 		return verificationToken != null ? verificationToken.getId() : null;
@@ -81,7 +81,7 @@ public class Account implements UserDetails {
 
 	@OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
-	private transient PersonalDetails personalDetails;
+	private PersonalDetails personalDetails;
 	@JsonProperty("personalDetailsId")
 	public Long getPersonalDetailsId() {
 		return personalDetails != null ? personalDetails.getId() : null;
@@ -89,7 +89,7 @@ public class Account implements UserDetails {
 
 	@OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
-	private transient ProfilePic profilePic;
+	private ProfilePic profilePic;
 	@JsonProperty("profilePicId")
 	public Long getProfilePicId() {
 		return profilePic != null ? profilePic.getId() : null;
@@ -97,7 +97,7 @@ public class Account implements UserDetails {
 
 	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
-	private transient List<PrintJob> printJobs;
+	private List<PrintJob> printJobs;
 	@JsonProperty("printJobIds")
 	public List<Long> getPrintJobIds() {
 		if (printJobs == null) {
@@ -108,7 +108,7 @@ public class Account implements UserDetails {
 
 	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
-	private transient List<Expense> expenses;
+	private List<Expense> expenses;
 	@JsonProperty("expenseIds")
 	public List<Long> getExpenseIds() {
 		if (expenses == null) {
@@ -119,7 +119,7 @@ public class Account implements UserDetails {
 
 	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
-	private transient List<Ledger> ledger;
+	private List<Ledger> ledger;
 	@JsonProperty("ledgerIds")
 	public List<Long> getLedgerIds() {
 		if (ledger == null) {
@@ -130,7 +130,7 @@ public class Account implements UserDetails {
 
 	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
-	private transient List<Customer> customers;
+	private List<Customer> customers;
 	@JsonProperty("customerIds")
 	public List<Long> getCustomerIds() {
 		if (customers == null) {
@@ -141,7 +141,7 @@ public class Account implements UserDetails {
 
 	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
-	private transient List<Vendor> vendors;
+	private List<Vendor> vendors;
 	@JsonProperty("vendorIds")
 	public List<Long> getVendorIds() {
 		if (vendors == null) {
