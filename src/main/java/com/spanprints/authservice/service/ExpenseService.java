@@ -2,6 +2,7 @@ package com.spanprints.authservice.service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,7 @@ public class ExpenseService {
 	private ExpenseRepository expenseRepository;
 
 	public Expense createExpense(CreateExpenseRequest request, Account account) {
-		Expense expense = Expense.builder().id(null).expenseType(request.getExpenseType()).amount(request.getAmount())
+		Expense expense = Expense.builder().id(null).uuid(UUID.randomUUID().toString()).expenseType(request.getExpenseType()).amount(request.getAmount())
 				.description(request.getDescription()).dateOfExpense(request.getDateOfExpense())
 				.createdAt(Instant.now()).updatedAt(Instant.now()).account(account).build();
 		return expenseRepository.save(expense);

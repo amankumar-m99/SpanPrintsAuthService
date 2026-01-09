@@ -34,12 +34,28 @@ public class Expense {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	private String uuid;
 	private ExpenseType expenseType;
 	private double amount;
 	private String description;
 	private Instant dateOfExpense;
 	private Instant createdAt;
 	private Instant updatedAt;
+
+	@ManyToOne
+	@JoinColumn(name = "account_id", referencedColumnName = "id")
+	@JsonIgnore
+	private Account account;
+
+	@JsonProperty("createBy")
+	public String getAddedBy() {
+		return account != null ? account.getUsername() : null;
+	}
+
+	@JsonProperty("createdById")
+	public Long getAccountId() {
+		return account != null ? account.getId() : null;
+	}
 
 	@OneToMany(mappedBy = "expense", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
@@ -51,21 +67,6 @@ public class Expense {
 			return Collections.emptyList();
 		}
 		return ledgers.stream().map(Ledger::getId).toList();
-	}
-
-	@ManyToOne
-	@JoinColumn(name = "account_id", referencedColumnName = "id")
-	@JsonIgnore
-	private Account account;
-
-	@JsonProperty("addedBy")
-	public String getAddedBy() {
-		return account != null ? account.getUsername() : null;
-	}
-
-	@JsonProperty("addedById")
-	public Long getAccountId() {
-		return account != null ? account.getId() : null;
 	}
 
 }
