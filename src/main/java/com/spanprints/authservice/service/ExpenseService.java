@@ -13,6 +13,7 @@ import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.Expense;
 import com.spanprints.authservice.exception.ledger.TransactionNotFoundException;
 import com.spanprints.authservice.repository.ExpenseRepository;
+import com.spanprints.authservice.util.BasicUtils;
 
 @Service
 public class ExpenseService {
@@ -21,8 +22,9 @@ public class ExpenseService {
 	private ExpenseRepository expenseRepository;
 
 	public Expense createExpense(CreateExpenseRequest request, Account account) {
-		Expense expense = Expense.builder().id(null).uuid(UUID.randomUUID().toString()).expenseType(request.getExpenseType()).amount(request.getAmount())
-				.description(request.getDescription()).dateOfExpense(request.getDateOfExpense())
+		Expense expense = Expense.builder().id(null).uuid(UUID.randomUUID().toString())
+				.expenseType(request.getExpenseType()).amount(request.getAmount()).description(request.getDescription())
+				.dateOfExpense(BasicUtils.convertLocalDateToInstant(request.getDateOfExpense()))
 				.createdAt(Instant.now()).updatedAt(Instant.now()).account(account).build();
 		return expenseRepository.save(expense);
 	}
@@ -32,7 +34,7 @@ public class ExpenseService {
 		expense.setExpenseType(request.getExpenseType());
 		expense.setAmount(request.getAmount());
 		expense.setDescription(request.getDescription());
-		expense.setDateOfExpense(request.getDateOfExpense());
+		expense.setDateOfExpense(BasicUtils.convertLocalDateToInstant(request.getDateOfExpense()));
 		expense.setUpdatedAt(Instant.now());
 		return expenseRepository.save(expense);
 	}

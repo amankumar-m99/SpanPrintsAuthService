@@ -1,10 +1,13 @@
 package com.spanprints.authservice.dto.expense;
 
-import java.time.Instant;
+import java.time.LocalDate;
 
 import com.spanprints.authservice.enums.ExpenseType;
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,15 +22,16 @@ public class UpdateExpenseRequest {
 	@NotBlank(message = "Expense id is required")
 	private Long id;
 
-	@NotBlank(message = "Expense type cannot be empty")
+	@NotNull(message = "Expense type cannot be empty")
+	@Enumerated(EnumType.STRING)
 	private ExpenseType expenseType;
 
-	@NotBlank(message = "Amount cannot be empty")
+	@NotNull(message = "Amount cannot be empty")
 	private Integer amount;
 
 	private String description;
 
-	@NotBlank(message = "Date of expense cannot be empty")
-	private Instant dateOfExpense;
+	@NotNull(message = "Date of expense cannot be empty")
+	private LocalDate dateOfExpense;
 
 }

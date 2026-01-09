@@ -1,5 +1,8 @@
 package com.spanprints.authservice.util;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,6 +22,11 @@ public class BasicUtils {
 		Pattern pattern = Pattern.compile(EMAIL_REGEX);
 		Matcher matcher = pattern.matcher(email);
 		return matcher.matches();
+	}
+
+	public static Instant convertLocalDateToInstant(LocalDate localDate) {
+		return localDate.atStartOfDay(ZoneOffset.UTC)
+        .toInstant();
 	}
 
 }
