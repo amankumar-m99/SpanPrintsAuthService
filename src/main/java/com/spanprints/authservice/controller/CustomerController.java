@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spanprints.authservice.dto.SuccessResponseDto;
@@ -22,6 +23,7 @@ import com.spanprints.authservice.service.CustomerService;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
@@ -45,6 +47,12 @@ public class CustomerController {
 	@GetMapping("/customers")
 	public ResponseEntity<List<Customer>> getAllCustomers() {
 		return new ResponseEntity<>(customerService.getAllCustomers(), HttpStatus.OK);
+	}
+
+	@GetMapping("/search")
+	public ResponseEntity<List<Customer>> searchCustomer(@RequestParam @NotBlank String name) {
+		List<Customer> customers = customerService.searchCustomersByName(name);
+		return ResponseEntity.ok(customers);
 	}
 
 	@GetMapping("/customer/id/{customerId}")

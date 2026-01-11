@@ -41,17 +41,32 @@ public class PrintJob {
 	private int bookNumber;
 	private int wBookNumber;
 	private Instant dateOfDelivery;
-	private String description;
 
 	private int totalAmount;
-	private int depositAmount;
 	private int discountedAmount;
+	private int depositAmount;
 	private int pendingAmount;
 	private PaymentStatus paymentStatus;
 
 	private String note;
-	private Instant createdAt;
+	private String description;
 	private Instant updateAt;
+	private Instant createdAt;
+
+	@ManyToOne
+	@JoinColumn(name = "account_id", referencedColumnName = "id")
+	@JsonIgnore
+	private Account account;
+
+	@JsonProperty("createdBy")
+	public String getAccountUsername() {
+		return account != null ? account.getUsername() : null;
+	}
+
+	@JsonProperty("createdById")
+	public Long getAccountId() {
+		return account != null ? account.getId() : null;
+	}
 
 	@OneToMany(mappedBy = "printJob", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
@@ -78,16 +93,6 @@ public class PrintJob {
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "account_id", referencedColumnName = "id")
-	@JsonIgnore
-	private Account account;
-
-	@JsonProperty("accountId")
-	public Long getAccountId() {
-		return account != null ? account.getId() : null;
-	}
-
-	@ManyToOne
 	@JoinColumn(name = "customer_id", referencedColumnName = "id")
 	@JsonIgnore
 	private Customer customer;
@@ -95,5 +100,20 @@ public class PrintJob {
 	@JsonProperty("customerId")
 	public Long getCustomerId() {
 		return customer != null ? customer.getId() : null;
+	}
+
+	@JsonProperty("customerName")
+	public String getCustomerName() {
+		return customer != null ? customer.getName() : null;
+	}
+
+	@JsonProperty("customerPhone")
+	public String getCustomerPhone() {
+		return customer != null ? customer.getPrimaryPhoneNumber() : null;
+	}
+
+	@JsonProperty("customerAddress")
+	public String getCustomerAddress() {
+		return customer != null ? customer.getAddress() : null;
 	}
 }

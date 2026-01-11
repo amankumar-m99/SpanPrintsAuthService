@@ -69,6 +69,10 @@ public class CustomerService {
 		return customerRepository.findByName(name).orElseThrow(() -> new CustomerNotFoundException("name", name));
 	}
 
+	public List<Customer> searchCustomersByName(String name) {
+        return customerRepository.findByNameContainingIgnoreCase(name);
+    }
+
 	public List<Customer> getCustomerByPrimaryPhoneNumber(String primaryPhoneNumber) {
 		return customerRepository.findAllByPrimaryPhoneNumber(primaryPhoneNumber)
 				.orElseThrow(() -> new CustomerNotFoundException("primary phone number", primaryPhoneNumber));

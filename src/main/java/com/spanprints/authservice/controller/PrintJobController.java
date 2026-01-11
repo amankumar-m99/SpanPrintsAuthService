@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.spanprints.authservice.dto.printjob.PrintJobRequest;
+import com.spanprints.authservice.dto.printjob.CreatePrintJobRequest;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.Customer;
 import com.spanprints.authservice.entity.PrintJob;
@@ -34,7 +34,7 @@ public class PrintJobController {
 	private CustomerService customerService;
 
 	@PostMapping("")
-	public PrintJob createPrintJob(@Valid @RequestBody PrintJobRequest request) {
+	public PrintJob createPrintJob(@Valid @RequestBody CreatePrintJobRequest request) {
 		Account account = securityUtils.getRequestingAccount();
 		Customer customer = customerService.getCustomerById(request.getCustomerId());
 		PrintJob printJob = printJobService.addPrintJob(request, account, customer);
