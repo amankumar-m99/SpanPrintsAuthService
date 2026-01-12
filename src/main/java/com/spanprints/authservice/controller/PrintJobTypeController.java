@@ -17,7 +17,7 @@ import com.spanprints.authservice.service.PrintJobTypeService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/printjob")
+@RequestMapping("/printjobtype")
 public class PrintJobTypeController {
 
 	@Autowired
@@ -28,7 +28,7 @@ public class PrintJobTypeController {
 		return printJobTypeService.createPrintJobType(request);
 	}
 
-	@GetMapping("")
+	@GetMapping("s")
 	public List<PrintJobType> getAllPrintJobs() {
 		return printJobTypeService.getAllPrintJobTypes();
 	}

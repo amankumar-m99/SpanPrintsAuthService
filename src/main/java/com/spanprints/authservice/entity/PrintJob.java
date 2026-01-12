@@ -67,7 +67,7 @@ public class PrintJob {
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "customer_id", referencedColumnName = "id")
+	@JoinColumn(name = "job_type_id", referencedColumnName = "id")
 	@JsonIgnore
 	private PrintJobType jobType;
 
