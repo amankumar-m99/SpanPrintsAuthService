@@ -49,8 +49,8 @@ public class CustomerController {
 		return new ResponseEntity<>(customerService.getAllCustomers(), HttpStatus.OK);
 	}
 
-	@GetMapping("/search")
-	public ResponseEntity<List<Customer>> searchCustomer(@RequestParam @NotBlank String name) {
+	@GetMapping("/customer/search")
+	public ResponseEntity<List<Customer>> searchCustomer(@RequestParam @NotNull @NotBlank String name) {
 		List<Customer> customers = customerService.searchCustomersByName(name);
 		return ResponseEntity.ok(customers);
 	}
