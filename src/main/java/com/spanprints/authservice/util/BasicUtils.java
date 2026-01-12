@@ -25,8 +25,36 @@ public class BasicUtils {
 	}
 
 	public static Instant convertLocalDateToInstant(LocalDate localDate) {
-		return localDate.atStartOfDay(ZoneOffset.UTC)
-        .toInstant();
+		return localDate.atStartOfDay(ZoneOffset.UTC).toInstant();
+	}
+
+	public static String formatStringToTitle(String input) {
+		if (input == null || input.trim().isEmpty()) {
+			return "";
+		}
+		String[] words = input.trim().split("\\s+");
+		StringBuilder result = new StringBuilder();
+		for (String word : words) {
+			if (!word.isEmpty()) {
+				result.append(Character.toUpperCase(word.charAt(0)));
+
+				if (word.length() > 1) {
+					result.append(word.substring(1).toLowerCase());
+				}
+
+				result.append(" ");
+			}
+		}
+		// Remove trailing space
+		return result.toString().trim();
+	}
+
+	public static Integer parserStringToInteger(String s) {
+		try {
+			return Integer.parseInt(s);
+		} catch (Exception e) {
+		}
+		return -1;
 	}
 
 }
