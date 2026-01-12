@@ -35,15 +35,15 @@ public class PrintJob {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private int count;
-	private int bookNumber;
-	private int wBookNumber;
+	private Integer count;
+	private Integer bookNumber;
+	private Integer wBookNumber;
 	private Instant dateOfDelivery;
 
-	private int totalAmount;
-	private int discountedAmount;
-	private int depositAmount;
-	private int pendingAmount;
+	private Integer totalAmount;
+	private Integer discountedAmount;
+	private Integer depositAmount;
+	private Integer pendingAmount;
 	private PaymentStatus paymentStatus;
 
 	private String note;

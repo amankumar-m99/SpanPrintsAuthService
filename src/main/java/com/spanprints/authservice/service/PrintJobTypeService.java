@@ -11,6 +11,7 @@ import com.spanprints.authservice.entity.PrintJobType;
 import com.spanprints.authservice.exception.printjob.PrintJobTypeAlreadyExistsException;
 import com.spanprints.authservice.exception.printjob.PrintJobTypeNotFoundException;
 import com.spanprints.authservice.repository.PrintJobTypeRepository;
+import com.spanprints.authservice.util.BasicUtils;
 
 @Service
 public class PrintJobTypeService {
@@ -45,7 +46,7 @@ public class PrintJobTypeService {
 	}
 
 	public PrintJobType convertToPrintJobTypeFromDto(CreatePrintJobTypeRequest request) {
-		return PrintJobType.builder().id(null).name(request.getName().toLowerCase())
+		return PrintJobType.builder().id(null).name(BasicUtils.formatStringToTitle(request.getName()))
 				.description(request.getDescription()).createdAt(Instant.now()).updatedAt(Instant.now()).build();
 	}
 

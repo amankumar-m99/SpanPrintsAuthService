@@ -32,11 +32,11 @@ public class CreatePrintJobRequest {
 	@NotNull(message = "Date of delivery cannot be empty")
 	private LocalDate dateOfDelivery;
 
-	@NotNull(message = "Book number cannot be empty")
-	private int bookNumber;
+//	@NotNull(message = "Book number cannot be empty")
+	private String bookNumber;
 
-	@NotNull(message = "Wedding book number cannot be empty")
-	private int wBookNumber;
+//	@NotNull(message = "Wedding book number cannot be empty")
+	private String wBookNumber;
 
 	@NotNull(message = "Total amount cannot be empty")
 	private int totalAmount;

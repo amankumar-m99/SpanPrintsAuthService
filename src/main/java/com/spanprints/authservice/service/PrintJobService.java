@@ -40,7 +40,8 @@ public class PrintJobService {
 		return PrintJob.builder().customer(customer).account(account).jobType(jobType).count(request.getCount())
 				.dateOfDelivery(BasicUtils.convertLocalDateToInstant(request.getDateOfDelivery()))
 				.totalAmount(request.getTotalAmount()).depositAmount(request.getDepositAmount()).note(request.getNote())
-				.bookNumber(request.getBookNumber()).wBookNumber(request.getWBookNumber())
+				.bookNumber(BasicUtils.parserStringToInteger(request.getBookNumber()))
+				.wBookNumber(BasicUtils.parserStringToInteger(request.getWBookNumber()))
 				.description(request.getDescription()).discountedAmount(request.getDiscountedAmount())
 				.pendingAmount(request.getPendingAmount()).paymentStatus(request.getPaymentStatus()).build();
 	}

@@ -28,7 +28,7 @@ public class PrintJobTypeController {
 		return printJobTypeService.createPrintJobType(request);
 	}
 
-	@GetMapping("s")
+	@GetMapping("/all")
 	public List<PrintJobType> getAllPrintJobs() {
 		return printJobTypeService.getAllPrintJobTypes();
 	}

@@ -3,11 +3,14 @@ package com.spanprints.authservice.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.spanprints.authservice.dto.printjob.CreatePrintJobRequest;
 import com.spanprints.authservice.entity.Account;
@@ -37,8 +40,9 @@ public class PrintJobController {
 	@Autowired
 	private CustomerService customerService;
 
-	@PostMapping("")
-	public PrintJob createPrintJob(@Valid @RequestBody CreatePrintJobRequest request) {
+	@PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public PrintJob createPrintJob(@Valid@ModelAttribute CreatePrintJobRequest request,
+	        @RequestParam(name = "attachments", required = false) List<MultipartFile> attachments) {
 		Account account = securityUtils.getRequestingAccount();
 		Customer customer = customerService.getCustomerById(request.getCustomerId());
 		PrintJobType printJobType = printJobTypeService.getPrintJobTypeById(request.getPrintJobId());
@@ -47,7 +51,7 @@ public class PrintJobController {
 		return printJob;
 	}
 
-	@GetMapping("s")
+	@GetMapping("/all")
 	public List<PrintJob> getAllPrintJobs() {
 		return printJobService.getAllPrintJobs();
 	}
