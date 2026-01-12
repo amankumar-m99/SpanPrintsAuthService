@@ -47,7 +47,7 @@ public class PrintJobController {
 		return printJob;
 	}
 
-	@GetMapping("")
+	@GetMapping("s")
 	public List<PrintJob> getAllPrintJobs() {
 		return printJobService.getAllPrintJobs();
 	}
