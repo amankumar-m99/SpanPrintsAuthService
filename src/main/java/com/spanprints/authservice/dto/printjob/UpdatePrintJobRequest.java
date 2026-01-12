@@ -2,7 +2,6 @@ package com.spanprints.authservice.dto.printjob;
 
 import java.time.LocalDate;
 
-import com.spanprints.authservice.enums.JobType;
 import com.spanprints.authservice.enums.PaymentStatus;
 
 import jakarta.persistence.EnumType;
@@ -27,9 +26,8 @@ public class UpdatePrintJobRequest {
 	@NotNull(message = "Customer id is required")
 	private Long customerId;
 
-	@NotNull(message = "Expense type cannot be empty")
-	@Enumerated(EnumType.STRING)
-	private JobType jobType;
+	@NotNull(message = "Print job type cannot be empty")
+	private Long printJobId;
 
 	@NotNull(message = "Count cannot be empty")
 	private int count;
@@ -48,18 +46,18 @@ public class UpdatePrintJobRequest {
 
 	@NotNull(message = "Discounted amount cannot be empty")
 	private int discountedAmount;
-	
+
 	@NotNull(message = "Deposit amount cannot be empty")
 	private int depositAmount;
 
 	@NotNull(message = "Pending amount cannot be empty")
 	private int pendingAmount;
-	
+
 	@NotNull(message = "Expense type cannot be empty")
 	@Enumerated(EnumType.STRING)
 	private PaymentStatus paymentStatus;
 
 	private String note;
-	
+
 	private String description;
 }

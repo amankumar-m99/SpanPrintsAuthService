@@ -9,6 +9,7 @@ import com.spanprints.authservice.dto.printjob.CreatePrintJobRequest;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.Customer;
 import com.spanprints.authservice.entity.PrintJob;
+import com.spanprints.authservice.entity.PrintJobType;
 import com.spanprints.authservice.exception.printjob.PrintJobNotFoundException;
 import com.spanprints.authservice.repository.PrintJobRepository;
 import com.spanprints.authservice.util.BasicUtils;
@@ -19,8 +20,9 @@ public class PrintJobService {
 	@Autowired
 	private PrintJobRepository printJobRepository;
 
-	public PrintJob addPrintJob(CreatePrintJobRequest request, Account account, Customer customer) {
-		PrintJob printJob = convertToPrintJobFromDto(request, account, customer);
+	public PrintJob createPrintJob(CreatePrintJobRequest request, PrintJobType jobType, Account account,
+			Customer customer) {
+		PrintJob printJob = convertToPrintJobFromDto(request, jobType, account, customer);
 		return printJobRepository.save(printJob);
 	}
 
@@ -33,9 +35,9 @@ public class PrintJobService {
 		return printJobRepository.findAll();
 	}
 
-	public PrintJob convertToPrintJobFromDto(CreatePrintJobRequest request, Account account, Customer customer) {
-		return PrintJob.builder().customer(customer).account(account).jobType(request.getJobType())
-				.count(request.getCount())
+	public PrintJob convertToPrintJobFromDto(CreatePrintJobRequest request, PrintJobType jobType, Account account,
+			Customer customer) {
+		return PrintJob.builder().customer(customer).account(account).jobType(jobType).count(request.getCount())
 				.dateOfDelivery(BasicUtils.convertLocalDateToInstant(request.getDateOfDelivery()))
 				.totalAmount(request.getTotalAmount()).depositAmount(request.getDepositAmount()).note(request.getNote())
 				.bookNumber(request.getBookNumber()).wBookNumber(request.getWBookNumber())

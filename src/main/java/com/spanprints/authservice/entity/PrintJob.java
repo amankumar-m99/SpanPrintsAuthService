@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.spanprints.authservice.enums.JobType;
 import com.spanprints.authservice.enums.PaymentStatus;
 
 import io.jsonwebtoken.lang.Collections;
@@ -36,7 +35,6 @@ public class PrintJob {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private JobType jobType;
 	private int count;
 	private int bookNumber;
 	private int wBookNumber;
@@ -66,6 +64,26 @@ public class PrintJob {
 	@JsonProperty("createdById")
 	public Long getAccountId() {
 		return account != null ? account.getId() : null;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "customer_id", referencedColumnName = "id")
+	@JsonIgnore
+	private PrintJobType jobType;
+
+	@JsonProperty("jobTypeId")
+	public Long getJobTypeId() {
+		return jobType != null ? jobType.getId() : null;
+	}
+
+	@JsonProperty("jobTypeName")
+	public String getJobTypeName() {
+		return jobType != null ? jobType.getName() : null;
+	}
+
+	@JsonProperty("jobTypeDescription")
+	public String getJobTypeDescription() {
+		return jobType != null ? jobType.getDescription() : null;
 	}
 
 	@OneToMany(mappedBy = "printJob", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
