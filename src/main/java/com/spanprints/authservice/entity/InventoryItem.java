@@ -3,8 +3,6 @@ package com.spanprints.authservice.entity;
 import java.time.Instant;
 import java.util.List;
 
-import org.springframework.data.annotation.CreatedDate;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -15,9 +13,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,37 +27,27 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class Vendor {
+public class InventoryItem {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String uuid;
-	private String email;
 	private String name;
-	private String address;
-	private String primaryPhoneNumber;
-	private String alternatePhoneNumber;
-	@CreatedDate
-	private Instant createdAt;
+	private String description;
+	private Double rate;
 	private Instant updatedAt;
+	private Instant createdAt;
 
-	@ManyToOne
-	@JoinColumn(name = "account_id", referencedColumnName = "id")
-	@JsonIgnore
-	private Account account;
+	@OneToOne(mappedBy = "inventoryItem", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	private Inventory inventory;
 
-	@JsonProperty("createdBy")
-	public String getAccountUsername() {
-		return account != null ? account.getUsername() : null;
+	@JsonProperty("inventoryId")
+	public Long getInventoryId() {
+		return inventory != null ? inventory.getId() : null;
 	}
 
-	@JsonProperty("createdById")
-	public Long getAccountId() {
-		return account != null ? account.getId() : null;
-	}
-
-	@OneToMany(mappedBy = "vendor", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "inventoryItem", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<InventoryHistory> inventoryHistories;
 
