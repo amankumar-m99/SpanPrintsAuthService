@@ -15,4 +15,5 @@ public class CreateInventoryItemRequest {
 	@NotNull(message = "Item name is required")
 	private String name;
 	private Double rate;
+	private String description;
 }
