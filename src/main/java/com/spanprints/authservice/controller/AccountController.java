@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spanprints.authservice.dto.SuccessResponseDto;
+import com.spanprints.authservice.dto.account.AccountResponse;
 import com.spanprints.authservice.dto.account.CreateAccountRequest;
 import com.spanprints.authservice.dto.account.UpdateAccountRequest;
-import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.service.AccountService;
 
 import jakarta.validation.Valid;
@@ -27,14 +27,14 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 @RestController
-@RequestMapping("")
+@RequestMapping("accounts")
 public class AccountController {
 
 	@Autowired
 	private AccountService accountService;
 
-	@PostMapping({ "/account", "/register" })
-	public ResponseEntity<SuccessResponseDto> register(@Valid @RequestBody CreateAccountRequest request,
+	@PostMapping
+	public ResponseEntity<SuccessResponseDto> createAccount(@Valid @RequestBody CreateAccountRequest request,
 			@RequestHeader(value = "Origin", required = false) String frontendBaseUrl) {
 		String email = accountService.createAccount(request, frontendBaseUrl);
 		String message = String.format(
@@ -43,33 +43,51 @@ public class AccountController {
 		return new ResponseEntity<>(responseDto, responseDto.getStatus());
 	}
 
-	@GetMapping("/account/{accountId}")
-	public ResponseEntity<Account> getAccountById(@PathVariable("accountId") @NotNull @Positive @Min(1) Long id) {
-		Account accounts = accountService.getAccountById(id);
-		return new ResponseEntity<>(accounts, HttpStatus.OK);
+	@GetMapping
+	public ResponseEntity<List<AccountResponse>> getAllAccounts() {
+		List<AccountResponse> list = accountService.getAllAccounts().stream().map(AccountResponse::new).toList();
+		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 
-	@GetMapping("/accounts")
-	public ResponseEntity<List<Account>> getAllAccounts() {
-		List<Account> accounts = accountService.getAllAccounts();
-		return new ResponseEntity<>(accounts, HttpStatus.OK);
+	@GetMapping("/id/{id}")
+	public ResponseEntity<AccountResponse> getAccountById(@PathVariable @NotNull @Positive @Min(1) Long id) {
+		AccountResponse accountResponse = new AccountResponse(accountService.getAccountById(id));
+		return new ResponseEntity<>(accountResponse, HttpStatus.OK);
 	}
 
-	@PutMapping("/account")
-	public ResponseEntity<String> updateAccount(@Valid @RequestBody UpdateAccountRequest request) {
+	@GetMapping("/uuid/{uuid}")
+	public ResponseEntity<AccountResponse> getAccountByUuid(@PathVariable @NotNull String uuid) {
+		AccountResponse accountResponse = new AccountResponse(accountService.getAccountByUuid(uuid));
+		return new ResponseEntity<>(accountResponse, HttpStatus.OK);
+	}
+
+	@PutMapping("/id/{id}")
+	public ResponseEntity<String> updateAccountById(@PathVariable @NotNull @Positive @Min(1) Long id,
+			@Valid @RequestBody UpdateAccountRequest request) {
 		return new ResponseEntity<>("Functionality not implemented yet.", HttpStatus.NOT_IMPLEMENTED);
 	}
 
-	@DeleteMapping("/accounts")
+	@PutMapping("/uuid/{uuid}")
+	public ResponseEntity<String> updateAccountByUuid(@PathVariable @NotNull String uuid,
+			@Valid @RequestBody UpdateAccountRequest request) {
+		return new ResponseEntity<>("Functionality not implemented yet.", HttpStatus.NOT_IMPLEMENTED);
+	}
+
+	@DeleteMapping
 	public ResponseEntity<SuccessResponseDto> deleteAllAccounts() {
 		SuccessResponseDto responseDto = accountService.deleteAllAccounts();
 		return new ResponseEntity<>(responseDto, responseDto.getStatus());
 	}
 
-	@DeleteMapping("/account/{accountId}")
-	public ResponseEntity<SuccessResponseDto> deleteAccountById(
-			@PathVariable("accountId") @NotNull @Positive @Min(1) Long id) {
+	@DeleteMapping("/id/{id}")
+	public ResponseEntity<SuccessResponseDto> deleteAccountById(@PathVariable @NotNull @Positive @Min(1) Long id) {
 		SuccessResponseDto responseDto = accountService.deleteById(id);
+		return new ResponseEntity<>(responseDto, responseDto.getStatus());
+	}
+
+	@DeleteMapping("/uuid/{uuid}")
+	public ResponseEntity<SuccessResponseDto> deleteAccountByUuidd(@PathVariable @NotNull String uuid) {
+		SuccessResponseDto responseDto = accountService.deleteByUuid(uuid);
 		return new ResponseEntity<>(responseDto, responseDto.getStatus());
 	}
 

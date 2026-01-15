@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +21,7 @@ import com.spanprints.authservice.dto.LoginRequestDto;
 import com.spanprints.authservice.dto.ProfileResponse;
 import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.dto.account.AccountResponse;
+import com.spanprints.authservice.dto.account.CreateAccountRequest;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.PersonalDetails;
 import com.spanprints.authservice.jwt.CustomUserDetailsService;
@@ -32,7 +34,7 @@ import com.spanprints.authservice.service.VerificationTokenService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("")
+@RequestMapping("/auth")
 public class AuthController {
 
 	private JwtUtils jwtUtils;
@@ -84,6 +86,16 @@ public class AuthController {
 		}
 	}
 
+	@PostMapping("/register")
+	public ResponseEntity<SuccessResponseDto> register(@Valid @RequestBody CreateAccountRequest request,
+			@RequestHeader(value = "Origin", required = false) String frontendBaseUrl) {
+		String email = accountService.createAccount(request, frontendBaseUrl);
+		String message = String.format(
+				"Account created sucessfully. Verification link sent to your registered e-mail address `%s`", email);
+		SuccessResponseDto responseDto = new SuccessResponseDto(HttpStatus.CREATED, message);
+		return new ResponseEntity<>(responseDto, responseDto.getStatus());
+	}
+
 	@GetMapping("/me")
 	public ResponseEntity<ProfileResponse> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
 		Account account = accountService.getAccountByUsername(userDetails.getUsername());
@@ -91,8 +103,7 @@ public class AuthController {
 		dto.setAccount(new AccountResponse(account));
 		if (account.getPersonalDetails() != null) {
 			dto.setPersonalDetails(personalDetailsService.getPersonalDetailsById(account.getPersonalDetails().getId()));
-		}
-		else {
+		} else {
 			dto.setPersonalDetails(new PersonalDetails());
 		}
 		return new ResponseEntity<>(dto, HttpStatus.OK);

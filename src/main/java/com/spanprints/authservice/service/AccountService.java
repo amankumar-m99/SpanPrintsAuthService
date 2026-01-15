@@ -114,14 +114,19 @@ public class AccountService {
 		return accountRepository.findAll();
 	}
 
-	public SuccessResponseDto deleteById(Long id) {
-		accountRepository.delete(getAccountById(id));
-		return new SuccessResponseDto(HttpStatus.OK, String.format("Deleted role by id `%d`", id));
-	}
-
 	public SuccessResponseDto deleteAllAccounts() {
 		accountRepository.deleteAll();
 		return new SuccessResponseDto(HttpStatus.OK, "All accounts deleted.");
+	}
+
+	public SuccessResponseDto deleteById(Long id) {
+		accountRepository.delete(getAccountById(id));
+		return new SuccessResponseDto(HttpStatus.OK, String.format("Deleted account by id `%d`", id));
+	}
+
+	public SuccessResponseDto deleteByUuid(String uuid) {
+		accountRepository.delete(getAccountByUuid(uuid));
+		return new SuccessResponseDto(HttpStatus.OK, String.format("Deleted account by id `%s`", uuid));
 	}
 
 	private void throwIfEmailAlreadyExists(String email) {
