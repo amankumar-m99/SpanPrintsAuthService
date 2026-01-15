@@ -1,5 +1,6 @@
 package com.spanprints.authservice.dto.expense;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import com.spanprints.authservice.enums.ExpenseType;
@@ -27,7 +28,7 @@ public class UpdateExpenseRequest {
 	private ExpenseType expenseType;
 
 	@NotNull(message = "Amount cannot be empty")
-	private Integer amount;
+	private BigDecimal amount;
 
 	private String description;
 

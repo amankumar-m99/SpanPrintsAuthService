@@ -1,5 +1,6 @@
 package com.spanprints.authservice.dto;
 
+import com.spanprints.authservice.dto.account.AccountResponse;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.PersonalDetails;
 
@@ -12,9 +13,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProfileDto {
+public class ProfileResponse {
 
-	private Account account;
+	private AccountResponse account;
 	private PersonalDetails personalDetails;
 
 }

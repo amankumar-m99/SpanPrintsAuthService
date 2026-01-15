@@ -1,5 +1,6 @@
 package com.spanprints.authservice.entity;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -29,7 +30,7 @@ public class Ledger {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private double amount;
+	private BigDecimal amount;
 	private TransactionType transactionType;
 	private TransactionDomain transactionDomain;
 	private Instant transactionDate;

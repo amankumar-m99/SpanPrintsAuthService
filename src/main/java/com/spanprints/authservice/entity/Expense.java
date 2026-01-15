@@ -1,5 +1,6 @@
 package com.spanprints.authservice.entity;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class Expense {
 	private Long id;
 	private String uuid;
 	private ExpenseType expenseType;
-	private double amount;
+	private BigDecimal amount;
 	private String description;
 	private Instant dateOfExpense;
 	private Instant createdAt;

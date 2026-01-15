@@ -1,5 +1,6 @@
 package com.spanprints.authservice.dto.printjob;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import com.spanprints.authservice.enums.PaymentStatus;
@@ -39,16 +40,16 @@ public class CreatePrintJobRequest {
 	private String wBookNumber;
 
 	@NotNull(message = "Total amount cannot be empty")
-	private int totalAmount;
+	private BigDecimal totalAmount;
 
 	@NotNull(message = "Discounted amount cannot be empty")
-	private int discountedAmount;
+	private BigDecimal discountedAmount;
 	
 	@NotNull(message = "Deposit amount cannot be empty")
-	private int depositAmount;
+	private BigDecimal depositAmount;
 
 	@NotNull(message = "Pending amount cannot be empty")
-	private int pendingAmount;
+	private BigDecimal pendingAmount;
 	
 	@NotNull(message = "Expense type cannot be empty")
 	@Enumerated(EnumType.STRING)

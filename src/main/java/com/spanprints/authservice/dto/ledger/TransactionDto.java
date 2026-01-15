@@ -1,5 +1,6 @@
 package com.spanprints.authservice.dto.ledger;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 
 import com.spanprints.authservice.enums.TransactionDomain;
@@ -19,7 +20,7 @@ import lombok.Setter;
 public class TransactionDto {
 
 	private Long id;
-	private Double amount;
+	private BigDecimal amount;
 	private TransactionType transactionType;
 	private TransactionDomain transactionDomain;
 	private Instant transactionTime;

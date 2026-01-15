@@ -1,5 +1,6 @@
 package com.spanprints.authservice.entity;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,16 +42,20 @@ public class PrintJob {
 	private Integer wBookNumber;
 	private Instant dateOfDelivery;
 
-	private Integer totalAmount;
-	private Integer discountedAmount;
-	private Integer depositAmount;
-	private Integer pendingAmount;
+	private BigDecimal totalAmount;
+	private BigDecimal discountedAmount;
+	private BigDecimal depositAmount;
+	private BigDecimal pendingAmount;
 	private PaymentStatus paymentStatus;
 
 	private String note;
 	private String description;
 	private Instant updateAt;
 	private Instant createdAt;
+
+	@OneToOne(mappedBy = "printJob", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JsonIgnore
+	private InventoryHistory inventoryHistory;
 
 	@ManyToOne
 	@JoinColumn(name = "account_id", referencedColumnName = "id")

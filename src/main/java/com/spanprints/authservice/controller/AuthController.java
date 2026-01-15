@@ -17,8 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spanprints.authservice.dto.LoginRequestDto;
-import com.spanprints.authservice.dto.ProfileDto;
+import com.spanprints.authservice.dto.ProfileResponse;
 import com.spanprints.authservice.dto.SuccessResponseDto;
+import com.spanprints.authservice.dto.account.AccountResponse;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.PersonalDetails;
 import com.spanprints.authservice.jwt.CustomUserDetailsService;
@@ -84,12 +85,12 @@ public class AuthController {
 	}
 
 	@GetMapping("/me")
-	public ResponseEntity<ProfileDto> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
+	public ResponseEntity<ProfileResponse> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
 		Account account = accountService.getAccountByUsername(userDetails.getUsername());
-		ProfileDto dto = new ProfileDto();
-		dto.setAccount(account);
-		if (account.getPersonalDetailsId() != null) {
-			dto.setPersonalDetails(personalDetailsService.getPersonalDetailsById(account.getPersonalDetailsId()));
+		ProfileResponse dto = new ProfileResponse();
+		dto.setAccount(new AccountResponse(account));
+		if (account.getPersonalDetails() != null) {
+			dto.setPersonalDetails(personalDetailsService.getPersonalDetailsById(account.getPersonalDetails().getId()));
 		}
 		else {
 			dto.setPersonalDetails(new PersonalDetails());

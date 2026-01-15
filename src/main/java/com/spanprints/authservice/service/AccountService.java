@@ -1,12 +1,9 @@
 package com.spanprints.authservice.service;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -69,8 +66,7 @@ public class AccountService {
 	private Account createAccountFromRequest(CreateAccountRequest request) {
 		throwIfEmailAlreadyExists(request.getEmail());
 		throwIfUsernameAlreadyExists(request.getUsername());
-		Account account = Account.builder().uuid(UUID.randomUUID().toString()).email(request.getEmail())
-				.createdAt(LocalDateTime.now()).updatedAt(Instant.now()).username(request.getUsername())
+		Account account = Account.builder().email(request.getEmail()).username(request.getUsername())
 				.password(passwordEncoder.encode(request.getPassword())).isLocked(false).isEnabled(false)
 				.isAccountExpired(false).isCredentialExpired(false).build();
 		if (request.getRoles() == null) {
