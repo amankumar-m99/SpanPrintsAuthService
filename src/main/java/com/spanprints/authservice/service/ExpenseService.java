@@ -1,8 +1,6 @@
 package com.spanprints.authservice.service;
 
-import java.time.Instant;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,21 +20,15 @@ public class ExpenseService {
 	private ExpenseRepository expenseRepository;
 
 	public Expense createExpense(CreateExpenseRequest request, Account account) {
-		Expense expense = Expense.builder().id(null).uuid(UUID.randomUUID().toString())
-				.expenseType(request.getExpenseType()).amount(request.getAmount()).description(request.getDescription())
-				.dateOfExpense(BasicUtils.convertLocalDateToInstant(request.getDateOfExpense()))
-				.createdAt(Instant.now()).updatedAt(Instant.now()).account(account).build();
+		Expense expense = Expense.builder().expenseType(request.getExpenseType()).amount(request.getAmount())
+				.description(request.getDescription())
+				.dateOfExpense(BasicUtils.convertLocalDateToInstant(request.getDateOfExpense())).account(account)
+				.build();
 		return expenseRepository.save(expense);
 	}
 
-	public Expense updateExpense(UpdateExpenseRequest request) {
-		Expense expense = getExpenseById(request.getId());
-		expense.setExpenseType(request.getExpenseType());
-		expense.setAmount(request.getAmount());
-		expense.setDescription(request.getDescription());
-		expense.setDateOfExpense(BasicUtils.convertLocalDateToInstant(request.getDateOfExpense()));
-		expense.setUpdatedAt(Instant.now());
-		return expenseRepository.save(expense);
+	public List<Expense> getAllExpenses() {
+		return expenseRepository.findAll();
 	}
 
 	public Expense getExpenseById(Long id) {
@@ -44,8 +36,27 @@ public class ExpenseService {
 				.orElseThrow(() -> new TransactionNotFoundException("No expense found by given id."));
 	}
 
-	public List<Expense> getAllExpenses() {
-		return expenseRepository.findAll();
+	public Expense getExpenseByUuid(String uuid) {
+		return expenseRepository.findByUuid(uuid)
+				.orElseThrow(() -> new TransactionNotFoundException("No expense found by given uuid."));
+	}
+
+	public Expense updateExpenseById(Long id, UpdateExpenseRequest request) {
+		Expense expense = getExpenseById(id);
+		return updateExpense(expense, request);
+	}
+
+	public Expense updateExpenseByUuid(String uuid, UpdateExpenseRequest request) {
+		Expense expense = getExpenseByUuid(uuid);
+		return updateExpense(expense, request);
+	}
+
+	private Expense updateExpense(Expense expense, UpdateExpenseRequest request) {
+		expense.setExpenseType(request.getExpenseType());
+		expense.setAmount(request.getAmount());
+		expense.setDescription(request.getDescription());
+		expense.setDateOfExpense(BasicUtils.convertLocalDateToInstant(request.getDateOfExpense()));
+		return expenseRepository.save(expense);
 	}
 
 }
