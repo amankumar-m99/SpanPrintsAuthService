@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.dto.customer.CreateCustomerRequest;
+import com.spanprints.authservice.dto.customer.CustomerResponse;
 import com.spanprints.authservice.dto.customer.UpdateCustomerRequest;
-import com.spanprints.authservice.entity.Customer;
 import com.spanprints.authservice.service.CustomerService;
 
 import jakarta.validation.Valid;
@@ -28,59 +28,75 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 @RestController
-@RequestMapping("")
+@RequestMapping("/customers")
 public class CustomerController {
 
 	@Autowired
 	private CustomerService customerService;
 
-	@PostMapping("/customer")
-	public ResponseEntity<Customer> createCustomer(@Valid @RequestBody CreateCustomerRequest request) {
-		return new ResponseEntity<>(customerService.createCustomer(request), HttpStatus.CREATED);
+	@PostMapping
+	public ResponseEntity<CustomerResponse> createCustomer(@Valid @RequestBody CreateCustomerRequest request) {
+		CustomerResponse customerResponse = new CustomerResponse(customerService.createCustomer(request));
+		return new ResponseEntity<>(customerResponse, HttpStatus.CREATED);
 	}
 
-	@PutMapping("/customer")
-	public ResponseEntity<Customer> updateCustomer(@Valid @RequestBody UpdateCustomerRequest request) {
-		return new ResponseEntity<>(customerService.updateCustomer(request), HttpStatus.OK);
+	@GetMapping
+	public ResponseEntity<List<CustomerResponse>> getAllCustomers() {
+		List<CustomerResponse> list = customerService.getAllCustomers().stream().map(CustomerResponse::new).toList();
+		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 
-	@GetMapping("/customers")
-	public ResponseEntity<List<Customer>> getAllCustomers() {
-		return new ResponseEntity<>(customerService.getAllCustomers(), HttpStatus.OK);
+	@GetMapping("/search")
+	public ResponseEntity<List<CustomerResponse>> searchCustomer(@RequestParam @NotNull @NotBlank String name) {
+		List<CustomerResponse> list = customerService.searchCustomersByName(name).stream().map(CustomerResponse::new)
+				.toList();
+		return ResponseEntity.ok(list);
 	}
 
-	@GetMapping("/customer/search")
-	public ResponseEntity<List<Customer>> searchCustomer(@RequestParam @NotNull @NotBlank String name) {
-		List<Customer> customers = customerService.searchCustomersByName(name);
-		return ResponseEntity.ok(customers);
+	@GetMapping("/id/{id}")
+	public ResponseEntity<CustomerResponse> getCustomerById(@PathVariable @NotNull @Positive @Min(1) Long id) {
+		CustomerResponse customerResponse = new CustomerResponse(customerService.getCustomerById(id));
+		return new ResponseEntity<>(customerResponse, HttpStatus.OK);
 	}
 
-	@GetMapping("/customer/id/{customerId}")
-	public ResponseEntity<Customer> getCustomerById(@PathVariable("customerId") @NotNull @Positive @Min(1) Long id) {
-		return new ResponseEntity<>(customerService.getCustomerById(id), HttpStatus.OK);
+	@GetMapping("/uuid/{uuid}")
+	public ResponseEntity<CustomerResponse> getCustomerByUuid(@PathVariable @NotNull String uuid) {
+		CustomerResponse customerResponse = new CustomerResponse(customerService.getCustomerByUuid(uuid));
+		return new ResponseEntity<>(customerResponse, HttpStatus.OK);
 	}
 
-	@GetMapping("/customer/uuid/{customerUuid}")
-	public ResponseEntity<Customer> getCustomerByUuid(@PathVariable("customerUuid") @NotNull String uuid) {
-		return new ResponseEntity<>(customerService.getCustomerByUuid(uuid), HttpStatus.OK);
+	@PutMapping("/id/{id}")
+	public ResponseEntity<CustomerResponse> updateCustomerById(
+			@PathVariable @NotNull(message = "Customer Id is required") @Positive @Min(1) Long id,
+			@Valid @RequestBody UpdateCustomerRequest request) {
+		CustomerResponse customerResponse = new CustomerResponse(customerService.updateCustomer(id, request));
+		return new ResponseEntity<>(customerResponse, HttpStatus.OK);
 	}
 
-	@DeleteMapping("/customer/id/{customerId}")
+	@PutMapping("/uuid/{uuid}")
+	public ResponseEntity<CustomerResponse> updateCustomerByUuid(
+			@PathVariable @NotNull(message = "Customer Id is required") @NotBlank String uuid,
+			@Valid @RequestBody UpdateCustomerRequest request) {
+		CustomerResponse customerResponse = new CustomerResponse(customerService.updateCustomer(uuid, request));
+		return new ResponseEntity<>(customerResponse, HttpStatus.OK);
+	}
+
+	@DeleteMapping
+	public ResponseEntity<SuccessResponseDto> deleteAllCustomers() {
+		SuccessResponseDto responseDto = customerService.deleteAllCustomers();
+		return new ResponseEntity<>(responseDto, responseDto.getStatus());
+	}
+
+	@DeleteMapping("/id/{id}")
 	public ResponseEntity<SuccessResponseDto> deleteCustomerById(
 			@PathVariable("customerId") @NotNull @Positive @Min(1) Long id) {
 		SuccessResponseDto responseDto = customerService.deleteCustomerById(id);
 		return new ResponseEntity<>(responseDto, responseDto.getStatus());
 	}
 
-	@DeleteMapping("/customer/uuid/{customerId}")
-	public ResponseEntity<SuccessResponseDto> deleteCustomerByUuid(@PathVariable("customerId") @NotNull String uuid) {
+	@DeleteMapping("/uuid/{uuid}")
+	public ResponseEntity<SuccessResponseDto> deleteCustomerByUuid(@PathVariable @NotNull String uuid) {
 		SuccessResponseDto responseDto = customerService.deleteCustomerByUuid(uuid);
-		return new ResponseEntity<>(responseDto, responseDto.getStatus());
-	}
-
-	@DeleteMapping("/customers")
-	public ResponseEntity<SuccessResponseDto> deleteAllCustomers() {
-		SuccessResponseDto responseDto = customerService.deleteAllCustomers();
 		return new ResponseEntity<>(responseDto, responseDto.getStatus());
 	}
 }

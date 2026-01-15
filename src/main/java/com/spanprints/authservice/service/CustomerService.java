@@ -1,8 +1,6 @@
 package com.spanprints.authservice.service;
 
-import java.time.Instant;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,21 +28,29 @@ public class CustomerService {
 	public Customer createCustomer(CreateCustomerRequest request) {
 		throwIfNameAlreadyExists(request.getName());
 		Account account = securityUtils.getRequestingAccount();
-		Customer customer = Customer.builder().id(null).uuid(UUID.randomUUID().toString()).name(request.getName())
-				.email(request.getEmail()).primaryPhoneNumber(request.getPrimaryPhoneNumber())
+		Customer customer = Customer.builder().name(request.getName()).email(request.getEmail())
+				.primaryPhoneNumber(request.getPrimaryPhoneNumber())
 				.alternatePhoneNumber(request.getAlternatePhoneNumber()).address(request.getAddress()).account(account)
-				.createdAt(Instant.now()).updatedAt(Instant.now()).build();
+				.build();
 		return customerRepository.save(customer);
 	}
 
-	public Customer updateCustomer(UpdateCustomerRequest request) {
-		Customer customer = getCustomerById(request.getId());
+	public Customer updateCustomer(Long id, UpdateCustomerRequest request) {
+		Customer customer = getCustomerById(id);
+		return updateCustomer(customer, request);
+	}
+
+	public Customer updateCustomer(String uuid, UpdateCustomerRequest request) {
+		Customer customer = getCustomerByUuid(uuid);
+		return updateCustomer(customer, request);
+	}
+
+	private Customer updateCustomer(Customer customer, UpdateCustomerRequest request) {
 		customer.setEmail(request.getEmail());
 		customer.setName(request.getName());
 		customer.setPrimaryPhoneNumber(request.getPrimaryPhoneNumber());
 		customer.setAlternatePhoneNumber(request.getAlternatePhoneNumber());
 		customer.setAddress(request.getAddress());
-		customer.setUpdatedAt(Instant.now());
 		return customerRepository.save(customer);
 	}
 
@@ -70,8 +76,8 @@ public class CustomerService {
 	}
 
 	public List<Customer> searchCustomersByName(String name) {
-        return customerRepository.findByNameContainingIgnoreCase(name);
-    }
+		return customerRepository.findByNameContainingIgnoreCase(name);
+	}
 
 	public List<Customer> getCustomerByPrimaryPhoneNumber(String primaryPhoneNumber) {
 		return customerRepository.findAllByPrimaryPhoneNumber(primaryPhoneNumber)

@@ -12,8 +12,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UpdateCustomerRequest {
 
-	@NotBlank(message = "Customer id is required")
-	private Long id;
 	@NotBlank(message = "Customer name is required")
 	private String name;
 	private String email;
