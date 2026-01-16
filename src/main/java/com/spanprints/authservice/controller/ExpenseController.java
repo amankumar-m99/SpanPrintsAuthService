@@ -27,7 +27,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 @RestController
-@RequestMapping("/expense")
+@RequestMapping("/expenses")
 public class ExpenseController {
 
 	@Autowired
