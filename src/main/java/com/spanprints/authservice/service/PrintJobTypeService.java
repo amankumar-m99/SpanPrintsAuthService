@@ -1,6 +1,5 @@
 package com.spanprints.authservice.service;
 
-import java.time.Instant;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,8 +45,8 @@ public class PrintJobTypeService {
 	}
 
 	public PrintJobType convertToPrintJobTypeFromDto(CreatePrintJobTypeRequest request) {
-		return PrintJobType.builder().id(null).name(BasicUtils.formatStringToTitle(request.getName()))
-				.description(request.getDescription()).createdAt(Instant.now()).updatedAt(Instant.now()).build();
+		return PrintJobType.builder().name(BasicUtils.formatStringToTitle(request.getName()))
+				.description(request.getDescription()).build();
 	}
 
 }
