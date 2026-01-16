@@ -13,7 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.spanprints.authservice.dto.SuccessResponseDto;
-import com.spanprints.authservice.dto.TokenResponseDto;
+import com.spanprints.authservice.dto.VerificationTokenResponse;
 import com.spanprints.authservice.dto.account.CreateAccountRequest;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.Role;
@@ -55,7 +55,7 @@ public class AccountService {
 		Account account = createAccountFromRequest(request);
 
 		// 2. Generate and save verification token
-		TokenResponseDto tokenResponse = verificationTokenService.getTokenResponseForAccount(account);
+		VerificationTokenResponse tokenResponse = verificationTokenService.getTokenResponseForAccount(account);
 
 		// 3. Send verification email (outside transaction discussed below)
 		publisher.publishEvent(

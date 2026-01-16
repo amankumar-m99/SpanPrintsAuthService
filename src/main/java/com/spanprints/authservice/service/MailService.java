@@ -8,7 +8,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import com.spanprints.authservice.dto.TokenResponseDto;
+import com.spanprints.authservice.dto.VerificationTokenResponse;
 import com.spanprints.authservice.mailtemplate.VerificationLinkMailTemplate;
 
 import jakarta.mail.internet.MimeMessage;
@@ -41,7 +41,7 @@ public class MailService {
 	// Use @Async("emailExecutor") if you want a custom configuration for
 	// executer-service
 	public void sendVerificationMail(String toEmailAddress, String username, String frontendBaseUrl,
-			TokenResponseDto tokenResponse) {
+			VerificationTokenResponse tokenResponse) {
 		try {
 			MimeMessage mimeMessage = mailSender.createMimeMessage();
 			MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false);

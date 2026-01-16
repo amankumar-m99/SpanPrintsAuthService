@@ -1,6 +1,6 @@
 package com.spanprints.authservice.event;
 
-import com.spanprints.authservice.dto.TokenResponseDto;
+import com.spanprints.authservice.dto.VerificationTokenResponse;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,6 +16,6 @@ public class AccountRegisteredEvent {
 	private String email;
 	private String username;
 	private String frontendBaseUrl;
-	private TokenResponseDto tokenResponseDto;
+	private VerificationTokenResponse tokenResponse;
 
 }

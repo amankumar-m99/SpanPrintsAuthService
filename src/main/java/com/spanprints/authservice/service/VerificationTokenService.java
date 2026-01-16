@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.spanprints.authservice.dto.SuccessResponseDto;
-import com.spanprints.authservice.dto.TokenResponseDto;
+import com.spanprints.authservice.dto.VerificationTokenResponse;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.VerificationToken;
 import com.spanprints.authservice.exception.verificationtoken.VerificationTokenAlreadyUsedException;
@@ -27,15 +27,15 @@ public class VerificationTokenService {
 		return accountVerificationRepository.findAll();
 	}
 
-	public TokenResponseDto getTokenResponseForAccount(Account account) {
+	public VerificationTokenResponse getTokenResponseForAccount(Account account) {
 		VerificationToken tokenForAccount = addTokenForAccount(account);
-		return new TokenResponseDto(tokenForAccount.getToken(), tokenForAccount.getExpiryDate());
+		return new VerificationTokenResponse(tokenForAccount);
 	}
 
 	public VerificationToken addTokenForAccount(Account account) {
 		String uuidToken = UUID.randomUUID().toString();
 		LocalDateTime expiry = LocalDateTime.now().plusDays(1);
-		VerificationToken token = new VerificationToken(null, uuidToken, expiry, false, account);
+		VerificationToken token = new VerificationToken(uuidToken, expiry, false, account);
 		return accountVerificationRepository.save(token);
 	}
 
