@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +25,8 @@ public class ProfilePicService {
 	@Autowired
 	private ProfilePicRepository profilePicRepository;
 
-	public String updateProfilePic(Account account, MultipartFile multipartFile) {
+	public ProfilePic updateProfilePic(Account account, MultipartFile multipartFile) {
+		String prefix = "/profile-pic/";
 		File file = new File(profilePicsDirectory);
 		if (!file.exists())
 			file.mkdirs();
@@ -37,14 +37,14 @@ public class ProfilePicService {
 				profilePic.setName(newFileName);
 			} else {
 				String fileName = createProfilePicOnFileSystem(multipartFile);
-				profilePic = ProfilePic.builder().name(fileName).lastUpdated(LocalDateTime.now()).account(account)
-						.build();
+				profilePic = ProfilePic.builder().name(fileName).account(account).build();
 			}
-			profilePicRepository.save(profilePic);
+			profilePic.setUrl(prefix + account.getUuid());
+			return profilePicRepository.save(profilePic);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return "/profile-pic/" + account.getUuid();
+		return null;
 	}
 
 	private String updateProfilePicOnFileSystem(MultipartFile multipartFile, ProfilePic profilePic) throws IOException {
@@ -56,7 +56,7 @@ public class ProfilePicService {
 		String newFileName = System.currentTimeMillis() + "_" + multipartFile.getOriginalFilename().replace(" ", "_");
 		extratctMultipartData(multipartFile, oldFile, null);
 		boolean isSuccess = oldFile.renameTo(new File(profilePicsDirectory + File.separator + newFileName));
-		return (isSuccess)?newFileName:oldFileName;
+		return (isSuccess) ? newFileName : oldFileName;
 	}
 
 	private String createProfilePicOnFileSystem(MultipartFile multipartFile) throws IOException {

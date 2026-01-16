@@ -18,9 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.spanprints.authservice.dto.ProfilePicDto;
 import com.spanprints.authservice.dto.ProfilePicResource;
+import com.spanprints.authservice.dto.ProfilePicResponse;
 import com.spanprints.authservice.entity.Account;
+import com.spanprints.authservice.entity.ProfilePic;
 import com.spanprints.authservice.exception.profilepic.ProfilePicFormatNotAcceptedException;
 import com.spanprints.authservice.service.AccountService;
 import com.spanprints.authservice.service.ProfilePicService;
@@ -29,7 +30,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
-@RequestMapping("/profile-pic")
+@RequestMapping("/profile-pics")
 public class ProfilePicController {
 
 	@Autowired
@@ -37,7 +38,7 @@ public class ProfilePicController {
 	@Autowired
 	private AccountService accountService;
 
-	@GetMapping(value = "/{id}", produces = { MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE })
+	@GetMapping(value = "/id/{id}", produces = { MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE })
 	public void getUserProfilePic(@PathVariable("id") String uuid, HttpServletResponse response) throws IOException {
 		Account account = accountService.getAccountByUuid(uuid);
 		ProfilePicResource resource = this.profilePicService.getProfilePic(account);
@@ -45,8 +46,8 @@ public class ProfilePicController {
 		StreamUtils.copy(resource.getFileInputStream(), response.getOutputStream());
 	}
 
-	@PostMapping("")
-	public ResponseEntity<?> saveUserProfilePic(HttpServletRequest request,
+	@PostMapping
+	public ResponseEntity<ProfilePicResponse> saveUserProfilePic(HttpServletRequest request,
 			@RequestParam("profile-pic") MultipartFile multipartFile,
 			@AuthenticationPrincipal UserDetails userDetails) {
 //		String type = multipartFile.getContentType().toLowerCase();
@@ -55,11 +56,11 @@ public class ProfilePicController {
 			throw new ProfilePicFormatNotAcceptedException("Only jpeg and png files are accepted.");
 		}
 		Account account = accountService.getAccountByUsername(userDetails.getUsername());
-		String updateProfilePic = this.profilePicService.updateProfilePic(account, multipartFile);
-		return new ResponseEntity<>(new ProfilePicDto(updateProfilePic), HttpStatus.OK);
+		ProfilePic profilePic = this.profilePicService.updateProfilePic(account, multipartFile);
+		return new ResponseEntity<>(new ProfilePicResponse(profilePic), HttpStatus.OK);
 	}
 
-	@DeleteMapping("")
+	@DeleteMapping
 	public void deleteProfilePic(@AuthenticationPrincipal UserDetails userDetails) {
 		Account account = accountService.getAccountByUsername(userDetails.getUsername());
 		this.profilePicService.deleteProfilePic(account);
