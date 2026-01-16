@@ -12,8 +12,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UpdateVendorRequest {
 
-	@NotBlank(message = "Vendor id is required")
-	private Long id;
 	@NotBlank(message = "Customer name is required")
 	private String name;
 	private String email;

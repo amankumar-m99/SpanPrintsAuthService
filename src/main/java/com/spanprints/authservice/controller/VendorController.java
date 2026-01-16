@@ -26,53 +26,53 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 @RestController
-@RequestMapping("")
+@RequestMapping("/vendors")
 public class VendorController {
 
 	@Autowired
 	private VendorService vendorService;
 
-	@PostMapping("/vendor")
+	@PostMapping
 	public ResponseEntity<Vendor> addVendor(@Valid @RequestBody CreateVendorRequest request) {
 		return new ResponseEntity<>(vendorService.createVendor(request), HttpStatus.CREATED);
 	}
 
-	@PutMapping("/vendor")
-	public ResponseEntity<Vendor> updateVendor(@Valid @RequestBody UpdateVendorRequest request) {
-		return new ResponseEntity<>(vendorService.updateVendor(request), HttpStatus.OK);
-	}
-
-	@GetMapping("/vendor/id/{vendorId}")
-	public ResponseEntity<Vendor> getVendorById(@PathVariable("vendorId") @NotNull @Positive @Min(1) Long id) {
-		return new ResponseEntity<>(vendorService.getVendorById(id), HttpStatus.OK);
-	}
-
-	@GetMapping("/vendor/uuid/{vendorUuid}")
-	public ResponseEntity<Vendor> getVendorByUuid(@PathVariable("vendorUuid") @NotNull String uuid) {
-		return new ResponseEntity<>(vendorService.getVendorByUuid(uuid), HttpStatus.OK);
-	}
-
-	@GetMapping("/vendors")
+	@GetMapping
 	public ResponseEntity<List<Vendor>> getAllVendors() {
 		return new ResponseEntity<>(vendorService.getAllVendors(), HttpStatus.OK);
 	}
 
-	@DeleteMapping("/vendor/id/{vendorId}")
-	public ResponseEntity<SuccessResponseDto> deleteVendorById(
-			@PathVariable("vendorId") @NotNull @Positive @Min(1) Long id) {
+	@GetMapping("/id/{id}")
+	public ResponseEntity<Vendor> getVendorById(@PathVariable @NotNull @Positive @Min(1) Long id) {
+		return new ResponseEntity<>(vendorService.getVendorById(id), HttpStatus.OK);
+	}
+
+	@GetMapping("/uuid/{uuid}")
+	public ResponseEntity<Vendor> getVendorByUuid(@PathVariable @NotNull String uuid) {
+		return new ResponseEntity<>(vendorService.getVendorByUuid(uuid), HttpStatus.OK);
+	}
+
+	@PutMapping("/id/{id}")
+	public ResponseEntity<Vendor> updateVendor(@PathVariable @NotNull @Positive @Min(1) Long id,
+			@Valid @RequestBody UpdateVendorRequest request) {
+		return new ResponseEntity<>(vendorService.updateVendor(id, request), HttpStatus.OK);
+	}
+
+	@DeleteMapping
+	public ResponseEntity<SuccessResponseDto> deleteAllVendors() {
+		SuccessResponseDto responseDto = vendorService.deleteAllVendors();
+		return new ResponseEntity<>(responseDto, responseDto.getStatus());
+	}
+
+	@DeleteMapping("/id/{id}")
+	public ResponseEntity<SuccessResponseDto> deleteVendorById(@PathVariable @NotNull @Positive @Min(1) Long id) {
 		SuccessResponseDto responseDto = vendorService.deleteVendorById(id);
 		return new ResponseEntity<>(responseDto, responseDto.getStatus());
 	}
 
-	@DeleteMapping("/vendor/uuid/{vendorId}")
-	public ResponseEntity<SuccessResponseDto> deleteVendorByUuid(@PathVariable("vendorId") @NotNull String uuid) {
+	@DeleteMapping("/uuid/{uuid}")
+	public ResponseEntity<SuccessResponseDto> deleteVendorByUuid(@PathVariable @NotNull String uuid) {
 		SuccessResponseDto responseDto = vendorService.deleteVendorByUuid(uuid);
-		return new ResponseEntity<>(responseDto, responseDto.getStatus());
-	}
-
-	@DeleteMapping("/vendors")
-	public ResponseEntity<SuccessResponseDto> deleteAllVendors() {
-		SuccessResponseDto responseDto = vendorService.deleteAllVendors();
 		return new ResponseEntity<>(responseDto, responseDto.getStatus());
 	}
 }

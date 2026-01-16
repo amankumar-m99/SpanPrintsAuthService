@@ -1,8 +1,6 @@
 package com.spanprints.authservice.service;
 
-import java.time.Instant;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,20 +28,18 @@ public class VendorService {
 	public Vendor createVendor(CreateVendorRequest request) {
 		throwIfNameAlreadyExists(request.getName());
 		Account account = securityUtils.getRequestingAccount();
-		Vendor vendor = Vendor.builder().id(null).uuid(UUID.randomUUID().toString()).name(request.getName())
-				.email(request.getEmail()).primaryPhoneNumber(request.getPrimaryPhoneNumber())
-				.address(request.getAddress()).alternatePhoneNumber(request.getAlternatePhoneNumber()).account(account)
-				.createdAt(Instant.now()).updatedAt(Instant.now()).build();
+		Vendor vendor = Vendor.builder().name(request.getName()).email(request.getEmail())
+				.primaryPhoneNumber(request.getPrimaryPhoneNumber()).address(request.getAddress())
+				.alternatePhoneNumber(request.getAlternatePhoneNumber()).account(account).build();
 		return vendorRepository.save(vendor);
 	}
 
-	public Vendor updateVendor(UpdateVendorRequest request) {
-		Vendor vendor = getVendorById(request.getId());
+	public Vendor updateVendor(Long id, UpdateVendorRequest request) {
+		Vendor vendor = getVendorById(id);
 		vendor.setEmail(request.getEmail());
 		vendor.setName(request.getName());
 		vendor.setPrimaryPhoneNumber(request.getPrimaryPhoneNumber());
 		vendor.setAlternatePhoneNumber(request.getAlternatePhoneNumber());
-		vendor.setUpdatedAt(Instant.now());
 		return vendorRepository.save(vendor);
 	}
 
