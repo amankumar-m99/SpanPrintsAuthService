@@ -1,14 +1,8 @@
 package com.spanprints.authservice.entity;
 
-import java.time.Instant;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 //import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
@@ -22,16 +16,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class FileAttachment {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-
+public class FileAttachment extends AuditableBaseEntity {
 	private String fileName;
 	private String fileType;
-	private Instant createdAt;
-	private Instant updatedAt;
-
 //	@Lob
 //	private byte[] data; // Actual file content
 
@@ -39,9 +26,4 @@ public class FileAttachment {
 	@JoinColumn(name = "printjob_id", referencedColumnName = "id")
 	@JsonIgnore
 	private PrintJob printJob;
-
-	@JsonProperty("printJobId")
-	public Long getPrintJobId() {
-		return printJob != null ? printJob.getId() : null;
-	}
 }

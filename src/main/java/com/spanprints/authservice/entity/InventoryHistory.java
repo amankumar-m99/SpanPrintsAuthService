@@ -1,7 +1,6 @@
 package com.spanprints.authservice.entity;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -10,9 +9,6 @@ import com.spanprints.authservice.enums.InventoryAction;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
@@ -28,12 +24,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class InventoryHistory {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	private String uuid;
+public class InventoryHistory extends AuditableBaseEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "inventory_item_id", referencedColumnName = "id")
@@ -57,9 +48,6 @@ public class InventoryHistory {
 	@JoinColumn(name = "printJob_id", referencedColumnName = "id")
 	@JsonIgnore
 	private PrintJob printJob;
-
-	private Instant updatedAt;
-	private Instant createdAt;
 
 	@JsonProperty("itemId")
 	public Long getItemId() {
