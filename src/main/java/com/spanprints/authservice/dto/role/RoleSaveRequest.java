@@ -1,4 +1,4 @@
-package com.spanprints.authservice.dto;
+package com.spanprints.authservice.dto.role;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoleSaveDto {
+public class RoleSaveRequest {
 
 	@NotBlank(message = "Role name is required")
 	private String roleName;

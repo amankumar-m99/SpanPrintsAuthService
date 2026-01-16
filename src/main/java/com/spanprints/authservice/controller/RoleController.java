@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.spanprints.authservice.dto.RoleSaveDto;
-import com.spanprints.authservice.dto.RoleUpdateDto;
 import com.spanprints.authservice.dto.SuccessResponseDto;
-import com.spanprints.authservice.entity.Role;
+import com.spanprints.authservice.dto.role.RoleResponse;
+import com.spanprints.authservice.dto.role.RoleSaveRequest;
+import com.spanprints.authservice.dto.role.RoleUpdateRequest;
 import com.spanprints.authservice.service.RoleService;
 
 import jakarta.validation.Valid;
@@ -26,41 +26,45 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 @RestController
-@RequestMapping("")
+@RequestMapping("/roles")
 public class RoleController {
 
 	@Autowired
 	private RoleService roleService;
 
-	@PostMapping("/role")
-	public ResponseEntity<Role> addRole(@Valid @RequestBody RoleSaveDto role) {
-		return new ResponseEntity<>(roleService.addRole(role), HttpStatus.CREATED);
+	@PostMapping
+	public ResponseEntity<RoleResponse> createRole(@Valid @RequestBody RoleSaveRequest request) {
+		return new ResponseEntity<>(new RoleResponse(roleService.addRole(request)), HttpStatus.CREATED);
 	}
 
-	@GetMapping("/role/{roleId}")
-	public ResponseEntity<Role> getRole(@PathVariable("roleId") @NotNull @Positive @Min(1) Long id) {
-		return new ResponseEntity<>(roleService.getRoleById(id), HttpStatus.OK);
+	@GetMapping
+	public ResponseEntity<List<RoleResponse>> getAllRoles() {
+		List<RoleResponse> list = roleService.getAllRoles().stream().map(RoleResponse::new).toList();
+		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 
-	@GetMapping("/roles")
-	public ResponseEntity<List<Role>> getAllRoles() {
-		return new ResponseEntity<>(roleService.getAllRoles(), HttpStatus.OK);
+	@GetMapping("/id/{id}")
+	public ResponseEntity<RoleResponse> getRole(@PathVariable @NotNull @Positive @Min(1) Long id) {
+		RoleResponse roleResponse = new RoleResponse(roleService.getRoleById(id));
+		return new ResponseEntity<>(roleResponse, HttpStatus.OK);
 	}
 
-	@PutMapping("/role")
-	public ResponseEntity<Role> updateRole(@Valid @RequestBody RoleUpdateDto role) {
-		return new ResponseEntity<>(roleService.updateRole(role), HttpStatus.OK);
+	@PutMapping("/id/{id}")
+	public ResponseEntity<RoleResponse> updateRole(@PathVariable @NotNull @Positive @Min(1) Long id,
+			@Valid @RequestBody RoleUpdateRequest request) {
+		RoleResponse roleResponse = new RoleResponse(roleService.updateRole(id, request));
+		return new ResponseEntity<>(roleResponse, HttpStatus.OK);
 	}
 
-	@DeleteMapping("/role/{roleId}")
-	public ResponseEntity<SuccessResponseDto> deleteRole(@PathVariable("roleId") @NotNull @Positive @Min(1) Long id) {
-		SuccessResponseDto responseDto = roleService.deleteRoleById(id);
+	@DeleteMapping
+	public ResponseEntity<SuccessResponseDto> deleteAllRoles() {
+		SuccessResponseDto responseDto = roleService.deleteAllRoles();
 		return new ResponseEntity<>(responseDto, responseDto.getStatus());
 	}
 
-	@DeleteMapping("/roles")
-	public ResponseEntity<SuccessResponseDto> deleteAllRoles() {
-		SuccessResponseDto responseDto = roleService.deleteAllRoles();
+	@DeleteMapping("/id/{id}")
+	public ResponseEntity<SuccessResponseDto> deleteRole(@PathVariable @NotNull @Positive @Min(1) Long id) {
+		SuccessResponseDto responseDto = roleService.deleteRoleById(id);
 		return new ResponseEntity<>(responseDto, responseDto.getStatus());
 	}
 }

@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spanprints.authservice.dto.LoginRequestDto;
-import com.spanprints.authservice.dto.ProfileResponse;
 import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.dto.account.AccountResponse;
 import com.spanprints.authservice.dto.account.CreateAccountRequest;
+import com.spanprints.authservice.dto.profile.ProfileResponse;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.PersonalDetails;
 import com.spanprints.authservice.jwt.CustomUserDetailsService;
