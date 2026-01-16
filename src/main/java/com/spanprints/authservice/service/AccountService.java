@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -95,6 +96,10 @@ public class AccountService {
 		accountRepository.save(account);
 	}
 
+	public List<Account> getAllAccounts() {
+		return accountRepository.findAll();
+	}
+
 	public Account getAccountById(Long id) {
 		return accountRepository.findById(id)
 				.orElseThrow(() -> new AccountNotFoundException(String.format("No account found with id `%d`", id)));
@@ -110,8 +115,9 @@ public class AccountService {
 				() -> new AccountNotFoundException(String.format("No account found with username `%s`", username)));
 	}
 
-	public List<Account> getAllAccounts() {
-		return accountRepository.findAll();
+	public Account getAccountByUserDetails(UserDetails userDetails) {
+		String username = userDetails.getUsername();
+		return getAccountByUsername(username);
 	}
 
 	public SuccessResponseDto deleteAllAccounts() {

@@ -18,8 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.dto.personaldetails.CreatePersonalDetailsRequest;
+import com.spanprints.authservice.dto.personaldetails.PersonalDetailsResponse;
+import com.spanprints.authservice.dto.personaldetails.UpdatePersonalDetailsRequest;
 import com.spanprints.authservice.entity.Account;
-import com.spanprints.authservice.entity.PersonalDetails;
 import com.spanprints.authservice.service.AccountService;
 import com.spanprints.authservice.service.PersonalDetailsService;
 
@@ -29,7 +30,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 @RestController
-@RequestMapping("")
+@RequestMapping("personal-details")
 public class PersonalDetailsController {
 
 	@Autowired
@@ -38,47 +39,65 @@ public class PersonalDetailsController {
 	@Autowired
 	private AccountService accountService;
 
-	@PostMapping("/personal-detail")
-	public ResponseEntity<PersonalDetails> createPersonalDetails(
+	@PostMapping
+	public ResponseEntity<PersonalDetailsResponse> createPersonalDetails(
 			@Valid @RequestBody CreatePersonalDetailsRequest request,
 			@AuthenticationPrincipal UserDetails userDetails) {
-		Account account = getAccount(userDetails);
-		return new ResponseEntity<>(personalDetailsService.createPersonalDetail(request, account), HttpStatus.CREATED);
+		Account account = accountService.getAccountByUserDetails(userDetails);
+		PersonalDetailsResponse personalDetailsResponse = new PersonalDetailsResponse(
+				personalDetailsService.createPersonalDetail(request, account));
+		return new ResponseEntity<>(personalDetailsResponse, HttpStatus.CREATED);
 	}
 
-	@PutMapping("/personal-detail")
-	public ResponseEntity<PersonalDetails> updateRole(@Valid @RequestBody CreatePersonalDetailsRequest request,
+	@GetMapping
+	public ResponseEntity<List<PersonalDetailsResponse>> getAllPersonalDetails() {
+		List<PersonalDetailsResponse> list = personalDetailsService.getAll().stream().map(PersonalDetailsResponse::new)
+				.toList();
+		return new ResponseEntity<>(list, HttpStatus.OK);
+	}
+
+	@GetMapping("/id/{id}")
+	public ResponseEntity<PersonalDetailsResponse> getPersonalDetailsById(
+			@PathVariable @NotNull @Positive @Min(1) Long id) {
+		PersonalDetailsResponse personalDetailsResponse = new PersonalDetailsResponse(
+				personalDetailsService.getPersonalDetailsById(id));
+		return new ResponseEntity<>(personalDetailsResponse, HttpStatus.OK);
+	}
+
+	@GetMapping("/uuid/{uuid}")
+	public ResponseEntity<PersonalDetailsResponse> getPersonalDetailsByUuid(@PathVariable @NotNull String uuid) {
+		PersonalDetailsResponse personalDetailsResponse = new PersonalDetailsResponse(
+				personalDetailsService.getPersonalDetailsByUuid(uuid));
+		return new ResponseEntity<>(personalDetailsResponse, HttpStatus.OK);
+	}
+
+	@PutMapping("/id/{id}")
+	public ResponseEntity<PersonalDetailsResponse> updatePersonalDetailsById(
+			@PathVariable @NotNull @Positive @Min(1) Long id, @Valid @RequestBody UpdatePersonalDetailsRequest request,
 			@AuthenticationPrincipal UserDetails userDetails) {
-		Account account = getAccount(userDetails);
-		return new ResponseEntity<>(personalDetailsService.createPersonalDetail(request, account), HttpStatus.CREATED);
+		Account account = accountService.getAccountByUserDetails(userDetails);
+		PersonalDetailsResponse personalDetailsResponse = new PersonalDetailsResponse(
+				personalDetailsService.updatePersonalDetail(request, account));
+		return new ResponseEntity<>(personalDetailsResponse, HttpStatus.CREATED);
 	}
 
-	@GetMapping("/personal-detail/{personalDetailsId}")
-	public ResponseEntity<PersonalDetails> getRole(
+	@DeleteMapping
+	public ResponseEntity<SuccessResponseDto> deleteAllPersonalDetails(
 			@PathVariable("personalDetailsId") @NotNull @Positive @Min(1) Long id) {
-		return new ResponseEntity<>(personalDetailsService.getPersonalDetailsById(id), HttpStatus.OK);
+		SuccessResponseDto responseDto = personalDetailsService.deleteAllDetails();
+		return new ResponseEntity<>(responseDto, responseDto.getStatus());
 	}
 
-	@GetMapping("/personal-details")
-	public ResponseEntity<List<PersonalDetails>> getAllDetails() {
-		return new ResponseEntity<>(personalDetailsService.getAll(), HttpStatus.OK);
-	}
-
-	@DeleteMapping("/personal-detail/{personalDetailsId}")
-	public ResponseEntity<SuccessResponseDto> deletePersonalDetails(
+	@DeleteMapping("/id/{id}")
+	public ResponseEntity<SuccessResponseDto> deletePersonalDetailsById(
 			@PathVariable("personalDetailsId") @NotNull @Positive @Min(1) Long id) {
 		SuccessResponseDto responseDto = personalDetailsService.deleteById(id);
 		return new ResponseEntity<>(responseDto, responseDto.getStatus());
 	}
 
-	@DeleteMapping("/personal-details")
-	public ResponseEntity<SuccessResponseDto> deleteAllRoles() {
-		SuccessResponseDto responseDto = personalDetailsService.deleteAllDetails();
+	@DeleteMapping("/uuid/{uuid}")
+	public ResponseEntity<SuccessResponseDto> deletePersonalDetailsByUuid(@PathVariable @NotNull String uuid) {
+		SuccessResponseDto responseDto = personalDetailsService.deleteByUuid(uuid);
 		return new ResponseEntity<>(responseDto, responseDto.getStatus());
-	}
-
-	private Account getAccount(UserDetails userDetails) {
-		String username = userDetails.getUsername();
-		return accountService.getAccountByUsername(username);
 	}
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.dto.personaldetails.CreatePersonalDetailsRequest;
+import com.spanprints.authservice.dto.personaldetails.UpdatePersonalDetailsRequest;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.PersonalDetails;
 import com.spanprints.authservice.exception.personaldetails.PersonalDetailsFoundException;
@@ -20,12 +21,14 @@ public class PersonalDetailsService {
 	private PersonalDetailsRepository personalDetailsRepository;
 
 	public PersonalDetails createPersonalDetail(CreatePersonalDetailsRequest request, Account account) {
+		PersonalDetails personDetails = buildPersonDetailsFromDto(request);
+		personDetails.setAccount(account);
+		return personalDetailsRepository.save(personDetails);
+	}
+
+	public PersonalDetails updatePersonalDetail(UpdatePersonalDetailsRequest request, Account account) {
 		PersonalDetails personDetails = account.getPersonalDetails();
-		if (personDetails != null) {
-			updatePersonDetails(personDetails, request);
-		} else {
-			personDetails = buildPersonDetailsFromDto(request);
-		}
+		updatePersonDetails(personDetails, request);
 		personDetails.setAccount(account);
 		return personalDetailsRepository.save(personDetails);
 	}
@@ -35,11 +38,15 @@ public class PersonalDetailsService {
 				.birthday(request.getBirthday()).build();
 	}
 
-	private PersonalDetails updatePersonDetails(PersonalDetails details, CreatePersonalDetailsRequest request) {
+	private PersonalDetails updatePersonDetails(PersonalDetails details, UpdatePersonalDetailsRequest request) {
 		details.setName(request.getName());
 		details.setGender(request.getGender());
 		details.setBirthday(request.getBirthday());
 		return details;
+	}
+
+	public List<PersonalDetails> getAll() {
+		return personalDetailsRepository.findAll();
 	}
 
 	public PersonalDetails getPersonalDetailsById(Long id) {
@@ -47,12 +54,18 @@ public class PersonalDetailsService {
 				() -> new PersonalDetailsFoundException(String.format("No personal detail exists with id `%d`", id)));
 	}
 
-	public List<PersonalDetails> getAll() {
-		return personalDetailsRepository.findAll();
+	public PersonalDetails getPersonalDetailsByUuid(String uuid) {
+		return personalDetailsRepository.findByUuid(uuid).orElseThrow(() -> new PersonalDetailsFoundException(
+				String.format("No personal detail exists with uuid `%s`", uuid)));
 	}
 
 	public void delete(PersonalDetails personalDetails) {
 		personalDetailsRepository.delete(personalDetails);
+	}
+
+	public SuccessResponseDto deleteAllDetails() {
+		personalDetailsRepository.deleteAll();
+		return new SuccessResponseDto(HttpStatus.OK, "Deleted all personal details.");
 	}
 
 	public SuccessResponseDto deleteById(Long id) {
@@ -60,9 +73,9 @@ public class PersonalDetailsService {
 		return new SuccessResponseDto(HttpStatus.OK, String.format("Deleted personal details by id `%d`", id));
 	}
 
-	public SuccessResponseDto deleteAllDetails() {
-		personalDetailsRepository.deleteAll();
-		return new SuccessResponseDto(HttpStatus.OK, "Deleted all personal details.");
+	public SuccessResponseDto deleteByUuid(String uuid) {
+		personalDetailsRepository.delete(getPersonalDetailsByUuid(uuid));
+		return new SuccessResponseDto(HttpStatus.OK, String.format("Deleted personal details by id `%s`", uuid));
 	}
 
 }
