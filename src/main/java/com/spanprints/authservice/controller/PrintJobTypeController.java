@@ -11,10 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spanprints.authservice.dto.printjob.CreatePrintJobTypeRequest;
-import com.spanprints.authservice.entity.PrintJobType;
+import com.spanprints.authservice.dto.printjob.PrintJobTypeResponse;
 import com.spanprints.authservice.service.PrintJobTypeService;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 @RestController
 @RequestMapping("/printjobtype")
@@ -23,18 +26,23 @@ public class PrintJobTypeController {
 	@Autowired
 	private PrintJobTypeService printJobTypeService;
 
-	@PostMapping("")
-	public PrintJobType createPrintJobType(@Valid @RequestBody CreatePrintJobTypeRequest request) {
-		return printJobTypeService.createPrintJobType(request);
+	@PostMapping
+	public PrintJobTypeResponse createPrintJobType(@Valid @RequestBody CreatePrintJobTypeRequest request) {
+		return new PrintJobTypeResponse(printJobTypeService.createPrintJobType(request));
 	}
 
-	@GetMapping("/all")
-	public List<PrintJobType> getAllPrintJobs() {
-		return printJobTypeService.getAllPrintJobTypes();
+	@GetMapping
+	public List<PrintJobTypeResponse> getAllPrintJobs() {
+		return printJobTypeService.getAllPrintJobTypes().stream().map(PrintJobTypeResponse::new).toList();
+	}
+
+	@GetMapping("/id/{id}")
+	public PrintJobTypeResponse getPrintJobTypeById(@PathVariable @NotNull @Positive @Min(1) String name) {
+		return new PrintJobTypeResponse(printJobTypeService.getPrintJobTypeByName(name.toLowerCase()));
 	}
 
 	@GetMapping("/name/{name}")
-	public PrintJobType getPrintJobTypeByName(@PathVariable("name") String name) {
-		return printJobTypeService.getPrintJobTypeByName(name.toLowerCase());
+	public PrintJobTypeResponse getPrintJobTypeByName(@PathVariable @NotNull String name) {
+		return new PrintJobTypeResponse(printJobTypeService.getPrintJobTypeByName(name.toLowerCase()));
 	}
 }

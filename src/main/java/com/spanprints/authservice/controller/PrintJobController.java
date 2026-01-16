@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.spanprints.authservice.dto.printjob.CreatePrintJobRequest;
+import com.spanprints.authservice.dto.printjob.PrintJobResponse;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.Customer;
 import com.spanprints.authservice.entity.PrintJob;
@@ -26,7 +27,7 @@ import com.spanprints.authservice.util.SecurityUtils;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/printjob")
+@RequestMapping("/printjobs")
 public class PrintJobController {
 
 	@Autowired
@@ -41,8 +42,8 @@ public class PrintJobController {
 	private CustomerService customerService;
 
 	@PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public PrintJob createPrintJob(@Valid@ModelAttribute CreatePrintJobRequest request,
-	        @RequestParam(name = "attachments", required = false) List<MultipartFile> attachments) {
+	public PrintJob createPrintJob(@Valid @ModelAttribute CreatePrintJobRequest request,
+			@RequestParam(name = "attachments", required = false) List<MultipartFile> attachments) {
 		Account account = securityUtils.getRequestingAccount();
 		Customer customer = customerService.getCustomerById(request.getCustomerId());
 		PrintJobType printJobType = printJobTypeService.getPrintJobTypeById(request.getPrintJobId());
@@ -51,8 +52,8 @@ public class PrintJobController {
 		return printJob;
 	}
 
-	@GetMapping("/all")
-	public List<PrintJob> getAllPrintJobs() {
-		return printJobService.getAllPrintJobs();
+	@GetMapping
+	public List<PrintJobResponse> getAllPrintJobs() {
+		return printJobService.getAllPrintJobs().stream().map(PrintJobResponse::new).toList();
 	}
 }
