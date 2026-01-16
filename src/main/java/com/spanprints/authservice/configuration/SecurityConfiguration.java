@@ -2,6 +2,7 @@ package com.spanprints.authservice.configuration;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -22,8 +23,13 @@ import com.spanprints.authservice.jwt.JwtAccessDeniedHandler;
 import com.spanprints.authservice.jwt.JwtAuthenticationEntryPoint;
 import com.spanprints.authservice.jwt.JwtRequestFilter;
 
+import io.jsonwebtoken.lang.Arrays;
+
 @Configuration
 public class SecurityConfiguration {
+
+	@Value("${spanprints.allowed-origins}")
+	private String allowedOrigins;
 
 	@Bean
 	PasswordEncoder getPasswordEncoder() {
@@ -39,9 +45,10 @@ public class SecurityConfiguration {
 	SecurityFilterChain filterChain(HttpSecurity http, JwtRequestFilter filter,
 			JwtAuthenticationEntryPoint authEntryPoint, JwtAccessDeniedHandler accessDeniedHandler) throws Exception {
 		http.authorizeHttpRequests(auth -> auth.requestMatchers("/h2-console/**").permitAll()
-				.requestMatchers("/login").permitAll()
-				.requestMatchers("/register").permitAll()
-				.requestMatchers("/verify").permitAll()
+				.requestMatchers("/auth/**").permitAll()
+//				.requestMatchers("/auth/login").permitAll()
+//				.requestMatchers("/auth/register").permitAll()
+//				.requestMatchers("/auth/verify").permitAll()
 				.requestMatchers("/role/**").permitAll()
 				.requestMatchers("/roles").permitAll()
 				.requestMatchers(HttpMethod.GET, "/profile-pic/**").permitAll()
@@ -63,8 +70,9 @@ public class SecurityConfiguration {
 
 	@Bean
     CorsConfigurationSource corsConfigurationSource() {
+		List<String> allowedOriginsList = Arrays.asList(allowedOrigins.split(",")).stream().map(String::trim).toList();
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:4200",  "http://192.168.1.5:4200", "http://localhost:5500",  "http://192.168.1.5:5500", "http://127.0.0.1:5500"));
+        config.setAllowedOrigins(allowedOriginsList);
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);

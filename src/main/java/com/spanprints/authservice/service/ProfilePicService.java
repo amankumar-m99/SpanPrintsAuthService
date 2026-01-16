@@ -20,7 +20,7 @@ import com.spanprints.authservice.repository.ProfilePicRepository;
 @Service
 public class ProfilePicService {
 
-	@Value("${data-directory.profile-pic}")
+	@Value("${spanprints.data-directory.profile-pic}")
 	private String profilePicsDirectory;
 
 	@Autowired

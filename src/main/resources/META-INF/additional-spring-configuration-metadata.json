@@ -1,0 +1,19 @@
+{
+	"properties": [
+		{
+			"name": "spanprints.allowed-origins",
+			"type": "java.lang.String",
+			"description": "A description for 'spanprints.allowed-origins'"
+		},
+		{
+			"name": "spanprints.data-directory.profile-pic",
+			"type": "java.lang.String",
+			"description": "A description for 'spanprints.data-directory.profile-pic'"
+		},
+		{
+			"name": "spanprints.verify-token-query-key",
+			"type": "java.lang.String",
+			"description": "A description for 'spanprints.data-directory.verify-token-query-key'"
+		}
+	]
+}

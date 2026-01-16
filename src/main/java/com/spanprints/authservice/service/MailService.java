@@ -25,7 +25,7 @@ public class MailService {
 	@Value("${api-gateway.service-id:SpanPrintsApiGateway}")
 	private String apiGatewayServiceId;
 
-	@Value("${verify-token-query-key}")
+	@Value("${spanprints.verify-token-query-key}")
 	private String verifyTokenQueryKey;
 
 	private JavaMailSender mailSender;
