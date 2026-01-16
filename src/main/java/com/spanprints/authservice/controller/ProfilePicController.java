@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.spanprints.authservice.dto.ProfilePicResource;
-import com.spanprints.authservice.dto.ProfilePicResponse;
+import com.spanprints.authservice.dto.profile.ProfilePicResource;
+import com.spanprints.authservice.dto.profile.ProfilePicResponse;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.ProfilePic;
 import com.spanprints.authservice.exception.profilepic.ProfilePicFormatNotAcceptedException;

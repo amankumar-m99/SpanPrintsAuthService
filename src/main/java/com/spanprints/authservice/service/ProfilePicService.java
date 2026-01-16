@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.spanprints.authservice.dto.ProfilePicResource;
+import com.spanprints.authservice.dto.profile.ProfilePicResource;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.ProfilePic;
 import com.spanprints.authservice.exception.profilepic.ProfilePicNotFoundException;

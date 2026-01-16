@@ -1,5 +1,6 @@
-package com.spanprints.authservice.dto;
+package com.spanprints.authservice.dto.profile;
 
+import com.spanprints.authservice.dto.EntityResponseDto;
 import com.spanprints.authservice.entity.ProfilePic;
 
 import lombok.Getter;

@@ -1,7 +1,6 @@
-package com.spanprints.authservice.dto;
+package com.spanprints.authservice.dto.profile;
 
 import com.spanprints.authservice.dto.account.AccountResponse;
-import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.PersonalDetails;
 
 import lombok.AllArgsConstructor;

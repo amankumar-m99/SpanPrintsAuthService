@@ -1,4 +1,4 @@
-package com.spanprints.authservice.dto;
+package com.spanprints.authservice.dto.profile;
 
 import java.io.File;
 import java.io.FileInputStream;
