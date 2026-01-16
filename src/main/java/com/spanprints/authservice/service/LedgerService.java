@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.spanprints.authservice.dto.SuccessResponseDto;
-import com.spanprints.authservice.dto.ledger.TransactionDto;
 import com.spanprints.authservice.entity.Expense;
 import com.spanprints.authservice.entity.Ledger;
 import com.spanprints.authservice.entity.PrintJob;
@@ -26,17 +25,15 @@ public class LedgerService {
 
 	public Ledger addTransaction(Expense expense) {
 		Ledger ledger = Ledger.builder().amount(expense.getAmount()).transactionType(TransactionType.DEBIT)
-				.transactionDomain(TransactionDomain.EXPENSE).transactionDate(expense.getDateOfExpense()).printJob(null)
-				.expense(expense).createdAt(expense.getCreatedAt()).updatedAt(expense.getUpdatedAt())
-				.account(expense.getAccount()).build();
+				.transactionDomain(TransactionDomain.EXPENSE).transactionDateTime(expense.getDateOfExpense())
+				.printJob(null).expense(expense).account(expense.getAccount()).build();
 		return ledgerRepository.save(ledger);
 	}
 
 	public Ledger addTransaction(PrintJob printJob) {
 		Ledger ledger = Ledger.builder().amount(printJob.getTotalAmount()).transactionType(TransactionType.CREDIT)
-				.transactionDomain(TransactionDomain.PRINT_JOB).transactionDate(Instant.now()).printJob(printJob)
-				.expense(null).createdAt(printJob.getCreatedAt()).updatedAt(printJob.getUpdateAt())
-				.account(printJob.getAccount()).build();
+				.transactionDomain(TransactionDomain.PRINT_JOB).transactionDateTime(Instant.now()).printJob(printJob)
+				.expense(null).account(printJob.getAccount()).build();
 		return ledgerRepository.save(ledger);
 	}
 
@@ -45,17 +42,16 @@ public class LedgerService {
 				() -> new TransactionNotFoundException(String.format("No transaction exists with id `%d`", id)));
 	}
 
-	public TransactionDto getTransactionDtoById(Long id) {
-		Ledger ledger = getTransactionById(id);
-		return convertLedgerTransactionToDto(ledger);
+	public Ledger getLedgerById(Long id) {
+		return getTransactionById(id);
 	}
 
 	public List<Ledger> getAllTransactions() {
 		return ledgerRepository.findAll();
 	}
 
-	public List<TransactionDto> getAllTransactionsDto() {
-		return ledgerRepository.findAll().stream().map(e -> convertLedgerTransactionToDto(e)).toList();
+	public List<Ledger> getAllTransactionsDto() {
+		return ledgerRepository.findAll();
 	}
 
 	public ResponseEntity<String> updateTransaction() {
@@ -74,24 +70,6 @@ public class LedgerService {
 	public SuccessResponseDto deleteAllTransactions() {
 		ledgerRepository.deleteAll();
 		return new SuccessResponseDto(HttpStatus.OK, "Deleted all transactions.");
-	}
-
-	public TransactionDto convertLedgerTransactionToDto(Ledger ledger) {
-		String description = null;
-		switch (ledger.getTransactionDomain()) {
-		case EXPENSE:
-			description = ledger.getExpense().getDescription();
-			break;
-		case PRINT_JOB:
-			PrintJob printJob = ledger.getPrintJob();
-			description = String.format("%d | %s | %d", printJob.getId(), printJob.getJobType(), printJob.getCount());
-			break;
-		}
-		return TransactionDto.builder().id(ledger.getId()).amount(ledger.getAmount())
-				.transactionType(ledger.getTransactionType()).transactionDomain(ledger.getTransactionDomain())
-				.transactionTime(ledger.getTransactionTime()).expenseId(ledger.getExpenseId())
-				.createdAt(ledger.getCreatedAt()).updatedAt(ledger.getUpdatedAt()).printJobId(ledger.getPrintJobId())
-				.description(description).build();
 	}
 
 }

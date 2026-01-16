@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spanprints.authservice.dto.SuccessResponseDto;
-import com.spanprints.authservice.dto.ledger.TransactionDto;
+import com.spanprints.authservice.dto.ledger.LedgerResponse;
 import com.spanprints.authservice.service.LedgerService;
 
 import jakarta.validation.constraints.Min;
@@ -21,24 +21,26 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 @RestController
-@RequestMapping("/transaction")
+@RequestMapping("/ledger")
 public class LedgerController {
 
 	@Autowired
 	private LedgerService ledgerService;
 
 	@GetMapping("/{transactionId}")
-	public ResponseEntity<TransactionDto> getTransaction(
+	public ResponseEntity<LedgerResponse> getTransaction(
 			@PathVariable("transactionId") @NotNull @Positive @Min(1) Long id) {
-		return new ResponseEntity<>(ledgerService.getTransactionDtoById(id), HttpStatus.OK);
+		LedgerResponse ledgerResponse = new LedgerResponse(ledgerService.getLedgerById(id));
+		return new ResponseEntity<>(ledgerResponse, HttpStatus.OK);
 	}
 
-	@GetMapping("")
-	public ResponseEntity<List<TransactionDto>> getAllTransactions() {
-		return new ResponseEntity<>(ledgerService.getAllTransactionsDto(), HttpStatus.OK);
+	@GetMapping
+	public ResponseEntity<List<LedgerResponse>> getAllTransactions() {
+		List<LedgerResponse> list = ledgerService.getAllTransactionsDto().stream().map(LedgerResponse::new).toList();
+		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 
-	@PutMapping("")
+	@PutMapping
 	public ResponseEntity<String> updateLedger() {
 		return ledgerService.updateTransaction();
 	}
@@ -50,7 +52,7 @@ public class LedgerController {
 		return new ResponseEntity<>(responseDto, responseDto.getStatus());
 	}
 
-	@DeleteMapping("")
+	@DeleteMapping
 	public ResponseEntity<SuccessResponseDto> deleteAllRoles() {
 		SuccessResponseDto responseDto = ledgerService.deleteAllTransactions();
 		return new ResponseEntity<>(responseDto, responseDto.getStatus());
