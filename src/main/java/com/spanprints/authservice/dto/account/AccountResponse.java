@@ -6,7 +6,7 @@ import com.spanprints.authservice.dto.EntityResponseDto;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.Customer;
 import com.spanprints.authservice.entity.Expense;
-import com.spanprints.authservice.entity.Ledger;
+import com.spanprints.authservice.entity.LedgerEntry;
 import com.spanprints.authservice.entity.PrintJob;
 import com.spanprints.authservice.entity.Role;
 import com.spanprints.authservice.entity.Vendor;
@@ -51,7 +51,7 @@ public class AccountResponse extends EntityResponseDto {
 				: Collections.emptyList();
 		this.expenseIds = account.getExpenses() != null ? account.getExpenses().stream().map(Expense::getId).toList()
 				: Collections.emptyList();
-		this.ledgerIds = account.getLedger() != null ? account.getLedger().stream().map(Ledger::getId).toList()
+		this.ledgerIds = account.getLedgerEntry() != null ? account.getLedgerEntry().stream().map(LedgerEntry::getId).toList()
 				: Collections.emptyList();
 		this.customerIds = account.getCustomers() != null
 				? account.getCustomers().stream().map(Customer::getId).toList()

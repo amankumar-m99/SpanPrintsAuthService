@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spanprints.authservice.dto.SuccessResponseDto;
-import com.spanprints.authservice.dto.ledger.LedgerResponse;
+import com.spanprints.authservice.dto.ledger.LedgerEntryResponse;
 import com.spanprints.authservice.service.LedgerService;
 
 import jakarta.validation.constraints.Min;
@@ -21,22 +21,22 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 @RestController
-@RequestMapping("/ledger")
+@RequestMapping("/ledgerentries")
 public class LedgerController {
 
 	@Autowired
 	private LedgerService ledgerService;
 
 	@GetMapping("/{transactionId}")
-	public ResponseEntity<LedgerResponse> getTransaction(
+	public ResponseEntity<LedgerEntryResponse> getTransaction(
 			@PathVariable("transactionId") @NotNull @Positive @Min(1) Long id) {
-		LedgerResponse ledgerResponse = new LedgerResponse(ledgerService.getLedgerById(id));
-		return new ResponseEntity<>(ledgerResponse, HttpStatus.OK);
+		LedgerEntryResponse ledgerEntryResponse = new LedgerEntryResponse(ledgerService.getLedgerById(id));
+		return new ResponseEntity<>(ledgerEntryResponse, HttpStatus.OK);
 	}
 
 	@GetMapping
-	public ResponseEntity<List<LedgerResponse>> getAllTransactions() {
-		List<LedgerResponse> list = ledgerService.getAllTransactionsDto().stream().map(LedgerResponse::new).toList();
+	public ResponseEntity<List<LedgerEntryResponse>> getAllTransactions() {
+		List<LedgerEntryResponse> list = ledgerService.getAllTransactionsDto().stream().map(LedgerEntryResponse::new).toList();
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 

@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.spanprints.authservice.dto.EntityResponseDto;
 import com.spanprints.authservice.entity.Expense;
-import com.spanprints.authservice.entity.Ledger;
+import com.spanprints.authservice.entity.LedgerEntry;
 import com.spanprints.authservice.enums.ExpenseType;
 
 import io.jsonwebtoken.lang.Collections;
@@ -21,7 +21,7 @@ public class ExpenseResponse extends EntityResponseDto {
 	private Instant dateOfExpense;
 	private String createdBy;
 	private Long createdById;
-	private List<Long> ledgerIds;
+	private List<Long> ledgerEntryIds;
 
 	public ExpenseResponse(Expense expense) {
 		super(expense);
@@ -31,7 +31,7 @@ public class ExpenseResponse extends EntityResponseDto {
 		this.dateOfExpense = expense.getDateOfExpense();
 		this.createdBy = expense.getAccount() != null ? expense.getAccount().getUsername() : null;
 		this.createdById = expense.getAccount() != null ? expense.getAccount().getId() : null;
-		this.ledgerIds = expense.getLedgers() != null ? expense.getLedgers().stream().map(Ledger::getId).toList()
+		this.ledgerEntryIds = expense.getLedgers() != null ? expense.getLedgers().stream().map(LedgerEntry::getId).toList()
 				: Collections.emptyList();
 	}
 }

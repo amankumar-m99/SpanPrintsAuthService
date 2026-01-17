@@ -39,6 +39,6 @@ public class Expense extends AuditableBaseEntity {
 
 	@OneToMany(mappedBy = "expense", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
-	private List<Ledger> ledgers;
+	private List<LedgerEntry> ledgers;
 
 }

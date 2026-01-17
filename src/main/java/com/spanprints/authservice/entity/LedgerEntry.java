@@ -22,12 +22,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class Ledger extends AuditableBaseEntity {
+public class LedgerEntry extends AuditableBaseEntity {
 	private BigDecimal amount;
 	private TransactionType transactionType;
 	private TransactionDomain transactionDomain;
 	private Instant transactionDateTime;
-	private String description;
 
 	@ManyToOne
 	@JoinColumn(name = "printjob_id", referencedColumnName = "id")

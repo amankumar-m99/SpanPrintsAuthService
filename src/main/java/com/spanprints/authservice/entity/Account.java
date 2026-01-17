@@ -71,7 +71,7 @@ public class Account extends AuditableBaseEntity implements UserDetails {
 
 	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
-	private List<Ledger> ledger;
+	private List<LedgerEntry> ledgerEntry;
 
 	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore

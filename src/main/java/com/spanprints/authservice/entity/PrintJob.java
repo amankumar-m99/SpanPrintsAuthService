@@ -62,7 +62,7 @@ public class PrintJob extends AuditableBaseEntity {
 
 	@OneToMany(mappedBy = "printJob", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
-	private List<Ledger> ledgers;
+	private List<LedgerEntry> ledgerEntry;
 
 	@ManyToOne
 	@JoinColumn(name = "customer_id", referencedColumnName = "id")

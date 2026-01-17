@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.spanprints.authservice.dto.EntityResponseDto;
 import com.spanprints.authservice.entity.FileAttachment;
-import com.spanprints.authservice.entity.Ledger;
+import com.spanprints.authservice.entity.LedgerEntry;
 import com.spanprints.authservice.entity.PrintJob;
 import com.spanprints.authservice.enums.PaymentStatus;
 
@@ -67,7 +67,7 @@ public class PrintJobResponse extends EntityResponseDto {
 		this.attachmentIds = printJob.getAttachments() != null
 				? printJob.getAttachments().stream().map(FileAttachment::getId).toList()
 				: Collections.emptyList();
-		this.ledgerIds = printJob.getLedgers() != null ? printJob.getLedgers().stream().map(Ledger::getId).toList()
+		this.ledgerIds = printJob.getLedgerEntry() != null ? printJob.getLedgerEntry().stream().map(LedgerEntry::getId).toList()
 				: Collections.emptyList();
 		if (printJob.getCustomer() != null) {
 			this.customerId = printJob.getCustomer().getId();
