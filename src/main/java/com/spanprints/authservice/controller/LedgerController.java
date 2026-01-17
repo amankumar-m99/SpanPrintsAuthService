@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.dto.ledger.LedgerEntryResponse;
-import com.spanprints.authservice.service.LedgerService;
+import com.spanprints.authservice.service.LedgerEntryService;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -25,36 +25,37 @@ import jakarta.validation.constraints.Positive;
 public class LedgerController {
 
 	@Autowired
-	private LedgerService ledgerService;
+	private LedgerEntryService ledgerEntryService;
 
 	@GetMapping("/{transactionId}")
 	public ResponseEntity<LedgerEntryResponse> getTransaction(
 			@PathVariable("transactionId") @NotNull @Positive @Min(1) Long id) {
-		LedgerEntryResponse ledgerEntryResponse = new LedgerEntryResponse(ledgerService.getLedgerById(id));
+		LedgerEntryResponse ledgerEntryResponse = new LedgerEntryResponse(ledgerEntryService.getLedgerEntryById(id));
 		return new ResponseEntity<>(ledgerEntryResponse, HttpStatus.OK);
 	}
 
 	@GetMapping
 	public ResponseEntity<List<LedgerEntryResponse>> getAllTransactions() {
-		List<LedgerEntryResponse> list = ledgerService.getAllTransactionsDto().stream().map(LedgerEntryResponse::new).toList();
+		List<LedgerEntryResponse> list = ledgerEntryService.getAllLedgerEntry().stream().map(LedgerEntryResponse::new)
+				.toList();
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 
 	@PutMapping
 	public ResponseEntity<String> updateLedger() {
-		return ledgerService.updateTransaction();
+		return ledgerEntryService.updateTransaction();
 	}
 
 	@DeleteMapping("/{transactionId}")
 	public ResponseEntity<SuccessResponseDto> deleteRole(
 			@PathVariable("transactionId") @NotNull @Positive @Min(1) Long id) {
-		SuccessResponseDto responseDto = ledgerService.deleteTransactionById(id);
+		SuccessResponseDto responseDto = ledgerEntryService.deleteLedgerEntryById(id);
 		return new ResponseEntity<>(responseDto, responseDto.getStatus());
 	}
 
 	@DeleteMapping
 	public ResponseEntity<SuccessResponseDto> deleteAllRoles() {
-		SuccessResponseDto responseDto = ledgerService.deleteAllTransactions();
+		SuccessResponseDto responseDto = ledgerEntryService.deleteAllLedgerEntry();
 		return new ResponseEntity<>(responseDto, responseDto.getStatus());
 	}
 }

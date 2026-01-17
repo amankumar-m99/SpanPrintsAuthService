@@ -19,7 +19,7 @@ import com.spanprints.authservice.entity.Customer;
 import com.spanprints.authservice.entity.PrintJob;
 import com.spanprints.authservice.entity.PrintJobType;
 import com.spanprints.authservice.service.CustomerService;
-import com.spanprints.authservice.service.LedgerService;
+import com.spanprints.authservice.service.LedgerEntryService;
 import com.spanprints.authservice.service.PrintJobService;
 import com.spanprints.authservice.service.PrintJobTypeService;
 import com.spanprints.authservice.util.SecurityUtils;
@@ -35,7 +35,7 @@ public class PrintJobController {
 	@Autowired
 	private PrintJobTypeService printJobTypeService;
 	@Autowired
-	private LedgerService ledgerService;
+	private LedgerEntryService ledgerEntryService;
 	@Autowired
 	private SecurityUtils securityUtils;
 	@Autowired
@@ -48,7 +48,7 @@ public class PrintJobController {
 		Customer customer = customerService.getCustomerById(request.getCustomerId());
 		PrintJobType printJobType = printJobTypeService.getPrintJobTypeById(request.getPrintJobTypeId());
 		PrintJob printJob = printJobService.createPrintJob(request, printJobType, account, customer);
-		ledgerService.addTransaction(printJob);
+		ledgerEntryService.createLedgerEntry(printJob);
 		return printJob;
 	}
 

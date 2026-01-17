@@ -17,7 +17,7 @@ import com.spanprints.authservice.dto.expense.UpdateExpenseRequest;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.Expense;
 import com.spanprints.authservice.service.ExpenseService;
-import com.spanprints.authservice.service.LedgerService;
+import com.spanprints.authservice.service.LedgerEntryService;
 import com.spanprints.authservice.util.SecurityUtils;
 
 import jakarta.transaction.Transactional;
@@ -33,7 +33,7 @@ public class ExpenseController {
 	@Autowired
 	private ExpenseService expenseService;
 	@Autowired
-	private LedgerService ledgerService;
+	private LedgerEntryService ledgerEntryService;
 
 	private SecurityUtils securityUtils;
 
@@ -42,7 +42,7 @@ public class ExpenseController {
 	public ExpenseResponse createExpense(@Valid @RequestBody CreateExpenseRequest request) {
 		Account account = securityUtils.getRequestingAccount();
 		Expense expense = expenseService.createExpense(request, account);
-		ledgerService.addTransaction(expense);
+		ledgerEntryService.createLedgerEntry(expense);
 		return new ExpenseResponse(expense);
 	}
 
@@ -66,7 +66,7 @@ public class ExpenseController {
 	public ExpenseResponse updateExpenseById(@PathVariable @NotNull @Positive @Min(1) Long id,
 			@Valid @RequestBody UpdateExpenseRequest request) {
 		Expense expense = expenseService.updateExpenseById(id, request);
-		ledgerService.addTransaction(expense);
+		ledgerEntryService.createLedgerEntry(expense);
 		return new ExpenseResponse(expense);
 	}
 
@@ -74,7 +74,7 @@ public class ExpenseController {
 	public ExpenseResponse updateExpenseByUuid(@PathVariable @NotNull String uuid,
 			@Valid @RequestBody UpdateExpenseRequest request) {
 		Expense expense = expenseService.updateExpenseByUuid(uuid, request);
-		ledgerService.addTransaction(expense);
+		ledgerEntryService.createLedgerEntry(expense);
 		return new ExpenseResponse(expense);
 	}
 }
