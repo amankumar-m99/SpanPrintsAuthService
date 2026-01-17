@@ -46,7 +46,7 @@ public class PrintJobController {
 			@RequestParam(name = "attachments", required = false) List<MultipartFile> attachments) {
 		Account account = securityUtils.getRequestingAccount();
 		Customer customer = customerService.getCustomerById(request.getCustomerId());
-		PrintJobType printJobType = printJobTypeService.getPrintJobTypeById(request.getPrintJobId());
+		PrintJobType printJobType = printJobTypeService.getPrintJobTypeById(request.getPrintJobTypeId());
 		PrintJob printJob = printJobService.createPrintJob(request, printJobType, account, customer);
 		ledgerService.addTransaction(printJob);
 		return printJob;

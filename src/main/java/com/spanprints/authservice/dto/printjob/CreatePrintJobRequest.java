@@ -25,7 +25,7 @@ public class CreatePrintJobRequest {
 	private Long customerId;
 
 	@NotNull(message = "Print job type cannot be empty")
-	private Long printJobId;
+	private Long printJobTypeId;
 
 	@NotNull(message = "Count cannot be empty")
 	private int count;
