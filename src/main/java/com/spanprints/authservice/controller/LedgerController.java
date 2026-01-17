@@ -28,33 +28,33 @@ public class LedgerController {
 	private LedgerEntryService ledgerEntryService;
 
 	@GetMapping("/{transactionId}")
-	public ResponseEntity<LedgerEntryResponse> getTransaction(
+	public ResponseEntity<LedgerEntryResponse> getLedgerEntryById(
 			@PathVariable("transactionId") @NotNull @Positive @Min(1) Long id) {
 		LedgerEntryResponse ledgerEntryResponse = new LedgerEntryResponse(ledgerEntryService.getLedgerEntryById(id));
 		return new ResponseEntity<>(ledgerEntryResponse, HttpStatus.OK);
 	}
 
 	@GetMapping
-	public ResponseEntity<List<LedgerEntryResponse>> getAllTransactions() {
+	public ResponseEntity<List<LedgerEntryResponse>> getAllLedgerEntry() {
 		List<LedgerEntryResponse> list = ledgerEntryService.getAllLedgerEntry().stream().map(LedgerEntryResponse::new)
 				.toList();
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 
 	@PutMapping
-	public ResponseEntity<String> updateLedger() {
+	public ResponseEntity<String> updateLedgerEntry() {
 		return ledgerEntryService.updateTransaction();
 	}
 
 	@DeleteMapping("/{transactionId}")
-	public ResponseEntity<SuccessResponseDto> deleteRole(
+	public ResponseEntity<SuccessResponseDto> deleteLedgerEntryById(
 			@PathVariable("transactionId") @NotNull @Positive @Min(1) Long id) {
 		SuccessResponseDto responseDto = ledgerEntryService.deleteLedgerEntryById(id);
 		return new ResponseEntity<>(responseDto, responseDto.getStatus());
 	}
 
 	@DeleteMapping
-	public ResponseEntity<SuccessResponseDto> deleteAllRoles() {
+	public ResponseEntity<SuccessResponseDto> deleteAllLedgerEntry() {
 		SuccessResponseDto responseDto = ledgerEntryService.deleteAllLedgerEntry();
 		return new ResponseEntity<>(responseDto, responseDto.getStatus());
 	}

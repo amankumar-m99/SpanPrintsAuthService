@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.time.Instant;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.spanprints.authservice.enums.TransactionDomain;
-import com.spanprints.authservice.enums.TransactionType;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -24,8 +22,8 @@ import lombok.Setter;
 @Builder
 public class LedgerEntry extends AuditableBaseEntity {
 	private BigDecimal amount;
-	private TransactionType transactionType;
-	private TransactionDomain transactionDomain;
+	private LedgerType ledgerType;
+	private LedgerSource ledgerSource;
 	private Instant transactionDateTime;
 
 	@ManyToOne

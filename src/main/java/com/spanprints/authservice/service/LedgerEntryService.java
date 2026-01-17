@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.entity.Expense;
 import com.spanprints.authservice.entity.LedgerEntry;
+import com.spanprints.authservice.entity.LedgerSource;
+import com.spanprints.authservice.entity.LedgerType;
 import com.spanprints.authservice.entity.PrintJob;
-import com.spanprints.authservice.enums.TransactionDomain;
-import com.spanprints.authservice.enums.TransactionType;
 import com.spanprints.authservice.exception.ledger.TransactionNotFoundException;
 import com.spanprints.authservice.repository.LedgerEntryRepository;
 
@@ -24,18 +24,16 @@ public class LedgerEntryService {
 	private LedgerEntryRepository ledgerEntryRepository;
 
 	public LedgerEntry createLedgerEntry(Expense expense) {
-		LedgerEntry ledgerEntry = LedgerEntry.builder().amount(expense.getAmount())
-				.transactionType(TransactionType.DEBIT).transactionDomain(TransactionDomain.EXPENSE)
-				.transactionDateTime(expense.getDateOfExpense()).printJob(null).expense(expense)
-				.account(expense.getAccount()).build();
+		LedgerEntry ledgerEntry = LedgerEntry.builder().amount(expense.getAmount()).ledgerType(LedgerType.DEBIT)
+				.ledgerSource(LedgerSource.PURCHASE).transactionDateTime(expense.getDateOfExpense()).printJob(null)
+				.expense(expense).account(expense.getAccount()).build();
 		return ledgerEntryRepository.save(ledgerEntry);
 	}
 
 	public LedgerEntry createLedgerEntry(PrintJob printJob) {
-		LedgerEntry ledgerEntry = LedgerEntry.builder().amount(printJob.getTotalAmount())
-				.transactionType(TransactionType.CREDIT).transactionDomain(TransactionDomain.PRINT_JOB)
-				.transactionDateTime(Instant.now()).printJob(printJob).expense(null).account(printJob.getAccount())
-				.build();
+		LedgerEntry ledgerEntry = LedgerEntry.builder().amount(printJob.getTotalAmount()).ledgerType(LedgerType.CREDIT)
+				.ledgerSource(LedgerSource.ORDER).transactionDateTime(Instant.now()).printJob(printJob).expense(null)
+				.account(printJob.getAccount()).build();
 		return ledgerEntryRepository.save(ledgerEntry);
 	}
 
