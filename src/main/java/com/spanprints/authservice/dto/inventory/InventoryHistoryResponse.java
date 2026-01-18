@@ -25,7 +25,7 @@ public class InventoryHistoryResponse extends EntityResponseDto {
 	protected InventoryHistoryResponse(InventoryHistory inventoryHistory) {
 		super(inventoryHistory);
 		this.rate = inventoryHistory.getRate();
-		this.amountPaid = inventoryHistory.getAmountPaid();
+		this.amountPaid = inventoryHistory.getAmount();
 		this.quantity = inventoryHistory.getQuantity();
 		this.inventoryItemId = inventoryHistory.getInventoryItem() != null ? inventoryHistory.getInventoryItem().getId()
 				: null;

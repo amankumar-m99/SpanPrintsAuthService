@@ -32,7 +32,7 @@ public class InventoryHistory extends AuditableBaseEntity {
 	private InventoryItem inventoryItem;
 
 	private BigDecimal rate;
-	private BigDecimal amountPaid;
+	private BigDecimal amount;
 
 	@Enumerated(EnumType.STRING)
 	private InventoryAction action;

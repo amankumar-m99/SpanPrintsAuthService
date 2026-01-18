@@ -1,5 +1,7 @@
 package com.spanprints.authservice.dto.inventory;
 
+import java.math.BigDecimal;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,6 +16,8 @@ public class CreateInventoryItemRequest {
 
 	@NotNull(message = "Item name is required")
 	private String name;
-	private Double rate;
 	private String description;
+	private BigDecimal rate;
+	private Long count;
+	private Boolean addToLedger;
 }

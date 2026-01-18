@@ -25,6 +25,7 @@ public class LedgerEntry extends AuditableBaseEntity {
 	private LedgerType ledgerType;
 	private LedgerSource ledgerSource;
 	private Instant transactionDateTime;
+	private String description;
 
 	@ManyToOne
 	@JoinColumn(name = "printjob_id", referencedColumnName = "id")
