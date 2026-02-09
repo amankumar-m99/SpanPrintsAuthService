@@ -88,8 +88,7 @@ public class CustomerController {
 	}
 
 	@DeleteMapping("/id/{id}")
-	public ResponseEntity<SuccessResponseDto> deleteCustomerById(
-			@PathVariable("customerId") @NotNull @Positive @Min(1) Long id) {
+	public ResponseEntity<SuccessResponseDto> deleteCustomerById(@PathVariable @NotNull @Positive @Min(1) Long id) {
 		SuccessResponseDto responseDto = customerService.deleteCustomerById(id);
 		return new ResponseEntity<>(responseDto, responseDto.getStatus());
 	}

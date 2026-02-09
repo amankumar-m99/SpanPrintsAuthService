@@ -15,7 +15,7 @@ public class AddToInventoryRequest {
 
 	private Long vendorId;
 	private Long itemId;
-	private Long count;
+	private Long quantity;
 	private Double rate;
 	private BigDecimal amountPaid;
 

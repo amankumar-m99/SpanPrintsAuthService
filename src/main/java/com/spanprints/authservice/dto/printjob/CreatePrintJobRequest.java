@@ -27,8 +27,8 @@ public class CreatePrintJobRequest {
 	@NotNull(message = "Print job type cannot be empty")
 	private Long printJobTypeId;
 
-	@NotNull(message = "Count cannot be empty")
-	private int count;
+	@NotNull(message = "Quantity cannot be empty")
+	private int quantity;
 
 	@NotNull(message = "Date of delivery cannot be empty")
 	private LocalDate dateOfDelivery;

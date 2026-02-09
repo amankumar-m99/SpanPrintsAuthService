@@ -37,7 +37,7 @@ public class PrintJobService {
 
 	public PrintJob convertToPrintJobFromDto(CreatePrintJobRequest request, PrintJobType jobType, Account account,
 			Customer customer) {
-		return PrintJob.builder().customer(customer).account(account).jobType(jobType).count(request.getCount())
+		return PrintJob.builder().customer(customer).account(account).jobType(jobType).quantity(request.getQuantity())
 				.dateOfDelivery(BasicUtils.convertLocalDateToInstant(request.getDateOfDelivery()))
 				.totalAmount(request.getTotalAmount()).depositAmount(request.getDepositAmount()).note(request.getNote())
 				.bookNumber(BasicUtils.parserStringToInteger(request.getBookNumber()))

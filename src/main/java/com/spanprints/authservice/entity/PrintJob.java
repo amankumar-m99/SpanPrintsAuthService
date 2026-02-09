@@ -28,7 +28,7 @@ import lombok.Setter;
 @Builder
 public class PrintJob extends AuditableBaseEntity {
 
-	private Integer count;
+	private Integer quantity;
 	private Integer bookNumber;
 	private Integer wBookNumber;
 	private Instant dateOfDelivery;

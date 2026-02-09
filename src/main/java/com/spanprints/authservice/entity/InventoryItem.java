@@ -22,10 +22,11 @@ import lombok.Setter;
 @Setter
 @Builder
 public class InventoryItem extends AuditableBaseEntity {
+	private String code;
 	private String name;
 	private String description;
 	private BigDecimal rate;
-	private Long availableCount;
+	private Long quantity;
 
 	@OneToMany(mappedBy = "inventoryItem", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore

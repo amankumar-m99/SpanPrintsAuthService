@@ -16,7 +16,7 @@ import lombok.Getter;
 @Getter
 public class PrintJobResponse extends EntityResponseDto {
 
-	private Integer count;
+	private Integer quantity;
 	private Integer bookNumber;
 	private Integer wBookNumber;
 	private Instant dateOfDelivery;
@@ -45,7 +45,7 @@ public class PrintJobResponse extends EntityResponseDto {
 
 	public PrintJobResponse(PrintJob printJob) {
 		super(printJob);
-		this.count = printJob.getCount();
+		this.quantity = printJob.getQuantity();
 		this.bookNumber = printJob.getBookNumber();
 		this.wBookNumber = printJob.getWBookNumber();
 		this.dateOfDelivery = printJob.getDateOfDelivery();
@@ -67,7 +67,8 @@ public class PrintJobResponse extends EntityResponseDto {
 		this.attachmentIds = printJob.getAttachments() != null
 				? printJob.getAttachments().stream().map(FileAttachment::getId).toList()
 				: Collections.emptyList();
-		this.ledgerIds = printJob.getLedgerEntry() != null ? printJob.getLedgerEntry().stream().map(LedgerEntry::getId).toList()
+		this.ledgerIds = printJob.getLedgerEntry() != null
+				? printJob.getLedgerEntry().stream().map(LedgerEntry::getId).toList()
 				: Collections.emptyList();
 		if (printJob.getCustomer() != null) {
 			this.customerId = printJob.getCustomer().getId();

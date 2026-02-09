@@ -12,6 +12,6 @@ import lombok.Setter;
 public class RemoveFromInventoryRequest {
 
 	private Long itemId;
-	private Long count;
+	private Long quantity;
 
 }
