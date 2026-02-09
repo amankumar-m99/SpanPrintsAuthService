@@ -17,7 +17,7 @@ import com.spanprints.authservice.entity.LedgerEntry;
 import com.spanprints.authservice.entity.LedgerSource;
 import com.spanprints.authservice.entity.LedgerType;
 import com.spanprints.authservice.enums.InventoryAction;
-import com.spanprints.authservice.exception.inventory.ItemNotFoundException;
+import com.spanprints.authservice.exception.inventory.InventoryItemNotFoundException;
 import com.spanprints.authservice.repository.InventoryHistoryRepository;
 import com.spanprints.authservice.repository.InventoryItemRepository;
 import com.spanprints.authservice.repository.LedgerEntryRepository;
@@ -59,11 +59,12 @@ public class InventoryItemService {
 	}
 
 	public InventoryItem getInventoryItemById(Long id) {
-		return inventoryItemRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("id", id));
+		return inventoryItemRepository.findById(id).orElseThrow(() -> new InventoryItemNotFoundException("id", id));
 	}
 
 	public InventoryItem getInventoryItemByUuid(String uuid) {
-		return inventoryItemRepository.findByUuid(uuid).orElseThrow(() -> new ItemNotFoundException("uuid", uuid));
+		return inventoryItemRepository.findByUuid(uuid)
+				.orElseThrow(() -> new InventoryItemNotFoundException("uuid", uuid));
 	}
 
 	public List<InventoryItem> getAllInventoryItems() {
