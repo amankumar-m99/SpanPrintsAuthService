@@ -46,15 +46,16 @@ public class InventoryItemService {
 		InventoryItem item = InventoryItem.builder().code(request.getCode()).name(request.getName())
 				.description(request.getDescription()).rate(request.getRate()).quantity(request.getQuantity()).build();
 		BigDecimal amount = item.getRate().multiply(new BigDecimal(request.getQuantity()));
-		if (request.getAddToLedger().equals(true)) {
-			LedgerEntry ledgerEntry = LedgerEntry.builder().account(account).amount(amount).ledgerType(LedgerType.DEBIT)
-					.ledgerSource(LedgerSource.PURCHASE).transactionDateTime(Instant.now()).build();
-			ledgerEntryRepository.save(ledgerEntry);
-		}
 		item = inventoryItemRepository.save(item);
 		InventoryHistory history = InventoryHistory.builder().inventoryItem(item).rate(item.getRate()).amount(amount)
 				.action(InventoryAction.PURCHASE).build();
 		inventoryHistoryRepository.save(history);
+		if (request.getAddToLedger().equals(true)) {
+			LedgerEntry ledgerEntry = LedgerEntry.builder().account(account).amount(amount).ledgerType(LedgerType.DEBIT)
+					.description("Purchase inventory-item id " + item.getId()).ledgerSource(LedgerSource.PURCHASE)
+					.transactionDateTime(Instant.now()).build();
+			ledgerEntryRepository.save(ledgerEntry);
+		}
 		return item;
 	}
 

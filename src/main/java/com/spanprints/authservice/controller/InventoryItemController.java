@@ -42,9 +42,7 @@ public class InventoryItemController {
 
 	@GetMapping
 	public List<InventoryItemResponse> getAllInventoryItems() {
-		List<InventoryItemResponse> list = inventoryItemService.getAllInventoryItems().stream()
-				.map(InventoryItemResponse::new).toList();
-		return list;
+		return inventoryItemService.getAllInventoryItems().stream().map(InventoryItemResponse::new).toList();
 	}
 
 	@DeleteMapping
