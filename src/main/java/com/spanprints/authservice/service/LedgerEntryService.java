@@ -31,7 +31,7 @@ public class LedgerEntryService {
 	}
 
 	public LedgerEntry createLedgerEntry(PrintJob printJob) {
-		LedgerEntry ledgerEntry = LedgerEntry.builder().amount(printJob.getTotalAmount()).ledgerType(LedgerType.CREDIT)
+		LedgerEntry ledgerEntry = LedgerEntry.builder().amount(printJob.getDepositAmount()).ledgerType(LedgerType.CREDIT)
 				.ledgerSource(LedgerSource.ORDER).transactionDateTime(Instant.now()).printJob(printJob).expense(null)
 				.account(printJob.getAccount()).build();
 		return ledgerEntryRepository.save(ledgerEntry);

@@ -9,6 +9,7 @@ import com.spanprints.authservice.entity.FileAttachment;
 import com.spanprints.authservice.entity.LedgerEntry;
 import com.spanprints.authservice.entity.PrintJob;
 import com.spanprints.authservice.enums.PaymentStatus;
+import com.spanprints.authservice.enums.PrintJobStatus;
 
 import io.jsonwebtoken.lang.Collections;
 import lombok.Getter;
@@ -20,6 +21,7 @@ public class PrintJobResponse extends EntityResponseDto {
 	private Integer bookNumber;
 	private Integer wBookNumber;
 	private Instant dateOfDelivery;
+	private PrintJobStatus printJobStatus;
 
 	private BigDecimal totalAmount;
 	private BigDecimal discountedAmount;
@@ -40,7 +42,8 @@ public class PrintJobResponse extends EntityResponseDto {
 	private List<Long> ledgerIds;
 	private Long customerId;
 	private String customerName;
-	private String customerPhone;
+	private String customerPrimaryPhone;
+	private String customerAlternatePhone;
 	private String customerAddress;
 
 	public PrintJobResponse(PrintJob printJob) {
@@ -49,6 +52,7 @@ public class PrintJobResponse extends EntityResponseDto {
 		this.bookNumber = printJob.getBookNumber();
 		this.wBookNumber = printJob.getWBookNumber();
 		this.dateOfDelivery = printJob.getDateOfDelivery();
+		this.printJobStatus = printJob.getPrintJobStatus();
 		this.totalAmount = printJob.getTotalAmount();
 		this.discountedAmount = printJob.getDiscountedAmount();
 		this.depositAmount = printJob.getDepositAmount();
@@ -73,6 +77,8 @@ public class PrintJobResponse extends EntityResponseDto {
 		if (printJob.getCustomer() != null) {
 			this.customerId = printJob.getCustomer().getId();
 			this.customerName = printJob.getCustomer().getName();
+			this.customerPrimaryPhone = printJob.getCustomer().getPrimaryPhoneNumber();
+			this.customerAlternatePhone = printJob.getCustomer().getAlternatePhoneNumber();
 			this.customerAddress = printJob.getCustomer().getAddress();
 		}
 	}

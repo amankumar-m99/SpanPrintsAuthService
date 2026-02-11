@@ -10,6 +10,7 @@ import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.Customer;
 import com.spanprints.authservice.entity.PrintJob;
 import com.spanprints.authservice.entity.PrintJobType;
+import com.spanprints.authservice.enums.PrintJobStatus;
 import com.spanprints.authservice.exception.printjob.PrintJobNotFoundException;
 import com.spanprints.authservice.repository.PrintJobRepository;
 import com.spanprints.authservice.util.BasicUtils;
@@ -39,7 +40,8 @@ public class PrintJobService {
 			Customer customer) {
 		return PrintJob.builder().customer(customer).account(account).jobType(jobType).quantity(request.getQuantity())
 				.dateOfDelivery(BasicUtils.convertLocalDateToInstant(request.getDateOfDelivery()))
-				.totalAmount(request.getTotalAmount()).depositAmount(request.getDepositAmount()).note(request.getNote())
+				.printJobStatus(PrintJobStatus.PLACED).totalAmount(request.getTotalAmount())
+				.depositAmount(request.getDepositAmount()).note(request.getNote())
 				.bookNumber(BasicUtils.parserStringToInteger(request.getBookNumber()))
 				.wBookNumber(BasicUtils.parserStringToInteger(request.getWBookNumber()))
 				.description(request.getDescription()).discountedAmount(request.getDiscountedAmount())

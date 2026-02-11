@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.spanprints.authservice.enums.PaymentStatus;
+import com.spanprints.authservice.enums.PrintJobStatus;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -32,6 +33,7 @@ public class PrintJob extends AuditableBaseEntity {
 	private Integer bookNumber;
 	private Integer wBookNumber;
 	private Instant dateOfDelivery;
+	private PrintJobStatus printJobStatus;
 
 	private BigDecimal totalAmount;
 	private BigDecimal discountedAmount;
