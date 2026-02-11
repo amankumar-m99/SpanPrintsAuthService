@@ -13,6 +13,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CreatePrintJobTypeRequest {
 
+	@NotNull(message = "Job id cannot be empty")
+	@NotBlank(message = "Job id cannot be empty")
+	private String jobId;
 	@NotNull(message = "Job type name cannot be empty")
 	@NotBlank(message = "Job type name cannot be empty")
 	private String name;

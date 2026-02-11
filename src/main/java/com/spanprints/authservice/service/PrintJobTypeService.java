@@ -45,7 +45,7 @@ public class PrintJobTypeService {
 	}
 
 	public PrintJobType convertToPrintJobTypeFromDto(CreatePrintJobTypeRequest request) {
-		return PrintJobType.builder().name(BasicUtils.formatStringToTitle(request.getName()))
+		return PrintJobType.builder().jobId(request.getJobId()).name(BasicUtils.formatStringToTitle(request.getName()))
 				.description(request.getDescription()).build();
 	}
 

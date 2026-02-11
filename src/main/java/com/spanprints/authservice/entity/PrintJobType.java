@@ -22,6 +22,7 @@ import lombok.Setter;
 @Builder
 public class PrintJobType extends AuditableBaseEntity {
 
+	private String jobId;
 	private String name;
 	private String description;
 

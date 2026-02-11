@@ -32,6 +32,11 @@ public class PrintJobService {
 				.orElseThrow(() -> new PrintJobNotFoundException("No print job found by given id."));
 	}
 
+	public PrintJob getPrintJobByUuid(String uuid) {
+		return printJobRepository.findByUuid(uuid)
+				.orElseThrow(() -> new PrintJobNotFoundException("No print job found by given uuid."));
+	}
+
 	public List<PrintJob> getAllPrintJobs() {
 		return printJobRepository.findAll();
 	}
