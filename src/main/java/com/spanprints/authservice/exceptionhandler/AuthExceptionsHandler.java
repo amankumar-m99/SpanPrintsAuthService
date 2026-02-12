@@ -21,7 +21,7 @@ public class AuthExceptionsHandler {
 	@ExceptionHandler(DisabledException.class)
 	public ResponseEntity<ErrorResponseDto> handleDisabledException(DisabledException ex, HttpServletRequest request) {
 		String message = ex.getMessage();
-		ErrorResponseDto responseDto = new ErrorResponseDto(HttpStatus.UNAUTHORIZED, null, message,
+		ErrorResponseDto responseDto = new ErrorResponseDto(HttpStatus.BAD_REQUEST, null, message,
 				request.getRequestURI(), null);
 		return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
 	}
@@ -29,7 +29,7 @@ public class AuthExceptionsHandler {
 	@ExceptionHandler(LockedException.class)
 	public ResponseEntity<ErrorResponseDto> handleLockedException(LockedException ex, HttpServletRequest request) {
 		String message = ex.getMessage();
-		ErrorResponseDto responseDto = new ErrorResponseDto(HttpStatus.UNAUTHORIZED, null, message,
+		ErrorResponseDto responseDto = new ErrorResponseDto(HttpStatus.BAD_REQUEST, null, message,
 				request.getRequestURI(), null);
 		return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
 	}
@@ -38,7 +38,7 @@ public class AuthExceptionsHandler {
 	public ResponseEntity<ErrorResponseDto> handleBadCredentialsException(BadCredentialsException ex,
 			HttpServletRequest request) {
 		String message = ex.getMessage();
-		ErrorResponseDto responseDto = new ErrorResponseDto(HttpStatus.UNAUTHORIZED, null, message,
+		ErrorResponseDto responseDto = new ErrorResponseDto(HttpStatus.BAD_REQUEST, null, message,
 				request.getRequestURI(), null);
 		return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
 	}
