@@ -20,7 +20,7 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtUtils {
 
-	public static final long JWT_TOKEN_VALIDITY_SEC = 2 * 60 * 60L; // 2 hours validity
+	public static final long JWT_TOKEN_VALIDITY_SEC = 8 * 60 * 60L; // 2 hours validity
 
 	private static final String SECRET_KEY = "TaK+HaV^uvCHEFsEVfypW#7g9^k*Z8$V";
 
