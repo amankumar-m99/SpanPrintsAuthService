@@ -36,6 +36,7 @@ public class PrintJobResponse extends EntityResponseDto {
 	private Long createdById;
 
 	private Long jobTypeId;
+	private String jobId;
 	private String jobTypeName;
 
 	private List<Long> attachmentIds;
@@ -65,6 +66,7 @@ public class PrintJobResponse extends EntityResponseDto {
 			this.createdById = printJob.getAccount().getId();
 		}
 		if (printJob.getJobType() != null) {
+			this.jobId = printJob.getJobType().getJobId();
 			this.jobTypeId = printJob.getJobType().getId();
 			this.jobTypeName = printJob.getJobType().getName();
 		}
