@@ -83,8 +83,20 @@ public class ProfilePicService {
 		inputStream.close();
 	}
 
-	public ProfilePicResource getProfilePic(Account account) {
+	public ProfilePicResource getProfilePicByAccount(Account account) {
 		ProfilePic profilePic = account.getProfilePic();
+		File file = null;
+		if (profilePic != null) {
+			file = new File(profilePicsDirectory + File.separator + profilePic.getName());
+		}
+		if (file == null || !file.exists()) {
+			throw new ProfilePicNotFoundException("Profile pic not found");
+		}
+		return new ProfilePicResource(file);
+	}
+
+	public ProfilePicResource getProfilePicByUuid(String uuid) {
+		ProfilePic profilePic = profilePicRepository.findByUuid().orElse(null);
 		File file = null;
 		if (profilePic != null) {
 			file = new File(profilePicsDirectory + File.separator + profilePic.getName());

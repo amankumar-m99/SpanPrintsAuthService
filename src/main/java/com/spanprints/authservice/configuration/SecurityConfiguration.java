@@ -51,7 +51,7 @@ public class SecurityConfiguration {
 //				.requestMatchers("/auth/verify").permitAll()
 				.requestMatchers("/role/**").permitAll()
 				.requestMatchers("/roles").permitAll()
-				.requestMatchers(HttpMethod.GET, "/profile-pic/**").permitAll()
+				.requestMatchers(HttpMethod.GET, "/profile-pics/**").permitAll()
 				.requestMatchers("/admin-context").hasRole("ADMIN").anyRequest()
 				.authenticated() // /person/** is
 								// authenticated

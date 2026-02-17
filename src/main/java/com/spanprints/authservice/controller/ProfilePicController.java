@@ -39,9 +39,16 @@ public class ProfilePicController {
 	private AccountService accountService;
 
 	@GetMapping(value = "/id/{id}", produces = { MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE })
-	public void getUserProfilePic(@PathVariable("id") String uuid, HttpServletResponse response) throws IOException {
+	public void getUserProfilePicByAccountId(@PathVariable("id") String uuid, HttpServletResponse response) throws IOException {
 		Account account = accountService.getAccountByUuid(uuid);
-		ProfilePicResource resource = this.profilePicService.getProfilePic(account);
+		ProfilePicResource resource = this.profilePicService.getProfilePicByAccount(account);
+		response.setContentType(resource.getContentType());
+		StreamUtils.copy(resource.getFileInputStream(), response.getOutputStream());
+	}
+
+	@GetMapping(value = "/uuid/{uuid}", produces = { MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE })
+	public void getUserProfilePicByUuid(@PathVariable String uuid, HttpServletResponse response) throws IOException {
+		ProfilePicResource resource = this.profilePicService.getProfilePicByUuid(uuid);
 		response.setContentType(resource.getContentType());
 		StreamUtils.copy(resource.getFileInputStream(), response.getOutputStream());
 	}
