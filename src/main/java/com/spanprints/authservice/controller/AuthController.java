@@ -140,7 +140,7 @@ public class AuthController {
 	}
 
 	@PostMapping("/verify-token/{token}")
-	public ResponseEntity<Boolean> verifyToken(@PathVariable String token) {
+	public ResponseEntity<Boolean> verifyTokenBefore(@PathVariable String token) {
 		resetPasswordTokenService.verifyTokenBefore(token);
 		return new ResponseEntity<>(true, HttpStatus.OK);
 	}
