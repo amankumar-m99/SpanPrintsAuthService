@@ -9,5 +9,5 @@ import com.spanprints.authservice.entity.ProfilePic;
 
 @Repository
 public interface ProfilePicRepository extends JpaRepository<ProfilePic, Long> {
-	Optional<ProfilePic> findByUuid();
+	Optional<ProfilePic> findByUuid(String uuid);
 }

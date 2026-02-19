@@ -96,7 +96,7 @@ public class ProfilePicService {
 	}
 
 	public ProfilePicResource getProfilePicByUuid(String uuid) {
-		ProfilePic profilePic = profilePicRepository.findByUuid().orElse(null);
+		ProfilePic profilePic = profilePicRepository.findByUuid(uuid).orElse(null);
 		File file = null;
 		if (profilePic != null) {
 			file = new File(profilePicsDirectory + File.separator + profilePic.getName());

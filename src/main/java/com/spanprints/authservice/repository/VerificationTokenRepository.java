@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.spanprints.authservice.entity.VerificationToken;
 
 @Repository
-public interface AccountVerificationRepository extends JpaRepository<VerificationToken, Long>{
+public interface VerificationTokenRepository extends JpaRepository<VerificationToken, Long>{
 
 	public Optional<VerificationToken> findByToken(String token);
 

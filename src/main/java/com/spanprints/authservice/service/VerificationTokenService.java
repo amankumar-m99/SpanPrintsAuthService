@@ -15,16 +15,22 @@ import com.spanprints.authservice.entity.VerificationToken;
 import com.spanprints.authservice.exception.verificationtoken.VerificationTokenAlreadyUsedException;
 import com.spanprints.authservice.exception.verificationtoken.VerificationTokenExpiredException;
 import com.spanprints.authservice.exception.verificationtoken.VerificationTokenNotFoundException;
-import com.spanprints.authservice.repository.AccountVerificationRepository;
+import com.spanprints.authservice.repository.VerificationTokenRepository;
 
 @Service
 public class VerificationTokenService {
 
 	@Autowired
-	private AccountVerificationRepository accountVerificationRepository;
+	private VerificationTokenRepository verificationTokenRepository;
+
+	LocalDateTime expiry;
+
+	public VerificationTokenService() {
+		this.expiry = LocalDateTime.now().plusDays(1);
+	}
 
 	public List<VerificationToken> getAllTokens() {
-		return accountVerificationRepository.findAll();
+		return verificationTokenRepository.findAll();
 	}
 
 	public VerificationTokenResponse getTokenResponseForAccount(Account account) {
@@ -34,26 +40,25 @@ public class VerificationTokenService {
 
 	public VerificationToken addTokenForAccount(Account account) {
 		String uuidToken = UUID.randomUUID().toString();
-		LocalDateTime expiry = LocalDateTime.now().plusDays(1);
 		VerificationToken token = new VerificationToken(uuidToken, expiry, false, account);
-		return accountVerificationRepository.save(token);
+		return verificationTokenRepository.save(token);
 	}
 
 	public VerificationToken getTokenById(Long id) {
-		return accountVerificationRepository.findById(id).orElse(null);
+		return verificationTokenRepository.findById(id).orElse(null);
 	}
 
 	public void deleteToken(VerificationToken token) {
-		accountVerificationRepository.delete(token);
+		verificationTokenRepository.delete(token);
 	}
 
 	public SuccessResponseDto deleteTokenById(Long id) {
-		accountVerificationRepository.delete(getTokenById(id));
+		verificationTokenRepository.delete(getTokenById(id));
 		return new SuccessResponseDto(HttpStatus.OK, String.format("Deleted token by id `%d`", id));
 	}
 
 	public Account verifyToken(String token) {
-		return accountVerificationRepository.findByToken(token).map(verificationToken -> {
+		return verificationTokenRepository.findByToken(token).map(verificationToken -> {
 			if (verificationToken.getIsUsed().equals(true)) {
 				throw new VerificationTokenAlreadyUsedException("Verification token has already been used.");
 			}
@@ -61,10 +66,9 @@ public class VerificationTokenService {
 				throw new VerificationTokenExpiredException("Verification token is expired.");
 			}
 			verificationToken.setIsUsed(true);
-			accountVerificationRepository.save(verificationToken);
+			verificationTokenRepository.save(verificationToken);
 			return verificationToken.getAccount();
-		}).orElseThrow(
-				() -> new VerificationTokenNotFoundException(String.format("No token found as `%s`", token)));
+		}).orElseThrow(() -> new VerificationTokenNotFoundException(String.format("No token found as `%s`", token)));
 	}
 
 }

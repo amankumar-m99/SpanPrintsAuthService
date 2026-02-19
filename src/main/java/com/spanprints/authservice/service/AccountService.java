@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.dto.VerificationTokenResponse;
 import com.spanprints.authservice.dto.account.CreateAccountRequest;
+import com.spanprints.authservice.dto.password.ResetPasswordRequest;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.Role;
 import com.spanprints.authservice.event.AccountRegisteredEvent;
@@ -84,6 +85,10 @@ public class AccountService {
 		return accountRepository.save(account);
 	}
 
+	public void updatePassword(Account account, ResetPasswordRequest request) {
+		account.setPassword(passwordEncoder.encode(request.getPassword()));
+	}
+
 	private void insertRoleIntoAccount(String roleName, Account account) {
 		Optional<Role> roleOptional = roleRepository.findByRoleName(roleName.toUpperCase());
 		if (roleOptional.isPresent()) {
@@ -107,12 +112,17 @@ public class AccountService {
 
 	public Account getAccountByUuid(String uuid) {
 		return accountRepository.findByUuid(uuid).orElseThrow(
-				() -> new AccountNotFoundException(String.format("No account found with uuid `%d`", uuid)));
+				() -> new AccountNotFoundException(String.format("No account found with uuid `%s`", uuid)));
 	}
 
 	public Account getAccountByUsername(String username) {
 		return accountRepository.findByUsername(username).orElseThrow(
 				() -> new AccountNotFoundException(String.format("No account found with username `%s`", username)));
+	}
+
+	public Account getAccountByEmail(String email) {
+		return accountRepository.findByEmail(email).orElseThrow(
+				() -> new AccountNotFoundException(String.format("No account found with email `%s`", email)));
 	}
 
 	public Account getAccountByUserDetails(UserDetails userDetails) {

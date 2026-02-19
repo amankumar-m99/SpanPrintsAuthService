@@ -9,6 +9,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.spanprints.authservice.dto.VerificationTokenResponse;
+import com.spanprints.authservice.dto.password.ResetPasswordTokenResponse;
+import com.spanprints.authservice.mailtemplate.ResetPasswordLinkMailTemplate;
 import com.spanprints.authservice.mailtemplate.VerificationLinkMailTemplate;
 
 import jakarta.mail.internet.MimeMessage;
@@ -28,6 +30,9 @@ public class MailService {
 	@Value("${spanprints.verify-token-query-key}")
 	private String verifyTokenQueryKey;
 
+	@Value("${spanprints.reset-password-token-query-key}")
+	private String resetPasswordTokenQueryKey;
+
 	private JavaMailSender mailSender;
 
 	private LoadBalancerClient loadBalancerClient;
@@ -38,8 +43,7 @@ public class MailService {
 	}
 
 	@Async()
-	// Use @Async("emailExecutor") if you want a custom configuration for
-	// executer-service
+	// Use @Async("emailExecutor") if you want a custom configuration for executer-service
 	public void sendVerificationMail(String toEmailAddress, String username, String frontendBaseUrl,
 			VerificationTokenResponse tokenResponse) {
 		try {
@@ -48,7 +52,7 @@ public class MailService {
 			mimeMessageHelper.setFrom("no-reply@" + appName.toLowerCase() + ".com");
 			mimeMessageHelper.setTo(toEmailAddress);
 			mimeMessageHelper.setSubject("Verification mail for " + username);
-			String link = generateLink(frontendBaseUrl, tokenResponse.getToken());
+			String link = generateVerificationLink(frontendBaseUrl, tokenResponse.getToken());
 			String mailContenText = VerificationLinkMailTemplate.buildHtmlContent(appName, supportEmailAddress, link,
 					tokenResponse.getExpiry(), username);
 			mimeMessageHelper.setText(mailContenText, true);
@@ -58,10 +62,33 @@ public class MailService {
 
 	}
 
-	private String generateLink(String frontendBaseUrl, String token) {
+	private String generateVerificationLink(String frontendBaseUrl, String token) {
 //		ServiceInstance si = loadBalancerClient.choose(apiGatewayServiceId);
 //		return String.format("http://%s:%s/auth/verify?token=%s", si.getHost(), si.getPort(), token);
 		return String.format("%s?token=%s", frontendBaseUrl + verifyTokenQueryKey, token);
+	}
+
+	@Async()
+	public void sendResetPasswordMail(String toEmailAddress, String username, String frontendBaseUrl,
+			ResetPasswordTokenResponse tokenResponse) {
+		try {
+			MimeMessage mimeMessage = mailSender.createMimeMessage();
+			MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false);
+			mimeMessageHelper.setFrom("no-reply@" + appName.toLowerCase() + ".com");
+			mimeMessageHelper.setTo(toEmailAddress);
+			mimeMessageHelper.setSubject("Reset your "+ appName +" password");
+			String link = generateResetPasswordLink(frontendBaseUrl, tokenResponse.getToken());
+			String mailContenText = ResetPasswordLinkMailTemplate.buildHtmlContent(appName, supportEmailAddress, link,
+					tokenResponse.getExpiry(), username);
+			mimeMessageHelper.setText(mailContenText, true);
+			mailSender.send(mimeMessage);
+		} catch (Exception e) {
+		}
+	}
+
+	private String generateResetPasswordLink(String frontendBaseUrl, String token) {
+//		ServiceInstance si = loadBalancerClient.choose(apiGatewayServiceId);
+		return String.format("%s?token=%s", frontendBaseUrl + resetPasswordTokenQueryKey, token);
 	}
 
 	public boolean send(String[] to, String subject, String text, String[] cc, String[] bcc, Resource resource) {
