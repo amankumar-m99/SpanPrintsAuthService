@@ -12,9 +12,9 @@ import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.dto.VerificationTokenResponse;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.VerificationToken;
-import com.spanprints.authservice.exception.verificationtoken.VerificationTokenAlreadyUsedException;
-import com.spanprints.authservice.exception.verificationtoken.VerificationTokenExpiredException;
-import com.spanprints.authservice.exception.verificationtoken.VerificationTokenNotFoundException;
+import com.spanprints.authservice.exception.token.TokenAlreadyUsedException;
+import com.spanprints.authservice.exception.token.TokenExpiredException;
+import com.spanprints.authservice.exception.token.TokenNotFoundException;
 import com.spanprints.authservice.repository.VerificationTokenRepository;
 
 @Service
@@ -60,15 +60,15 @@ public class VerificationTokenService {
 	public Account verifyToken(String token) {
 		return verificationTokenRepository.findByToken(token).map(verificationToken -> {
 			if (verificationToken.getIsUsed().equals(true)) {
-				throw new VerificationTokenAlreadyUsedException("Verification token has already been used.");
+				throw new TokenAlreadyUsedException("Verification token has already been used.");
 			}
 			if (verificationToken.getExpiryDate().isBefore(java.time.LocalDateTime.now())) {
-				throw new VerificationTokenExpiredException("Verification token is expired.");
+				throw new TokenExpiredException("Verification token is expired.");
 			}
 			verificationToken.setIsUsed(true);
 			verificationTokenRepository.save(verificationToken);
 			return verificationToken.getAccount();
-		}).orElseThrow(() -> new VerificationTokenNotFoundException(String.format("No token found as `%s`", token)));
+		}).orElseThrow(() -> new TokenNotFoundException(String.format("No token found as `%s`", token)));
 	}
 
 }

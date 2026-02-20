@@ -12,9 +12,9 @@ import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.dto.password.ResetPasswordTokenResponse;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.ResetPasswordToken;
-import com.spanprints.authservice.exception.verificationtoken.VerificationTokenAlreadyUsedException;
-import com.spanprints.authservice.exception.verificationtoken.VerificationTokenExpiredException;
-import com.spanprints.authservice.exception.verificationtoken.VerificationTokenNotFoundException;
+import com.spanprints.authservice.exception.token.TokenAlreadyUsedException;
+import com.spanprints.authservice.exception.token.TokenExpiredException;
+import com.spanprints.authservice.exception.token.TokenNotFoundException;
 import com.spanprints.authservice.repository.ResetPasswordTokenRepository;
 
 @Service
@@ -46,7 +46,7 @@ public class ResetPasswordTokenService {
 
 	public ResetPasswordToken getTokenById(Long id) {
 		return resetPasswordTokenRepository.findById(id).orElseThrow(
-				() -> new VerificationTokenNotFoundException(String.format("No token found by id  `%d`", id)));
+				() -> new TokenNotFoundException(String.format("No token found by id  `%d`", id)));
 	}
 
 	public void deleteToken(ResetPasswordToken token) {
@@ -61,13 +61,13 @@ public class ResetPasswordTokenService {
 	public ResetPasswordToken verifyTokenBefore(String resetPasswordToken) {
 		return resetPasswordTokenRepository.findByToken(resetPasswordToken).map(token -> {
 			if (token.getIsUsed().equals(true)) {
-				throw new VerificationTokenAlreadyUsedException("Verification token has already been used.");
+				throw new TokenAlreadyUsedException("Verification token has already been used.");
 			}
 			if (token.getExpiryDate().isBefore(java.time.LocalDateTime.now())) {
-				throw new VerificationTokenExpiredException("Verification token is expired.");
+				throw new TokenExpiredException("Verification token is expired.");
 			}
 			return token;
-		}).orElseThrow(() -> new VerificationTokenNotFoundException(
+		}).orElseThrow(() -> new TokenNotFoundException(
 				String.format("No token found as `%s`", resetPasswordToken)));
 	}
 
@@ -78,7 +78,7 @@ public class ResetPasswordTokenService {
 
 	public void markTokenAsUsed(String token) {
 		ResetPasswordToken passwordToken = resetPasswordTokenRepository.findByToken(token).orElseThrow(
-				() -> new VerificationTokenNotFoundException(String.format("No token found as `%s`", token)));
+				() -> new TokenNotFoundException(String.format("No token found as `%s`", token)));
 		markTokenAsUsed(passwordToken);
 	}
 

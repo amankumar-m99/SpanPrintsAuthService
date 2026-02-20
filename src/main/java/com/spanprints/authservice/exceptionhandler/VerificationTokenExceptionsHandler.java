@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.spanprints.authservice.dto.ErrorResponseDto;
-import com.spanprints.authservice.exception.verificationtoken.VerificationTokenAlreadyUsedException;
-import com.spanprints.authservice.exception.verificationtoken.VerificationTokenExpiredException;
-import com.spanprints.authservice.exception.verificationtoken.VerificationTokenNotFoundException;
+import com.spanprints.authservice.exception.token.TokenAlreadyUsedException;
+import com.spanprints.authservice.exception.token.TokenExpiredException;
+import com.spanprints.authservice.exception.token.TokenNotFoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -18,25 +18,25 @@ import jakarta.servlet.http.HttpServletRequest;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class VerificationTokenExceptionsHandler {
 
-	@ExceptionHandler(VerificationTokenAlreadyUsedException.class)
+	@ExceptionHandler(TokenAlreadyUsedException.class)
 	public ResponseEntity<ErrorResponseDto> handleVerificationTokenAlreadyUsedException(
-			VerificationTokenAlreadyUsedException ex, HttpServletRequest request) {
+			TokenAlreadyUsedException ex, HttpServletRequest request) {
 		ErrorResponseDto responseDto = new ErrorResponseDto(HttpStatus.BAD_REQUEST, null, ex.getMessage(),
 				request.getRequestURI());
 		return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
 	}
 
-	@ExceptionHandler(VerificationTokenExpiredException.class)
+	@ExceptionHandler(TokenExpiredException.class)
 	public ResponseEntity<ErrorResponseDto> handleVerificationTokenExpiredException(
-			VerificationTokenExpiredException ex, HttpServletRequest request) {
+			TokenExpiredException ex, HttpServletRequest request) {
 		ErrorResponseDto responseDto = new ErrorResponseDto(HttpStatus.BAD_REQUEST, null, ex.getMessage(),
 				request.getRequestURI());
 		return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
 	}
 
-	@ExceptionHandler(VerificationTokenNotFoundException.class)
+	@ExceptionHandler(TokenNotFoundException.class)
 	public ResponseEntity<ErrorResponseDto> handleVerificationTokenNotFoundException(
-			VerificationTokenNotFoundException ex, HttpServletRequest request) {
+			TokenNotFoundException ex, HttpServletRequest request) {
 		ErrorResponseDto responseDto = new ErrorResponseDto(HttpStatus.BAD_REQUEST, null, ex.getMessage(),
 				request.getRequestURI());
 		return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
