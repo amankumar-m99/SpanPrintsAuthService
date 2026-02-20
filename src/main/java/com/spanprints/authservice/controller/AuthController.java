@@ -46,19 +46,12 @@ import jakarta.validation.Valid;
 public class AuthController {
 
 	private JwtUtils jwtUtils;
-
 	private AuthenticationManager authenticationManager;
-
 	private CustomUserDetailsService userDetailsService;
-
 	private AccountService accountService;
-
 	private PersonalDetailsService personalDetailsService;
-
 	private VerificationTokenService verificationTokenService;
-
 	private ResetPasswordTokenService resetPasswordTokenService;
-
 	private MailService mailService;
 
 	public AuthController(AuthenticationManager authenticationManager, CustomUserDetailsService userDetailsService,
