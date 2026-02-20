@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.dto.VerificationTokenResponse;
 import com.spanprints.authservice.dto.account.CreateAccountRequest;
 import com.spanprints.authservice.dto.password.ResetPasswordRequest;
+import com.spanprints.authservice.dto.password.UpdatePasswordRequest;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.Role;
 import com.spanprints.authservice.event.AccountRegisteredEvent;
@@ -85,9 +87,25 @@ public class AccountService {
 		return accountRepository.save(account);
 	}
 
-	public void updatePassword(Account account, ResetPasswordRequest request) {
+	public boolean updatePassword(Account account, ResetPasswordRequest request) throws BadRequestException {
+		if (!request.getPassword().equals(request.getConfirmPassword())) {
+			throw new BadRequestException("Password and confirm password do not match.");
+		}
 		account.setPassword(passwordEncoder.encode(request.getPassword()));
 		accountRepository.save(account);
+		return true;
+	}
+
+	public boolean updatePassword(Account account, UpdatePasswordRequest request) throws BadRequestException {
+		if (!account.getPassword().equals(passwordEncoder.encode(request.getCurrentPassword()))) {
+			throw new BadRequestException("Current password is not correct.");
+		}
+		if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+			throw new BadRequestException("Password and confirm password do not match.");
+		}
+		account.setPassword(passwordEncoder.encode(request.getNewPassword()));
+		accountRepository.save(account);
+		return true;
 	}
 
 	private void insertRoleIntoAccount(String roleName, Account account) {

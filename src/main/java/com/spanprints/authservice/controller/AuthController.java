@@ -2,6 +2,7 @@ package com.spanprints.authservice.controller;
 
 import java.util.Map;
 
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -141,11 +142,12 @@ public class AuthController {
 	}
 
 	@PostMapping("/reset-password")
-	public ResponseEntity<Boolean> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+	public ResponseEntity<Boolean> resetPassword(@Valid @RequestBody ResetPasswordRequest request)
+			throws BadRequestException {
 		ResetPasswordToken token = resetPasswordTokenService.verifyTokenBefore(request.getToken());
-		accountService.updatePassword(token.getAccount(), request);
-		resetPasswordTokenService.markTokenAsUsed(token);
+		if (accountService.updatePassword(token.getAccount(), request)) {
+			resetPasswordTokenService.markTokenAsUsed(token);
+		}
 		return new ResponseEntity<>(true, HttpStatus.OK);
 	}
-
 }

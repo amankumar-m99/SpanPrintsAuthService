@@ -2,9 +2,12 @@ package com.spanprints.authservice.controller;
 
 import java.util.List;
 
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +22,8 @@ import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.dto.account.AccountResponse;
 import com.spanprints.authservice.dto.account.CreateAccountRequest;
 import com.spanprints.authservice.dto.account.UpdateAccountRequest;
+import com.spanprints.authservice.dto.password.UpdatePasswordRequest;
+import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.service.AccountService;
 
 import jakarta.validation.Valid;
@@ -71,6 +76,14 @@ public class AccountController {
 	public ResponseEntity<String> updateAccountByUuid(@PathVariable @NotNull String uuid,
 			@Valid @RequestBody UpdateAccountRequest request) {
 		return new ResponseEntity<>("Functionality not implemented yet.", HttpStatus.NOT_IMPLEMENTED);
+	}
+
+	@PutMapping("/update-password")
+	public ResponseEntity<Boolean> updatePassword(@Valid @RequestBody UpdatePasswordRequest request,
+			@AuthenticationPrincipal UserDetails userDetails) throws BadRequestException {
+		Account account = accountService.getAccountByUsername(userDetails.getUsername());
+		accountService.updatePassword(account, request);
+		return new ResponseEntity<>(true, HttpStatus.OK);
 	}
 
 	@DeleteMapping
