@@ -1,5 +1,7 @@
 package com.spanprints.authservice.controller;
 
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,14 +12,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.spanprints.authservice.dto.LoginRequestDto;
 import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.dto.account.AccountResponse;
@@ -68,9 +69,10 @@ public class AuthController {
 		this.mailService = mailService;
 	}
 
-	@GetMapping("/verify")
-	public ResponseEntity<SuccessResponseDto> verifyUser(@RequestParam("token") String verificationToken) {
-		Account account = verificationTokenService.verifyToken(verificationToken);
+	@PostMapping("/verify-account")
+	public ResponseEntity<SuccessResponseDto> verifyUser(@RequestBody JsonNode node) {
+//		node.get("user").get("name").asText();
+		Account account = verificationTokenService.verifyToken(node.get("token").asText());
 		accountService.enableAccount(account);
 		SuccessResponseDto responseDto = new SuccessResponseDto(HttpStatus.OK, "Account verified successfully.");
 		return new ResponseEntity<>(responseDto, responseDto.getStatus());
@@ -132,9 +134,9 @@ public class AuthController {
 		return new ResponseEntity<>(dto, dto.getStatus());
 	}
 
-	@PostMapping("/verify-token/{token}")
-	public ResponseEntity<Boolean> verifyTokenBefore(@PathVariable String token) {
-		resetPasswordTokenService.verifyTokenBefore(token);
+	@PostMapping("/verify-token-before-reset-password")
+	public ResponseEntity<Boolean> verifyTokenBefore(@RequestBody Map<String, Object> body) {
+		resetPasswordTokenService.verifyTokenBefore(body.get("token").toString());
 		return new ResponseEntity<>(true, HttpStatus.OK);
 	}
 

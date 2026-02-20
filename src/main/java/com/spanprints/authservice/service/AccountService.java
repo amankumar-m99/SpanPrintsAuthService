@@ -87,6 +87,7 @@ public class AccountService {
 
 	public void updatePassword(Account account, ResetPasswordRequest request) {
 		account.setPassword(passwordEncoder.encode(request.getPassword()));
+		accountRepository.save(account);
 	}
 
 	private void insertRoleIntoAccount(String roleName, Account account) {
