@@ -41,7 +41,6 @@ public class BasicUtils {
 				if (word.length() > 1) {
 					result.append(word.substring(1).toLowerCase());
 				}
-
 				result.append(" ");
 			}
 		}
@@ -56,5 +55,4 @@ public class BasicUtils {
 		}
 		return -1;
 	}
-
 }
