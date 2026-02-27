@@ -97,11 +97,14 @@ public class AccountService {
 	}
 
 	public boolean updatePassword(Account account, UpdatePasswordRequest request) throws BadRequestException {
-		if (!account.getPassword().equals(passwordEncoder.encode(request.getCurrentPassword()))) {
+		if (!passwordEncoder.matches(request.getCurrentPassword(), account.getPassword())) {
 			throw new BadRequestException("Current password is not correct.");
 		}
 		if (!request.getNewPassword().equals(request.getConfirmPassword())) {
 			throw new BadRequestException("Password and confirm password do not match.");
+		}
+		if (passwordEncoder.matches(request.getNewPassword(), account.getPassword())) {
+			throw new BadRequestException("New password can't be same as current password.");
 		}
 		account.setPassword(passwordEncoder.encode(request.getNewPassword()));
 		accountRepository.save(account);
