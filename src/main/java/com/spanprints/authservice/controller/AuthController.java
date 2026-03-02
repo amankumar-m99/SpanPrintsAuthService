@@ -17,13 +17,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.spanprints.authservice.dto.LoginRequestDto;
 import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.dto.account.AccountResponse;
 import com.spanprints.authservice.dto.account.CreateAccountRequest;
+import com.spanprints.authservice.dto.captcha.ReCaptchaResponse;
 import com.spanprints.authservice.dto.password.ForgotPasswordRequest;
 import com.spanprints.authservice.dto.password.ResetPasswordRequest;
 import com.spanprints.authservice.dto.password.ResetPasswordTokenResponse;
@@ -80,8 +83,18 @@ public class AuthController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<JwtResponseDto> login(@Valid @RequestBody LoginRequestDto request) {
+	public ResponseEntity<JwtResponseDto> login(@Valid @RequestBody LoginRequestDto request,
+			@RequestParam(name = "g-recaptcha-response", required = false) String reCaptchaResponse) {
 		try {
+			String url = "https://www.google.com/recaptcha/api/siteverify";
+			String key = "6LcVSXUrAAAAANahPTSo6ca37lpOAhiD1cqWkdlh";
+			String query = "secret=" + key + "&" + "response=" + reCaptchaResponse;
+			String finalUrl = url + "?" + query;
+			RestTemplate rt = new RestTemplate();
+			ReCaptchaResponse response = rt.postForEntity(finalUrl, null, ReCaptchaResponse.class).getBody();
+			if(reCaptchaResponse != null &&  (response == null || !response.isSuccess())) {
+				throw new BadCredentialsException("Invalid captcha");
+			}
 			authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 			UserDetails user = userDetailsService.loadUserByUsername(request.getUsername());
