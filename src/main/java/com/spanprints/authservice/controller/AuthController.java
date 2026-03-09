@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
@@ -84,17 +83,17 @@ public class AuthController {
 
 	@PostMapping("/login")
 	public ResponseEntity<JwtResponseDto> login(@Valid @RequestBody LoginRequestDto request,
-			@RequestParam(name = "g-recaptcha-response", required = false) String reCaptchaResponse) {
+			@RequestHeader(name = "g-recaptcha-token", required = true) String reCaptchaToken) {
+		String url = "https://www.google.com/recaptcha/api/siteverify";
+		String key = "6LcVSXUrAAAAANahPTSo6ca37lpOAhiD1cqWkdlh";
+		String query = "secret=" + key + "&" + "response=" + reCaptchaToken;
+		String finalUrl = url + "?" + query;
+		RestTemplate rt = new RestTemplate();
+		ReCaptchaResponse response = rt.postForEntity(finalUrl, null, ReCaptchaResponse.class).getBody();
+		if (reCaptchaToken != null && (response == null || !response.isSuccess())) {
+			throw new BadCredentialsException("Invalid captcha");
+		}
 		try {
-			String url = "https://www.google.com/recaptcha/api/siteverify";
-			String key = "6LcVSXUrAAAAANahPTSo6ca37lpOAhiD1cqWkdlh";
-			String query = "secret=" + key + "&" + "response=" + reCaptchaResponse;
-			String finalUrl = url + "?" + query;
-			RestTemplate rt = new RestTemplate();
-			ReCaptchaResponse response = rt.postForEntity(finalUrl, null, ReCaptchaResponse.class).getBody();
-			if(reCaptchaResponse != null &&  (response == null || !response.isSuccess())) {
-				throw new BadCredentialsException("Invalid captcha");
-			}
 			authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 			UserDetails user = userDetailsService.loadUserByUsername(request.getUsername());
