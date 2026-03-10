@@ -18,14 +18,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.spanprints.authservice.dto.LoginRequestDto;
 import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.dto.account.AccountResponse;
 import com.spanprints.authservice.dto.account.CreateAccountRequest;
-import com.spanprints.authservice.dto.captcha.ReCaptchaResponse;
 import com.spanprints.authservice.dto.password.ForgotPasswordRequest;
 import com.spanprints.authservice.dto.password.ResetPasswordRequest;
 import com.spanprints.authservice.dto.password.ResetPasswordTokenResponse;
@@ -42,6 +40,7 @@ import com.spanprints.authservice.service.MailService;
 import com.spanprints.authservice.service.PersonalDetailsService;
 import com.spanprints.authservice.service.ResetPasswordTokenService;
 import com.spanprints.authservice.service.VerificationTokenService;
+import com.spanprints.authservice.util.GReCaptchaUtils;
 
 import jakarta.validation.Valid;
 
@@ -57,11 +56,12 @@ public class AuthController {
 	private VerificationTokenService verificationTokenService;
 	private ResetPasswordTokenService resetPasswordTokenService;
 	private MailService mailService;
+	private GReCaptchaUtils gReCaptchaUtils;
 
 	public AuthController(AuthenticationManager authenticationManager, CustomUserDetailsService userDetailsService,
 			JwtUtils jwtUtils, AccountService accountService, PersonalDetailsService personalDetailsService,
 			VerificationTokenService verificationTokenService, ResetPasswordTokenService resetPasswordTokenService,
-			MailService mailService) {
+			MailService mailService, GReCaptchaUtils gReCaptchaUtils) {
 		this.authenticationManager = authenticationManager;
 		this.userDetailsService = userDetailsService;
 		this.jwtUtils = jwtUtils;
@@ -70,6 +70,7 @@ public class AuthController {
 		this.verificationTokenService = verificationTokenService;
 		this.resetPasswordTokenService = resetPasswordTokenService;
 		this.mailService = mailService;
+		this.gReCaptchaUtils = gReCaptchaUtils;
 	}
 
 	@PostMapping("/verify-account")
@@ -84,15 +85,7 @@ public class AuthController {
 	@PostMapping("/login")
 	public ResponseEntity<JwtResponseDto> login(@Valid @RequestBody LoginRequestDto request,
 			@RequestHeader(name = "g-recaptcha-token", required = true) String reCaptchaToken) {
-		String url = "https://www.google.com/recaptcha/api/siteverify";
-		String key = "6LcVSXUrAAAAANahPTSo6ca37lpOAhiD1cqWkdlh";
-		String query = "secret=" + key + "&" + "response=" + reCaptchaToken;
-		String finalUrl = url + "?" + query;
-		RestTemplate rt = new RestTemplate();
-		ReCaptchaResponse response = rt.postForEntity(finalUrl, null, ReCaptchaResponse.class).getBody();
-		if (reCaptchaToken != null && (response == null || !response.isSuccess())) {
-			throw new BadCredentialsException("Invalid captcha");
-		}
+		gReCaptchaUtils.verify(reCaptchaToken);
 		try {
 			authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
@@ -111,7 +104,9 @@ public class AuthController {
 
 	@PostMapping("/register")
 	public ResponseEntity<SuccessResponseDto> register(@Valid @RequestBody CreateAccountRequest request,
-			@RequestHeader(value = "Origin", required = false) String frontendBaseUrl) {
+			@RequestHeader(value = "Origin", required = false) String frontendBaseUrl,
+			@RequestHeader(name = "g-recaptcha-token", required = true) String reCaptchaToken) {
+		gReCaptchaUtils.verify(reCaptchaToken);
 		String email = accountService.createAccount(request, frontendBaseUrl);
 		String message = String.format(
 				"Account created sucessfully. Verification link sent to your registered e-mail address `%s`", email);

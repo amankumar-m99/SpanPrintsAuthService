@@ -25,6 +25,7 @@ import com.spanprints.authservice.dto.account.UpdateAccountRequest;
 import com.spanprints.authservice.dto.password.UpdatePasswordRequest;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.service.AccountService;
+import com.spanprints.authservice.util.GReCaptchaUtils;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -38,9 +39,14 @@ public class AccountController {
 	@Autowired
 	private AccountService accountService;
 
+	@Autowired
+	private GReCaptchaUtils gReCaptchaUtils;
+
 	@PostMapping
 	public ResponseEntity<SuccessResponseDto> createAccount(@Valid @RequestBody CreateAccountRequest request,
-			@RequestHeader(value = "Origin", required = false) String frontendBaseUrl) {
+			@RequestHeader(value = "Origin", required = false) String frontendBaseUrl,
+			@RequestHeader(name = "g-recaptcha-token", required = true) String reCaptchaToken) {
+		gReCaptchaUtils.verify(reCaptchaToken);
 		String email = accountService.createAccount(request, frontendBaseUrl);
 		String message = String.format(
 				"Account created sucessfully. Verification link sent to your registered e-mail address `%s`", email);
