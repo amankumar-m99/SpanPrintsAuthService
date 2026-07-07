@@ -22,11 +22,13 @@ public class ProfilePicService {
 	@Value("${spanprints.data-directory.profile-pic}")
 	private String profilePicsDirectory;
 
+	@Value("${spanprints.endpoint.profile-pic}")
+	private String profilePicsEndpint;
+
 	@Autowired
 	private ProfilePicRepository profilePicRepository;
 
 	public ProfilePic updateProfilePic(Account account, MultipartFile multipartFile) {
-		String prefix = "/profile-pic/";
 		File file = new File(profilePicsDirectory);
 		if (!file.exists())
 			file.mkdirs();
@@ -39,7 +41,7 @@ public class ProfilePicService {
 				String fileName = createProfilePicOnFileSystem(multipartFile);
 				profilePic = ProfilePic.builder().name(fileName).account(account).build();
 			}
-			profilePic.setUrl(prefix + account.getUuid());
+			profilePic.setUrl(profilePicsEndpint + account.getUuid());
 			return profilePicRepository.save(profilePic);
 		} catch (IOException e) {
 			e.printStackTrace();

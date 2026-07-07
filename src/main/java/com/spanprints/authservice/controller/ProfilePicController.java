@@ -30,7 +30,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
-@RequestMapping("/profile-pics")
+@RequestMapping("${spanprints.endpoint.profile-pic}")// ("/profile-pics")
 public class ProfilePicController {
 
 	@Autowired

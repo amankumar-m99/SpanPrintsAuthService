@@ -20,6 +20,7 @@ import com.spanprints.authservice.entity.Customer;
 import com.spanprints.authservice.entity.PrintJob;
 import com.spanprints.authservice.entity.PrintJobType;
 import com.spanprints.authservice.service.CustomerService;
+import com.spanprints.authservice.service.FileAttachmentService;
 import com.spanprints.authservice.service.LedgerEntryService;
 import com.spanprints.authservice.service.PrintJobService;
 import com.spanprints.authservice.service.PrintJobTypeService;
@@ -44,14 +45,23 @@ public class PrintJobController {
 	private SecurityUtils securityUtils;
 	@Autowired
 	private CustomerService customerService;
+	@Autowired
+	private FileAttachmentService fileAttachmentService;
 
 	@PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public PrintJob createPrintJob(@Valid @ModelAttribute CreatePrintJobRequest request,
 			@RequestParam(name = "attachments", required = false) List<MultipartFile> attachments) {
 		Account account = securityUtils.getRequestingAccount();
-		Customer customer = customerService.getCustomerById(request.getCustomerId());
+		Customer customer = null;
+		if(!customerService.doesCustomerExistsByPhoneNumber(request.getCustomerPhoneNumber())) {
+			customer = customerService.createCustomerByPhoneNumber(request.getCustomerPhoneNumber());
+		}
+		else {
+			customer = customerService.getCustomerByPrimaryPhoneNumber(request.getCustomerPhoneNumber());
+		}
 		PrintJobType printJobType = printJobTypeService.getPrintJobTypeById(request.getPrintJobTypeId());
 		PrintJob printJob = printJobService.createPrintJob(request, printJobType, account, customer);
+		fileAttachmentService.addFileAttachment(attachments, printJob);
 		ledgerEntryService.createLedgerEntry(printJob);
 		return printJob;
 	}

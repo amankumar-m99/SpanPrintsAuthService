@@ -48,7 +48,7 @@ public class PrintJobService {
 				.printJobStatus(PrintJobStatus.PLACED).totalAmount(request.getTotalAmount())
 				.depositAmount(request.getDepositAmount()).note(request.getNote())
 				.bookNumber(BasicUtils.parserStringToInteger(request.getBookNumber()))
-				.wBookNumber(BasicUtils.parserStringToInteger(request.getWBookNumber()))
+//				.wBookNumber(BasicUtils.parserStringToInteger(request.getWBookNumber()))
 				.description(request.getDescription()).discountedAmount(request.getDiscountedAmount())
 				.pendingAmount(request.getPendingAmount()).paymentStatus(request.getPaymentStatus()).build();
 	}

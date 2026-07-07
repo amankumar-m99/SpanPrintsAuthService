@@ -31,7 +31,7 @@ public class PrintJob extends AuditableBaseEntity {
 
 	private Integer quantity;
 	private Integer bookNumber;
-	private Integer wBookNumber;
+//	private Integer wBookNumber;
 	private Instant dateOfDelivery;
 	private PrintJobStatus printJobStatus;
 

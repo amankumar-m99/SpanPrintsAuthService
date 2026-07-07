@@ -7,6 +7,7 @@ import jakarta.persistence.JoinColumn;
 //import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,8 +17,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class FileAttachment extends AuditableBaseEntity {
-	private String fileName;
+	private String originalFileName;
+	private String createdFileName;
 	private String fileType;
 //	@Lob
 //	private byte[] data; // Actual file content

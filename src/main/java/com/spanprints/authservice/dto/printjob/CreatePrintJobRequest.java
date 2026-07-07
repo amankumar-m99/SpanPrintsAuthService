@@ -21,8 +21,8 @@ import lombok.Setter;
 @Builder
 public class CreatePrintJobRequest {
 
-	@NotNull(message = "Customer id is required")
-	private Long customerId;
+	@NotNull(message = "Customer's phone number is required")
+	private String customerPhoneNumber;
 
 	@NotNull(message = "Print job type cannot be empty")
 	private Long printJobTypeId;
@@ -33,11 +33,11 @@ public class CreatePrintJobRequest {
 	@NotNull(message = "Date of delivery cannot be empty")
 	private LocalDate dateOfDelivery;
 
-//	@NotNull(message = "Book number cannot be empty")
+	@NotNull(message = "Book number cannot be empty")
 	private String bookNumber;
 
 //	@NotNull(message = "Wedding book number cannot be empty")
-	private String wBookNumber;
+//	private String wBookNumber;
 
 	@NotNull(message = "Total amount cannot be empty")
 	private BigDecimal totalAmount;
@@ -51,7 +51,7 @@ public class CreatePrintJobRequest {
 	@NotNull(message = "Pending amount cannot be empty")
 	private BigDecimal pendingAmount;
 	
-	@NotNull(message = "Expense type cannot be empty")
+	@NotNull(message = "Payment status cannot be empty")
 	@Enumerated(EnumType.STRING)
 	private PaymentStatus paymentStatus;
 

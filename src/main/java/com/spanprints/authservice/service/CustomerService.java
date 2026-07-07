@@ -1,6 +1,7 @@
 package com.spanprints.authservice.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,11 +27,21 @@ public class CustomerService {
 	private SecurityUtils securityUtils;
 
 	public Customer createCustomer(CreateCustomerRequest request) {
-		throwIfNameAlreadyExists(request.getName());
+		throwIfPhoneNumberAlreadyExists(request.getPrimaryPhoneNumber());
 		Account account = securityUtils.getRequestingAccount();
 		Customer customer = Customer.builder().name(request.getName()).email(request.getEmail())
 				.primaryPhoneNumber(request.getPrimaryPhoneNumber())
 				.alternatePhoneNumber(request.getAlternatePhoneNumber()).address(request.getAddress()).account(account)
+				.build();
+		return customerRepository.save(customer);
+	}
+
+	public Customer createCustomerByPhoneNumber(String phoneNumber){
+		throwIfPhoneNumberAlreadyExists(phoneNumber);
+		Account account = securityUtils.getRequestingAccount();
+		Customer customer = Customer.builder().name("").email("")
+				.primaryPhoneNumber(phoneNumber)
+				.alternatePhoneNumber("").address("").account(account)
 				.build();
 		return customerRepository.save(customer);
 	}
@@ -79,14 +90,23 @@ public class CustomerService {
 		return customerRepository.findByNameContainingIgnoreCase(name);
 	}
 
-	public List<Customer> getCustomerByPrimaryPhoneNumber(String primaryPhoneNumber) {
+	public boolean doesCustomerExistsByPhoneNumber(String primaryPhoneNumber) {
+		Optional<List<Customer>> optional = customerRepository.findAllByPrimaryPhoneNumber(primaryPhoneNumber);
+		return optional.isPresent() && !optional.get().isEmpty();
+	}
+
+	public List<Customer> getCustomersByPrimaryPhoneNumber(String primaryPhoneNumber) {
 		return customerRepository.findAllByPrimaryPhoneNumber(primaryPhoneNumber)
 				.orElseThrow(() -> new CustomerNotFoundException("primary phone number", primaryPhoneNumber));
 	}
 
-	private void throwIfNameAlreadyExists(String name) {
-		if (!customerRepository.findByName(name).isEmpty()) {
-			throw new CustomerAlreadyExistsException("A customer already exists with the name " + name);
+	public Customer getCustomerByPrimaryPhoneNumber(String primaryPhoneNumber) {
+		return getCustomersByPrimaryPhoneNumber(primaryPhoneNumber).get(0);
+	}
+
+	private void throwIfPhoneNumberAlreadyExists(String phoneNumber) {
+		if(doesCustomerExistsByPhoneNumber(phoneNumber)){
+			throw new CustomerAlreadyExistsException("A customer already exists with phone number " + phoneNumber);
 		}
 	}
 

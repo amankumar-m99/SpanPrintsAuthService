@@ -19,7 +19,7 @@ public class PrintJobResponse extends EntityResponseDto {
 
 	private Integer quantity;
 	private Integer bookNumber;
-	private Integer wBookNumber;
+//	private Integer wBookNumber;
 	private Instant dateOfDelivery;
 	private PrintJobStatus printJobStatus;
 
@@ -51,7 +51,7 @@ public class PrintJobResponse extends EntityResponseDto {
 		super(printJob);
 		this.quantity = printJob.getQuantity();
 		this.bookNumber = printJob.getBookNumber();
-		this.wBookNumber = printJob.getWBookNumber();
+//		this.wBookNumber = printJob.getWBookNumber();
 		this.dateOfDelivery = printJob.getDateOfDelivery();
 		this.printJobStatus = printJob.getPrintJobStatus();
 		this.totalAmount = printJob.getTotalAmount();
