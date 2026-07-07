@@ -5,7 +5,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.spanprints.authservice.entity.FileAttachment;
 import com.spanprints.authservice.entity.PrintJob;
 import com.spanprints.authservice.repository.FileAttachmentRepository;
+import com.spanprints.authservice.repository.PrintJobRepository;
 import com.spanprints.authservice.util.BasicUtils;
 
 @Service
@@ -25,6 +28,9 @@ public class FileAttachmentService {
 
 	@Autowired
 	private FileAttachmentRepository fileAttachmentRepository;
+
+	@Autowired
+	private PrintJobRepository printJobRepository;
 	
 	public List<FileAttachment> addFileAttachment(List<MultipartFile> attachments, PrintJob printJob) {
 		File file = new File(fileAttachmentDirectory);
@@ -68,6 +74,15 @@ public class FileAttachmentService {
 		fileOutputStream.flush();
 		fileOutputStream.close();
 		inputStream.close();
+	}
+
+	public List<FileAttachment> getFileAttatchmentsByPrintJobUuid(String uuid) {
+		Optional<PrintJob> byUuid = printJobRepository.findByUuid(uuid);
+		if(byUuid.isEmpty()) {
+			return Collections.emptyList();
+		}
+		PrintJob printJob = byUuid.get();
+		return printJob.getAttachments();
 	}
 
 }
