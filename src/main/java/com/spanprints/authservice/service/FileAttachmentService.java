@@ -4,6 +4,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,7 +15,13 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.spanprints.authservice.entity.FileAttachment;
@@ -83,6 +93,45 @@ public class FileAttachmentService {
 		}
 		PrintJob printJob = byUuid.get();
 		return printJob.getAttachments();
+	}
+
+	public ResponseEntity<Resource> downloadFile(@PathVariable String uuid) {
+		try {
+			FileAttachment fileAttachment = fileAttachmentRepository.findByUuid(uuid).orElse(null);
+			if(fileAttachment == null) {
+				return ResponseEntity.notFound().build();
+			}
+			String fileName = fileAttachment.getCreatedFileName();
+			Path fileStorageLocation = Paths.get(fileAttachmentDirectory);
+			Path filePath = fileStorageLocation.resolve(fileName).normalize();
+
+			// Security: prevent path traversal
+			if (!filePath.startsWith(fileStorageLocation)) {
+				return ResponseEntity.badRequest().build();
+			}
+
+			Resource resource = new UrlResource(filePath.toUri());
+
+			if (!resource.exists() || !resource.isReadable()) {
+				return ResponseEntity.notFound().build();
+			}
+
+			String contentType = Files.probeContentType(filePath);
+			if (contentType == null) {
+				contentType = "application/octet-stream";
+			}
+
+//			String downloadFileName = resource.getFilename();
+			String downloadFileName = fileAttachment.getOriginalFileName();
+			return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
+					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + downloadFileName + "\"")
+					.body(resource);
+
+		} catch (MalformedURLException e) {
+			return ResponseEntity.badRequest().build();
+		} catch (IOException e) {
+			return ResponseEntity.internalServerError().build();
+		}
 	}
 
 }
