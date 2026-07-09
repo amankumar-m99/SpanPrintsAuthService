@@ -60,6 +60,6 @@ public class BasicUtils {
 		int lastIndexOfDot = fileName.lastIndexOf('.');
 		if(lastIndexOfDot == -1)
 			return new String[]{fileName, ""};
-		return new String[]{fileName.substring(0, lastIndexOfDot), fileName.substring(lastIndexOfDot)};
+		return new String[]{fileName.substring(0, lastIndexOfDot), fileName.substring(lastIndexOfDot+1)};
 	}
 }
