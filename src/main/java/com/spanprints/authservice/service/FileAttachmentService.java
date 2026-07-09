@@ -50,6 +50,7 @@ public class FileAttachmentService {
 		try {
 			for(MultipartFile multipartFile: attachments) {
 				String createdFileName = createProfilePicOnFileSystem(multipartFile);
+				long size = multipartFile.getSize();
 				String[] strings = BasicUtils.separateFileExtension(multipartFile.getOriginalFilename());
 				String originalFileName = strings[0];
 				String fileExt = strings[1];
@@ -57,6 +58,7 @@ public class FileAttachmentService {
 						.originalFileName(originalFileName)
 						.createdFileName(createdFileName)
 						.fileType(fileExt)
+						.size(size)
 						.build();
 				fileAttachment.setPrintJob(printJob);
 				fileAttachments.add(fileAttachment);
