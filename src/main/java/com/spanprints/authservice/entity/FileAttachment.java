@@ -22,6 +22,7 @@ public class FileAttachment extends AuditableBaseEntity {
 	private String originalFileName;
 	private String createdFileName;
 	private String fileType;
+	private String contentType;
 	private Long size;
 //	@Lob
 //	private byte[] data; // Actual file content

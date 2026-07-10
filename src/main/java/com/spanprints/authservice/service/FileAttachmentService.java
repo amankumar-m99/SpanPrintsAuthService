@@ -41,25 +41,22 @@ public class FileAttachmentService {
 
 	@Autowired
 	private PrintJobRepository printJobRepository;
-	
+
 	public List<FileAttachment> addFileAttachment(List<MultipartFile> attachments, PrintJob printJob) {
 		File file = new File(fileAttachmentDirectory);
 		if (!file.exists())
 			file.mkdirs();
 		List<FileAttachment> fileAttachments = new ArrayList<>();
 		try {
-			for(MultipartFile multipartFile: attachments) {
+			for (MultipartFile multipartFile : attachments) {
 				String createdFileName = createProfilePicOnFileSystem(multipartFile);
 				long size = multipartFile.getSize();
 				String[] strings = BasicUtils.separateFileExtension(multipartFile.getOriginalFilename());
 				String originalFileName = strings[0];
 				String fileExt = strings[1];
-				FileAttachment fileAttachment = FileAttachment.builder()
-						.originalFileName(originalFileName)
-						.createdFileName(createdFileName)
-						.fileType(fileExt)
-						.size(size)
-						.build();
+				FileAttachment fileAttachment = FileAttachment.builder().originalFileName(originalFileName)
+						.createdFileName(createdFileName).fileType(fileExt).contentType(multipartFile.getContentType())
+						.size(size).build();
 				fileAttachment.setPrintJob(printJob);
 				fileAttachments.add(fileAttachment);
 			}
@@ -76,8 +73,7 @@ public class FileAttachmentService {
 		return targetFileName;
 	}
 
-	private void extratctMultipartData(MultipartFile multipartFile, String targetFilePath)
-			throws IOException {
+	private void extratctMultipartData(MultipartFile multipartFile, String targetFilePath) throws IOException {
 		InputStream inputStream = multipartFile.getInputStream();
 		byte[] data = new byte[inputStream.available()];
 		inputStream.read(data);
@@ -90,7 +86,7 @@ public class FileAttachmentService {
 
 	public List<FileAttachment> getFileAttatchmentsByPrintJobUuid(String uuid) {
 		Optional<PrintJob> byUuid = printJobRepository.findByUuid(uuid);
-		if(byUuid.isEmpty()) {
+		if (byUuid.isEmpty()) {
 			return Collections.emptyList();
 		}
 		PrintJob printJob = byUuid.get();
@@ -98,9 +94,17 @@ public class FileAttachmentService {
 	}
 
 	public ResponseEntity<Resource> downloadFile(@PathVariable String uuid) {
+		return fetchFile(uuid, "attachment");
+	}
+
+	public ResponseEntity<Resource> previewFile(@PathVariable String uuid) {
+		return fetchFile(uuid, "inline");
+	}
+
+	private ResponseEntity<Resource> fetchFile(String uuid, String contentDisposition) {
 		try {
 			FileAttachment fileAttachment = fileAttachmentRepository.findByUuid(uuid).orElse(null);
-			if(fileAttachment == null) {
+			if (fileAttachment == null) {
 				return ResponseEntity.notFound().build();
 			}
 			String fileName = fileAttachment.getCreatedFileName();
@@ -118,16 +122,20 @@ public class FileAttachmentService {
 				return ResponseEntity.notFound().build();
 			}
 
-			String contentType = Files.probeContentType(filePath);
+//			String contentType = Files.probeContentType(filePath);
+			String contentType = fileAttachment.getContentType();
+			if (contentType == null) {
+				contentType = Files.probeContentType(filePath);
+			}
 			if (contentType == null) {
 				contentType = "application/octet-stream";
 			}
 
 //			String downloadFileName = resource.getFilename();
 			String downloadFileName = fileAttachment.getOriginalFileName();
+			String contentDispositionStr = String.format("%s; filename=\"%s\"", contentDisposition, downloadFileName);
 			return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
-					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + downloadFileName + "\"")
-					.body(resource);
+					.header(HttpHeaders.CONTENT_DISPOSITION, contentDispositionStr).body(resource);
 
 		} catch (MalformedURLException e) {
 			return ResponseEntity.badRequest().build();
@@ -135,5 +143,4 @@ public class FileAttachmentService {
 			return ResponseEntity.internalServerError().build();
 		}
 	}
-
 }
