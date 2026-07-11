@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.dto.customer.CreateCustomerRequest;
 import com.spanprints.authservice.dto.customer.UpdateCustomerRequest;
+import com.spanprints.authservice.dto.printjob.CreatePrintJobRequest;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.Customer;
 import com.spanprints.authservice.exception.customer.CustomerAlreadyExistsException;
@@ -36,14 +37,10 @@ public class CustomerService {
 		return customerRepository.save(customer);
 	}
 
-	public Customer createCustomerByPhoneNumber(String phoneNumber){
-		throwIfPhoneNumberAlreadyExists(phoneNumber);
-		Account account = securityUtils.getRequestingAccount();
-		Customer customer = Customer.builder().name("").email("")
-				.primaryPhoneNumber(phoneNumber)
-				.alternatePhoneNumber("").address("").account(account)
-				.build();
-		return customerRepository.save(customer);
+	public Customer createCustomerForPrintJob(CreatePrintJobRequest request) {
+		CreateCustomerRequest createCustomerRequest = CreateCustomerRequest.builder().name(request.getCustomerName())
+				.primaryPhoneNumber(request.getCustomerPhoneNumber()).address(request.getCustomerAddress()).build();
+		return createCustomer(createCustomerRequest);
 	}
 
 	public Customer updateCustomer(Long id, UpdateCustomerRequest request) {
@@ -90,6 +87,10 @@ public class CustomerService {
 		return customerRepository.findByNameContainingIgnoreCase(name);
 	}
 
+	public List<Customer> searchCustomersByPhoneNumber(String phoneNumber) {
+		return customerRepository.findByPrimaryPhoneNumberContainingIgnoreCase(phoneNumber);
+	}
+
 	public boolean doesCustomerExistsByPhoneNumber(String primaryPhoneNumber) {
 		Optional<List<Customer>> optional = customerRepository.findAllByPrimaryPhoneNumber(primaryPhoneNumber);
 		return optional.isPresent() && !optional.get().isEmpty();
@@ -105,7 +106,7 @@ public class CustomerService {
 	}
 
 	private void throwIfPhoneNumberAlreadyExists(String phoneNumber) {
-		if(doesCustomerExistsByPhoneNumber(phoneNumber)){
+		if (doesCustomerExistsByPhoneNumber(phoneNumber)) {
 			throw new CustomerAlreadyExistsException("A customer already exists with phone number " + phoneNumber);
 		}
 	}

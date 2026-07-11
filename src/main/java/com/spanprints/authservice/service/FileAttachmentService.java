@@ -21,7 +21,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.spanprints.authservice.entity.FileAttachment;
@@ -43,6 +42,9 @@ public class FileAttachmentService {
 	private PrintJobRepository printJobRepository;
 
 	public List<FileAttachment> addFileAttachment(List<MultipartFile> attachments, PrintJob printJob) {
+		if(attachments == null || attachments.isEmpty()) {
+			return Collections.emptyList();
+		}
 		File file = new File(fileAttachmentDirectory);
 		if (!file.exists())
 			file.mkdirs();
@@ -93,11 +95,11 @@ public class FileAttachmentService {
 		return printJob.getAttachments();
 	}
 
-	public ResponseEntity<Resource> downloadFile(@PathVariable String uuid) {
+	public ResponseEntity<Resource> downloadFile(String uuid) {
 		return fetchFile(uuid, "attachment");
 	}
 
-	public ResponseEntity<Resource> previewFile(@PathVariable String uuid) {
+	public ResponseEntity<Resource> previewFile(String uuid) {
 		return fetchFile(uuid, "inline");
 	}
 

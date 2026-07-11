@@ -49,12 +49,12 @@ public class PrintJobController {
 	private FileAttachmentService fileAttachmentService;
 
 	@PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public PrintJob createPrintJob(@Valid @ModelAttribute CreatePrintJobRequest request,
+	public PrintJobResponse createPrintJob(@Valid @ModelAttribute CreatePrintJobRequest request,
 			@RequestParam(name = "attachments", required = false) List<MultipartFile> attachments) {
 		Account account = securityUtils.getRequestingAccount();
 		Customer customer = null;
 		if(!customerService.doesCustomerExistsByPhoneNumber(request.getCustomerPhoneNumber())) {
-			customer = customerService.createCustomerByPhoneNumber(request.getCustomerPhoneNumber());
+			customer = customerService.createCustomerForPrintJob(request);
 		}
 		else {
 			customer = customerService.getCustomerByPrimaryPhoneNumber(request.getCustomerPhoneNumber());
@@ -63,7 +63,8 @@ public class PrintJobController {
 		PrintJob printJob = printJobService.createPrintJob(request, printJobType, account, customer);
 		fileAttachmentService.addFileAttachment(attachments, printJob);
 		ledgerEntryService.createLedgerEntry(printJob);
-		return printJob;
+		PrintJobResponse printJobResponse = new PrintJobResponse(printJob);
+		return printJobResponse;
 	}
 
 	@GetMapping

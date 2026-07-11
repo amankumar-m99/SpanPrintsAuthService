@@ -84,5 +84,4 @@ public class PrintJobResponse extends EntityResponseDto {
 			this.customerAddress = printJob.getCustomer().getAddress();
 		}
 	}
-
 }

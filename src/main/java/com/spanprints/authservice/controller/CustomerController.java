@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spanprints.authservice.dto.SuccessResponseDto;
@@ -46,9 +45,17 @@ public class CustomerController {
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 
-	@GetMapping("/search")
-	public ResponseEntity<List<CustomerResponse>> searchCustomer(@RequestParam @NotNull @NotBlank String name) {
+	@GetMapping("/search/name/{name}")
+//	public ResponseEntity<List<CustomerResponse>> searchCustomer(@RequestParam @NotNull @NotBlank String name) {
+	public ResponseEntity<List<CustomerResponse>> searchCustomer(@PathVariable @NotNull @NotBlank String name) {
 		List<CustomerResponse> list = customerService.searchCustomersByName(name).stream().map(CustomerResponse::new)
+				.toList();
+		return ResponseEntity.ok(list);
+	}
+
+	@GetMapping("/search/phoneNumber/{phoneNumber}")
+	public ResponseEntity<List<CustomerResponse>> searchCustomerByPhoneNumber(@PathVariable @NotNull @NotBlank String phoneNumber) {
+		List<CustomerResponse> list = customerService.searchCustomersByPhoneNumber(phoneNumber).stream().map(CustomerResponse::new)
 				.toList();
 		return ResponseEntity.ok(list);
 	}

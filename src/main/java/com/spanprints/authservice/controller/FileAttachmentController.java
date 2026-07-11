@@ -34,6 +34,6 @@ public class FileAttachmentController {
 
 	@GetMapping("/preview/{uuid}")
 	public ResponseEntity<Resource> previewFile(@PathVariable String uuid) {
-		return fileAttachmentService.downloadFile(uuid);
+		return fileAttachmentService.previewFile(uuid);
 	}
 }

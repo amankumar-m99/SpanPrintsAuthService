@@ -24,6 +24,10 @@ public class CreatePrintJobRequest {
 	@NotNull(message = "Customer's phone number is required")
 	private String customerPhoneNumber;
 
+	private String customerName;
+
+	private String customerAddress;
+
 	@NotNull(message = "Print job type cannot be empty")
 	private Long printJobTypeId;
 
