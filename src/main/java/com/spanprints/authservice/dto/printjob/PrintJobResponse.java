@@ -35,9 +35,9 @@ public class PrintJobResponse extends EntityResponseDto {
 	private String createdBy;
 	private Long createdById;
 
-	private Long jobTypeId;
-	private String jobTypeCode;
-	private String jobTypeName;
+	private Long printJobTypeId;
+	private String printJobTypeCode;
+	private String printJobTypeName;
 
 	private List<Long> attachmentIds;
 	private List<Long> ledgerIds;
@@ -66,9 +66,9 @@ public class PrintJobResponse extends EntityResponseDto {
 			this.createdById = printJob.getAccount().getId();
 		}
 		if (printJob.getJobType() != null) {
-			this.jobTypeCode = printJob.getJobType().getCode();
-			this.jobTypeId = printJob.getJobType().getId();
-			this.jobTypeName = printJob.getJobType().getName();
+			this.printJobTypeCode = printJob.getJobType().getCode();
+			this.printJobTypeId = printJob.getJobType().getId();
+			this.printJobTypeName = printJob.getJobType().getName();
 		}
 		this.attachmentIds = printJob.getAttachments() != null
 				? printJob.getAttachments().stream().map(FileAttachment::getId).toList()

@@ -53,11 +53,11 @@ public class PrintJobController {
 			@RequestParam(name = "attachments", required = false) List<MultipartFile> attachments) {
 		Account account = securityUtils.getRequestingAccount();
 		Customer customer = null;
-		if(!customerService.doesCustomerExistsByPhoneNumber(request.getCustomerPhoneNumber())) {
+		if(!customerService.doesCustomerExistsByPhoneNumber(request.getCustomerPrimaryPhone())) {
 			customer = customerService.createCustomerForPrintJob(request);
 		}
 		else {
-			customer = customerService.getCustomerByPrimaryPhoneNumber(request.getCustomerPhoneNumber());
+			customer = customerService.getCustomerByPrimaryPhoneNumber(request.getCustomerPrimaryPhone());
 		}
 		PrintJobType printJobType = printJobTypeService.getPrintJobTypeById(request.getPrintJobTypeId());
 		PrintJob printJob = printJobService.createPrintJob(request, printJobType, account, customer);

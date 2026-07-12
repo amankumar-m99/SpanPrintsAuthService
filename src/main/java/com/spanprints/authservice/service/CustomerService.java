@@ -39,7 +39,7 @@ public class CustomerService {
 
 	public Customer createCustomerForPrintJob(CreatePrintJobRequest request) {
 		CreateCustomerRequest createCustomerRequest = CreateCustomerRequest.builder().name(request.getCustomerName())
-				.primaryPhoneNumber(request.getCustomerPhoneNumber()).address(request.getCustomerAddress()).build();
+				.primaryPhoneNumber(request.getCustomerPrimaryPhone()).address(request.getCustomerAddress()).build();
 		return createCustomer(createCustomerRequest);
 	}
 

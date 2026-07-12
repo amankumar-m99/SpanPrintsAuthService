@@ -22,7 +22,7 @@ import lombok.Setter;
 public class CreatePrintJobRequest {
 
 	@NotNull(message = "Customer's phone number is required")
-	private String customerPhoneNumber;
+	private String customerPrimaryPhone;
 
 	private String customerName;
 
