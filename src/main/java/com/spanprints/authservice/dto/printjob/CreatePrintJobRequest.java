@@ -37,6 +37,9 @@ public class CreatePrintJobRequest {
 	@NotNull(message = "Date of delivery cannot be empty")
 	private LocalDate dateOfDelivery;
 
+	@NotNull(message = "Date of placed cannot be empty")
+	private LocalDate dateOfPlaced;
+
 	@NotNull(message = "Book number cannot be empty")
 	private String bookNumber;
 

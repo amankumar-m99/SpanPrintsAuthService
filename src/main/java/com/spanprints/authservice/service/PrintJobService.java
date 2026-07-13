@@ -1,5 +1,8 @@
 package com.spanprints.authservice.service;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,7 @@ public class PrintJobService {
 
 	@Autowired
 	private PrintJobRepository printJobRepository;
+	 private final ZoneId zoneId = ZoneId.of("Asia/Kolkata"); // pick your app's reference timezone
 
 	public PrintJob createPrintJob(CreatePrintJobRequest request, PrintJobType jobType, Account account,
 			Customer customer) {
@@ -37,6 +41,13 @@ public class PrintJobService {
 				.orElseThrow(() -> new PrintJobNotFoundException("No print job found by given uuid."));
 	}
 
+	public List<PrintJob> getAllPrintJobsPlacedToday() {
+		LocalDate today = LocalDate.now(zoneId);
+        Instant startOfDay = today.atStartOfDay(zoneId).toInstant();
+        Instant startOfNextDay = today.plusDays(1).atStartOfDay(zoneId).toInstant();
+		return printJobRepository.findByDateOfPlacedGreaterThanEqualAndCreatedAtLessThan(startOfDay, startOfNextDay);
+	}
+
 	public List<PrintJob> getAllPrintJobs() {
 		return printJobRepository.findAll();
 	}
@@ -45,6 +56,7 @@ public class PrintJobService {
 			Customer customer) {
 		return PrintJob.builder().customer(customer).account(account).jobType(jobType).quantity(request.getQuantity())
 				.dateOfDelivery(BasicUtils.convertLocalDateToInstant(request.getDateOfDelivery()))
+				.dateOfPlaced(BasicUtils.convertLocalDateToInstant(request.getDateOfPlaced()))
 				.printJobStatus(PrintJobStatus.PLACED).totalAmount(request.getTotalAmount())
 				.depositAmount(request.getDepositAmount()).note(request.getNote())
 				.bookNumber(BasicUtils.parserStringToInteger(request.getBookNumber()))

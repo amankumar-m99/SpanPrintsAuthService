@@ -53,10 +53,9 @@ public class PrintJobController {
 			@RequestParam(name = "attachments", required = false) List<MultipartFile> attachments) {
 		Account account = securityUtils.getRequestingAccount();
 		Customer customer = null;
-		if(!customerService.doesCustomerExistsByPhoneNumber(request.getCustomerPrimaryPhoneNumber())) {
+		if (!customerService.doesCustomerExistsByPhoneNumber(request.getCustomerPrimaryPhoneNumber())) {
 			customer = customerService.createCustomerForPrintJob(request);
-		}
-		else {
+		} else {
 			customer = customerService.getCustomerByPrimaryPhoneNumber(request.getCustomerPrimaryPhoneNumber());
 		}
 		PrintJobType printJobType = printJobTypeService.getPrintJobTypeById(request.getPrintJobTypeId());
@@ -80,5 +79,10 @@ public class PrintJobController {
 	@GetMapping("/uuid/{uuid}")
 	public PrintJobResponse getPrintJobByUuid(@PathVariable @NotNull String uuid) {
 		return new PrintJobResponse(printJobService.getPrintJobByUuid(uuid));
+	}
+
+	@GetMapping("/today")
+	public List<PrintJobResponse> getPrintJobsPlacedToday() {
+		return printJobService.getAllPrintJobsPlacedToday().stream().map(PrintJobResponse::new).toList();
 	}
 }
