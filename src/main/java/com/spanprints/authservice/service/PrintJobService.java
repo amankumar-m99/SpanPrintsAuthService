@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,15 +16,22 @@ import com.spanprints.authservice.entity.PrintJob;
 import com.spanprints.authservice.entity.PrintJobType;
 import com.spanprints.authservice.enums.PrintJobStatus;
 import com.spanprints.authservice.exception.printjob.PrintJobNotFoundException;
+import com.spanprints.authservice.repository.CustomerRepository;
 import com.spanprints.authservice.repository.PrintJobRepository;
 import com.spanprints.authservice.util.BasicUtils;
+
+import io.jsonwebtoken.lang.Collections;
 
 @Service
 public class PrintJobService {
 
 	@Autowired
 	private PrintJobRepository printJobRepository;
-	 private final ZoneId zoneId = ZoneId.of("Asia/Kolkata"); // pick your app's reference timezone
+
+	@Autowired
+	private CustomerRepository customerRepository;
+
+	private final ZoneId zoneId = ZoneId.of("Asia/Kolkata"); // pick your app's reference timezone
 
 	public PrintJob createPrintJob(CreatePrintJobRequest request, PrintJobType jobType, Account account,
 			Customer customer) {
@@ -43,13 +51,45 @@ public class PrintJobService {
 
 	public List<PrintJob> getAllPrintJobsPlacedToday() {
 		LocalDate today = LocalDate.now(zoneId);
-        Instant startOfDay = today.atStartOfDay(zoneId).toInstant();
-        Instant startOfNextDay = today.plusDays(1).atStartOfDay(zoneId).toInstant();
+		Instant startOfDay = today.atStartOfDay(zoneId).toInstant();
+		Instant startOfNextDay = today.plusDays(1).atStartOfDay(zoneId).toInstant();
 		return printJobRepository.findByDateOfPlacedGreaterThanEqualAndCreatedAtLessThan(startOfDay, startOfNextDay);
 	}
 
 	public List<PrintJob> getAllPrintJobs() {
 		return printJobRepository.findAll();
+	}
+
+	public List<PrintJob> getAllPrintJobsByCustomerUuid(String uuid) {
+		Optional<Customer> optional = customerRepository.findByUuid(uuid);
+		if (optional.isPresent()) {
+			Customer customer = optional.get();
+			return customer.getPrintJobs();
+		}
+		return Collections.emptyList();
+	}
+
+	public List<PrintJob> findPreparedAndDueTodayOrEarlier() {
+		LocalDate today = LocalDate.now(zoneId);
+		Instant startOfTomorrow = today.plusDays(1).atStartOfDay(zoneId).toInstant();
+		return printJobRepository.findByPrintJobStatusAndDateOfDeliveryLessThan(PrintJobStatus.PREPARED,
+				startOfTomorrow);
+	}
+
+	public List<PrintJob> findByDateOfDeliveryTomorrow() {
+		LocalDate tomorrow = LocalDate.now(zoneId).plusDays(1);
+		return findByDateOfDelivery(tomorrow);
+	}
+
+	public List<PrintJob> findByDateOfDeliveryToday() {
+		LocalDate today = LocalDate.now(zoneId);
+		return findByDateOfDelivery(today);
+	}
+
+	private List<PrintJob> findByDateOfDelivery(LocalDate day) {
+		Instant startOfDay = day.atStartOfDay(zoneId).toInstant();
+		Instant startOfDayAfter = day.plusDays(1).atStartOfDay(zoneId).toInstant();
+		return printJobRepository.findByDateOfDeliveryBetween(startOfDay, startOfDayAfter);
 	}
 
 	public PrintJob convertToPrintJobFromDto(CreatePrintJobRequest request, PrintJobType jobType, Account account,

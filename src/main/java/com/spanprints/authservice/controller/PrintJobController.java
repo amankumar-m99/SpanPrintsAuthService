@@ -62,8 +62,7 @@ public class PrintJobController {
 		PrintJob printJob = printJobService.createPrintJob(request, printJobType, account, customer);
 		fileAttachmentService.addFileAttachment(attachments, printJob);
 		ledgerEntryService.createLedgerEntry(printJob);
-		PrintJobResponse printJobResponse = new PrintJobResponse(printJob);
-		return printJobResponse;
+		return new PrintJobResponse(printJob);
 	}
 
 	@GetMapping
@@ -81,8 +80,28 @@ public class PrintJobController {
 		return new PrintJobResponse(printJobService.getPrintJobByUuid(uuid));
 	}
 
+	@GetMapping("customer-uuid/{uuid}")
+	public List<PrintJobResponse> getAllPrintJobsByCustomerUuid(@PathVariable @NotNull String uuid) {
+		return printJobService.getAllPrintJobsByCustomerUuid(uuid).stream().map(PrintJobResponse::new).toList();
+	}
+
 	@GetMapping("/today")
-	public List<PrintJobResponse> getPrintJobsPlacedToday() {
+	public List<PrintJobResponse> getAllPrintJobsPlacedToday() {
 		return printJobService.getAllPrintJobsPlacedToday().stream().map(PrintJobResponse::new).toList();
+	}
+
+	@GetMapping("/yet-to-deliver")
+	public List<PrintJobResponse> findPreparedAndDueTodayOrEarlier() {
+		return printJobService.findPreparedAndDueTodayOrEarlier().stream().map(PrintJobResponse::new).toList();
+	}
+
+	@GetMapping("/to-be-prepared-today")
+	public List<PrintJobResponse> findToBePreparedToday() {
+		return printJobService.findByDateOfDeliveryTomorrow().stream().map(PrintJobResponse::new).toList();
+	}
+
+	@GetMapping("/to-be-deliver-today")
+	public List<PrintJobResponse> findToBeDeliveredToday() {
+		return printJobService.findByDateOfDeliveryToday().stream().map(PrintJobResponse::new).toList();
 	}
 }
