@@ -45,8 +45,9 @@ public class CustomerController {
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 
-	@GetMapping("/search/name/{name}")
+//	@GetMapping("/search")
 //	public ResponseEntity<List<CustomerResponse>> searchCustomer(@RequestParam @NotNull @NotBlank String name) {
+	@GetMapping("/search/name/{name}")
 	public ResponseEntity<List<CustomerResponse>> searchCustomer(@PathVariable @NotNull @NotBlank String name) {
 		List<CustomerResponse> list = customerService.searchCustomersByName(name).stream().map(CustomerResponse::new)
 				.toList();

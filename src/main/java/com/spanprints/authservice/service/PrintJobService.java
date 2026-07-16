@@ -7,9 +7,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.spanprints.authservice.dto.printjob.CreatePrintJobRequest;
+import com.spanprints.authservice.dto.printjob.PrintJobPaginatonResponse;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.Customer;
 import com.spanprints.authservice.entity.PrintJob;
@@ -58,6 +62,12 @@ public class PrintJobService {
 
 	public List<PrintJob> getAllPrintJobs() {
 		return printJobRepository.findAll();
+	}
+
+	public PrintJobPaginatonResponse getAllPrintJobsPaginated(int pageNumber, int pageSize) {
+		Pageable page = PageRequest.of(pageNumber, pageSize);
+		Page<PrintJob> all = printJobRepository.findAll(page);
+		return new PrintJobPaginatonResponse(all);
 	}
 
 	public List<PrintJob> getAllPrintJobsByCustomerUuid(String uuid) {

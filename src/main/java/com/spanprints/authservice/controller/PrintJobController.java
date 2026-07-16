@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.spanprints.authservice.dto.printjob.CreatePrintJobRequest;
+import com.spanprints.authservice.dto.printjob.PrintJobPaginatonResponse;
 import com.spanprints.authservice.dto.printjob.PrintJobResponse;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.Customer;
@@ -28,6 +29,7 @@ import com.spanprints.authservice.util.SecurityUtils;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
@@ -68,6 +70,12 @@ public class PrintJobController {
 	@GetMapping
 	public List<PrintJobResponse> getAllPrintJobs() {
 		return printJobService.getAllPrintJobs().stream().map(PrintJobResponse::new).toList();
+	}
+
+	@GetMapping("paginated")
+	public PrintJobPaginatonResponse getAllPrintJobsPaginated(@RequestParam @NotNull @Min(0) int pageNumber,
+			@RequestParam @NotNull @Min(1) int pageSize) {
+		return printJobService.getAllPrintJobsPaginated(pageNumber, pageSize);
 	}
 
 	@GetMapping("/id/{id}")
