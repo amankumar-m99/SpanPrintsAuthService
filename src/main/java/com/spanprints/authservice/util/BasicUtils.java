@@ -25,6 +25,7 @@ public class BasicUtils {
 	}
 
 	public static Instant convertLocalDateToInstant(LocalDate localDate) {
+//		localDate.atTime(12, 0).toInstant(ZoneOffset.UTC);
 		return localDate.atStartOfDay(ZoneOffset.UTC).toInstant();
 	}
 
