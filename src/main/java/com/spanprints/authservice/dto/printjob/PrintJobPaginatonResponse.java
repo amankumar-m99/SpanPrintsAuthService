@@ -11,7 +11,7 @@ import lombok.Getter;
 @Getter
 public class PrintJobPaginatonResponse {
 
-	private List<PrintJob> orders;
+	private List<PrintJobResponse> orders;
 	private int currentPageNumber;
 	private int numberOfTotalPages;
 	private long totalElements;
@@ -22,7 +22,7 @@ public class PrintJobPaginatonResponse {
 	private int size;
 
 	public PrintJobPaginatonResponse(Page<PrintJob> page) {
-		orders = page.getContent();
+		orders = page.getContent().stream().map(PrintJobResponse::new).toList();
 		currentPageNumber = page.getNumber();
 		numberOfTotalPages = page.getTotalPages();
 		totalElements = page.getTotalElements();
