@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import com.spanprints.authservice.dto.printjob.CreatePrintJobRequest;
 import com.spanprints.authservice.dto.printjob.PrintJobPaginatonResponse;
 import com.spanprints.authservice.dto.printjob.UpdatePrintJobNonDependentFieldsRequest;
-import com.spanprints.authservice.dto.printjob.UpdatePrintJobPaymentDetailsRequest;
+import com.spanprints.authservice.dto.printjob.PrintJobDepositAmountRequest;
 import com.spanprints.authservice.dto.printjob.UpdatePrintJobStatusRequest;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.Customer;
@@ -119,7 +119,7 @@ public class PrintJobService {
 				.pendingAmount(request.getPendingAmount()).paymentStatus(request.getPaymentStatus()).build();
 	}
 
-	public PrintJob updatePrintJobPaymentDetails(UpdatePrintJobPaymentDetailsRequest request) {
+	public PrintJob updatePrintJobPaymentDetails(PrintJobDepositAmountRequest request) {
 		PrintJob printJob = printJobRepository.findById(request.getId())
 				.orElseThrow(() -> new PrintJobNotFoundException("No order with id" + request.getId()));
 		BigDecimal totalAmount = printJob.getTotalAmount();
@@ -148,9 +148,9 @@ public class PrintJobService {
 		return printJobRepository.save(printJob);
 	}
 
-	public PrintJob markPrintJobAsPaid(Long id) {
-		PrintJob printJob = printJobRepository.findById(id)
-				.orElseThrow(() -> new PrintJobNotFoundException("No order with id" + id));
+	public PrintJob markPrintJobAsPaid(String uuid) {
+		PrintJob printJob = printJobRepository.findByUuid(uuid)
+				.orElseThrow(() -> new PrintJobNotFoundException("No order with id" + uuid));
 		BigDecimal totalAmount = printJob.getTotalAmount();
 		BigDecimal discountAmount = printJob.getDiscountedAmount();
 		BigDecimal depositAmount = printJob.getDepositAmount();

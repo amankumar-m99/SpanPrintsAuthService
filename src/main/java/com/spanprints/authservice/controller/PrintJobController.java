@@ -1,5 +1,6 @@
 package com.spanprints.authservice.controller;
 
+import java.time.Instant;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.spanprints.authservice.dto.printjob.CreatePrintJobRequest;
+import com.spanprints.authservice.dto.printjob.PrintJobDepositAmountRequest;
 import com.spanprints.authservice.dto.printjob.PrintJobPaginatonResponse;
 import com.spanprints.authservice.dto.printjob.PrintJobResponse;
 import com.spanprints.authservice.dto.printjob.UpdatePrintJobNonDependentFieldsRequest;
-import com.spanprints.authservice.dto.printjob.UpdatePrintJobPaymentDetailsRequest;
 import com.spanprints.authservice.dto.printjob.UpdatePrintJobStatusRequest;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.Customer;
@@ -36,6 +37,7 @@ import com.spanprints.authservice.util.SecurityUtils;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
@@ -69,7 +71,7 @@ public class PrintJobController {
 		PrintJobType printJobType = printJobTypeService.getPrintJobTypeById(request.getPrintJobTypeId());
 		PrintJob printJob = printJobService.createPrintJob(request, printJobType, account, customer);
 		fileAttachmentService.addFileAttachment(attachments, printJob);
-		ledgerEntryService.createLedgerEntry(printJob);
+		ledgerEntryService.createLedgerEntry(printJob, printJob.getDepositAmount(), Instant.now());
 		return new PrintJobResponse(printJob);
 	}
 
@@ -131,14 +133,14 @@ public class PrintJobController {
 		return new PrintJobResponse(printJob);
 	}
 
-	@PutMapping("payment-details")
-	public PrintJobResponse updatePrintJobPaymentDetails(
-			@Valid @RequestBody UpdatePrintJobPaymentDetailsRequest request) {
+	@PutMapping("deposit-amount")
+	public PrintJobResponse updatePrintJobPaymentDetails(@Valid @RequestBody PrintJobDepositAmountRequest request) {
 		Account account = securityUtils.getRequestingAccount();
 		if (account == null) {
 			throw new UsernameNotFoundException("Missing account/customer");
 		}
 		PrintJob printJob = printJobService.updatePrintJobPaymentDetails(request);
+		ledgerEntryService.createLedgerEntry(printJob, request.getDepositAmount(), Instant.now());
 		return new PrintJobResponse(printJob);
 	}
 
@@ -153,12 +155,12 @@ public class PrintJobController {
 	}
 
 	@PatchMapping("mark-as-paid/{uuid}")
-	public PrintJobResponse markPrintJobAsPaid(@PathVariable("id") @NotNull @Min(1) Long printJobId) {
+	public PrintJobResponse markPrintJobAsPaid(@PathVariable @NotNull @NotBlank String uuid) {
 		Account account = securityUtils.getRequestingAccount();
 		if (account == null) {
 			throw new UsernameNotFoundException("Missing account/customer");
 		}
-		PrintJob printJob = printJobService.markPrintJobAsPaid(printJobId);
+		PrintJob printJob = printJobService.markPrintJobAsPaid(uuid);
 		return new PrintJobResponse(printJob);
 	}
 

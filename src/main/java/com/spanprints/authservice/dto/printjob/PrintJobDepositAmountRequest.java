@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class UpdatePrintJobPaymentDetailsRequest {
+public class PrintJobDepositAmountRequest {
 
 	@NotNull(message = "Print Job id is required")
 	private Long id;

@@ -1,5 +1,6 @@
 package com.spanprints.authservice.service;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 
@@ -30,9 +31,9 @@ public class LedgerEntryService {
 		return ledgerEntryRepository.save(ledgerEntry);
 	}
 
-	public LedgerEntry createLedgerEntry(PrintJob printJob) {
-		LedgerEntry ledgerEntry = LedgerEntry.builder().amount(printJob.getDepositAmount()).ledgerType(LedgerType.CREDIT)
-				.ledgerSource(LedgerSource.ORDER).transactionDateTime(Instant.now()).printJob(printJob).expense(null)
+	public LedgerEntry createLedgerEntry(PrintJob printJob, BigDecimal amount, Instant instant) {
+		LedgerEntry ledgerEntry = LedgerEntry.builder().amount(amount).ledgerType(LedgerType.CREDIT)
+				.ledgerSource(LedgerSource.ORDER).transactionDateTime(instant).printJob(printJob).expense(null)
 				.account(printJob.getAccount()).build();
 		return ledgerEntryRepository.save(ledgerEntry);
 	}
