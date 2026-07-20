@@ -1,5 +1,6 @@
 package com.spanprints.authservice.service;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -14,10 +15,14 @@ import org.springframework.stereotype.Service;
 
 import com.spanprints.authservice.dto.printjob.CreatePrintJobRequest;
 import com.spanprints.authservice.dto.printjob.PrintJobPaginatonResponse;
+import com.spanprints.authservice.dto.printjob.UpdatePrintJobNonDependentFieldsRequest;
+import com.spanprints.authservice.dto.printjob.UpdatePrintJobPaymentDetailsRequest;
+import com.spanprints.authservice.dto.printjob.UpdatePrintJobStatusRequest;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.Customer;
 import com.spanprints.authservice.entity.PrintJob;
 import com.spanprints.authservice.entity.PrintJobType;
+import com.spanprints.authservice.enums.PaymentStatus;
 import com.spanprints.authservice.enums.PrintJobStatus;
 import com.spanprints.authservice.exception.printjob.PrintJobNotFoundException;
 import com.spanprints.authservice.repository.CustomerRepository;
@@ -107,12 +112,71 @@ public class PrintJobService {
 		return PrintJob.builder().customer(customer).account(account).jobType(jobType).quantity(request.getQuantity())
 				.dateOfDelivery(BasicUtils.convertLocalDateToInstant(request.getDateOfDelivery()))
 				.dateOfPlaced(BasicUtils.convertLocalDateToInstant(request.getDateOfPlaced()))
-				.printJobStatus(PrintJobStatus.PLACED).totalAmount(request.getTotalAmount())
+				.printJobStatus(request.getPrintJobStatus()).totalAmount(request.getTotalAmount())
 				.depositAmount(request.getDepositAmount()).note(request.getNote())
 				.bookNumber(BasicUtils.parserStringToInteger(request.getBookNumber()))
-//				.wBookNumber(BasicUtils.parserStringToInteger(request.getWBookNumber()))
 				.description(request.getDescription()).discountedAmount(request.getDiscountedAmount())
 				.pendingAmount(request.getPendingAmount()).paymentStatus(request.getPaymentStatus()).build();
 	}
 
+	public PrintJob updatePrintJobPaymentDetails(UpdatePrintJobPaymentDetailsRequest request) {
+		PrintJob printJob = printJobRepository.findById(request.getId())
+				.orElseThrow(() -> new PrintJobNotFoundException("No order with id" + request.getId()));
+		BigDecimal totalAmount = printJob.getTotalAmount();
+		BigDecimal discountAmount = printJob.getDiscountedAmount();
+		BigDecimal depositAmount = printJob.getDepositAmount();
+		BigDecimal pendingAmount = totalAmount.subtract(discountAmount).subtract(depositAmount);
+		BigDecimal amountToDeposit = request.getDepositAmount();
+		if (amountToDeposit.compareTo(pendingAmount) > 0) {
+			return null;
+		}
+		depositAmount = depositAmount.add(amountToDeposit);
+		pendingAmount = pendingAmount.subtract(amountToDeposit);
+		printJob.setDepositAmount(depositAmount);
+		printJob.setPendingAmount(pendingAmount);
+		if (pendingAmount.equals(new BigDecimal(0))) {
+			printJob.setPaymentStatus(PaymentStatus.PAID);
+		}
+		return printJobRepository.save(printJob);
+	}
+
+	public PrintJob updatePrintJob(UpdatePrintJobNonDependentFieldsRequest request, PrintJobType jobType) {
+		PrintJob printJob = printJobRepository.findById(request.getId())
+				.orElseThrow(() -> new PrintJobNotFoundException("No order with id" + request.getId()));
+		printJob.setJobType(jobType);
+		updatePrintJobFromDto(request, printJob);
+		return printJobRepository.save(printJob);
+	}
+
+	public PrintJob markPrintJobAsPaid(Long id) {
+		PrintJob printJob = printJobRepository.findById(id)
+				.orElseThrow(() -> new PrintJobNotFoundException("No order with id" + id));
+		BigDecimal totalAmount = printJob.getTotalAmount();
+		BigDecimal discountAmount = printJob.getDiscountedAmount();
+		BigDecimal depositAmount = printJob.getDepositAmount();
+		discountAmount = totalAmount.subtract(depositAmount);
+		printJob.setDiscountedAmount(discountAmount);
+		printJob.setPendingAmount(new BigDecimal(0));
+		printJob.setPaymentStatus(PaymentStatus.PAID);
+		return printJobRepository.save(printJob);
+	}
+
+	public PrintJob updatePrintJobStatus(UpdatePrintJobStatusRequest request) {
+		PrintJob printJob = printJobRepository.findById(request.getId())
+				.orElseThrow(() -> new PrintJobNotFoundException("No order with id" + request.getId()));
+		printJob.setPrintJobStatus(request.getPrintJobStatus());
+		return printJobRepository.save(printJob);
+	}
+
+	private void updatePrintJobFromDto(UpdatePrintJobNonDependentFieldsRequest request, PrintJob printJob) {
+		printJob.setNote(request.getNote());
+		printJob.setDescription(request.getDescription());
+		printJob.setQuantity(request.getQuantity());
+		printJob.setBookNumber(request.getBookNumber());
+		printJob.setTotalAmount(request.getTotalAmount());
+		printJob.setDiscountedAmount(request.getDiscountedAmount());
+		printJob.setDateOfPlaced(BasicUtils.convertLocalDateToInstant(request.getDateOfPlaced()));
+		printJob.setDateOfDelivery(BasicUtils.convertLocalDateToInstant(request.getDateOfDelivery()));
+		printJob.setPrintJobStatus(request.getPrintJobStatus());
+	}
 }

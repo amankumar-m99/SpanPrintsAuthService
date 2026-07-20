@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import com.spanprints.authservice.enums.PaymentStatus;
+import com.spanprints.authservice.enums.PrintJobStatus;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -43,26 +44,27 @@ public class CreatePrintJobRequest {
 	@NotNull(message = "Book number cannot be empty")
 	private String bookNumber;
 
-//	@NotNull(message = "Wedding book number cannot be empty")
-//	private String wBookNumber;
+	@NotNull(message = "Order status cannot be empty")
+	@Enumerated(EnumType.STRING)
+	private PrintJobStatus printJobStatus;
 
 	@NotNull(message = "Total amount cannot be empty")
 	private BigDecimal totalAmount;
 
 	@NotNull(message = "Discounted amount cannot be empty")
 	private BigDecimal discountedAmount;
-	
+
 	@NotNull(message = "Deposit amount cannot be empty")
 	private BigDecimal depositAmount;
 
 	@NotNull(message = "Pending amount cannot be empty")
 	private BigDecimal pendingAmount;
-	
+
 	@NotNull(message = "Payment status cannot be empty")
 	@Enumerated(EnumType.STRING)
 	private PaymentStatus paymentStatus;
 
 	private String note;
-	
+
 	private String description;
 }

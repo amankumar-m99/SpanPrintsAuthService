@@ -3,7 +3,7 @@ package com.spanprints.authservice.dto.printjob;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.spanprints.authservice.enums.PaymentStatus;
+import com.spanprints.authservice.enums.PrintJobStatus;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -19,28 +19,25 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class UpdatePrintJobRequest {
+public class UpdatePrintJobNonDependentFieldsRequest {
 
 	@NotNull(message = "Print Job id is required")
 	private Long id;
 
-	@NotNull(message = "Customer id is required")
-	private Long customerId;
-
 	@NotNull(message = "Print job type cannot be empty")
-	private Long printJobId;
+	private Long printJobTypeId;
 
 	@NotNull(message = "Quantity cannot be empty")
 	private int quantity;
 
-	@NotNull(message = "Date of delivery cannot be empty")
-	private LocalDate dateOfDelivery;
-
 	@NotNull(message = "Book number cannot be empty")
 	private int bookNumber;
 
-	@NotNull(message = "Wedding book number cannot be empty")
-	private int wBookNumber;
+	@NotNull(message = "Date of placed cannot be empty")
+	private LocalDate dateOfPlaced;
+
+	@NotNull(message = "Date of delivery cannot be empty")
+	private LocalDate dateOfDelivery;
 
 	@NotNull(message = "Total amount cannot be empty")
 	private BigDecimal totalAmount;
@@ -48,17 +45,11 @@ public class UpdatePrintJobRequest {
 	@NotNull(message = "Discounted amount cannot be empty")
 	private BigDecimal discountedAmount;
 
-	@NotNull(message = "Deposit amount cannot be empty")
-	private BigDecimal depositAmount;
-
-	@NotNull(message = "Pending amount cannot be empty")
-	private BigDecimal pendingAmount;
-
-	@NotNull(message = "Expense type cannot be empty")
-	@Enumerated(EnumType.STRING)
-	private PaymentStatus paymentStatus;
-
 	private String note;
 
 	private String description;
+
+	@NotNull(message = "Order status cannot be empty")
+	@Enumerated(EnumType.STRING)
+	private PrintJobStatus printJobStatus;
 }

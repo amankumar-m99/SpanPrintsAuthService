@@ -42,6 +42,7 @@ public class PrintJobResponse extends EntityResponseDto {
 
 	private List<Long> attachmentIds;
 	private List<Long> ledgerIds;
+	private String customerUuid;
 	private Long customerId;
 	private String customerName;
 	private String customerPrimaryPhoneNumber;
@@ -79,6 +80,7 @@ public class PrintJobResponse extends EntityResponseDto {
 				? printJob.getLedgerEntry().stream().map(LedgerEntry::getId).toList()
 				: Collections.emptyList();
 		if (printJob.getCustomer() != null) {
+			this.customerUuid = printJob.getCustomer().getUuid();
 			this.customerId = printJob.getCustomer().getId();
 			this.customerName = printJob.getCustomer().getName();
 			this.customerPrimaryPhoneNumber = printJob.getCustomer().getPrimaryPhoneNumber();
