@@ -162,8 +162,8 @@ public class PrintJobService {
 	}
 
 	public PrintJob updatePrintJobStatus(UpdatePrintJobStatusRequest request) {
-		PrintJob printJob = printJobRepository.findById(request.getId())
-				.orElseThrow(() -> new PrintJobNotFoundException("No order with id" + request.getId()));
+		PrintJob printJob = printJobRepository.findByUuid(request.getOrderUuid())
+				.orElseThrow(() -> new PrintJobNotFoundException("No order with id" + request.getOrderUuid()));
 		printJob.setPrintJobStatus(request.getPrintJobStatus());
 		return printJobRepository.save(printJob);
 	}

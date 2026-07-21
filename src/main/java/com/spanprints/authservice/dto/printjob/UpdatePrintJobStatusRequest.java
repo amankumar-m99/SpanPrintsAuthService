@@ -18,8 +18,8 @@ import lombok.Setter;
 @Builder
 public class UpdatePrintJobStatusRequest {
 
-	@NotNull(message = "Print Job id is required")
-	private Long id;
+	@NotNull(message = "Print Job uuid is required")
+	private String orderUuid;
 
 	@NotNull(message = "Order status cannot be empty")
 	@Enumerated(EnumType.STRING)
