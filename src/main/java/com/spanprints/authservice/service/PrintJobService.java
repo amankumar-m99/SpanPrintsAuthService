@@ -141,8 +141,8 @@ public class PrintJobService {
 	}
 
 	public PrintJob updatePrintJob(UpdatePrintJobNonDependentFieldsRequest request, PrintJobType jobType) {
-		PrintJob printJob = printJobRepository.findById(request.getId())
-				.orElseThrow(() -> new PrintJobNotFoundException("No order with id" + request.getId()));
+		PrintJob printJob = printJobRepository.findByUuid(request.getUuid())
+				.orElseThrow(() -> new PrintJobNotFoundException("No order with id" + request.getUuid()));
 		printJob.setJobType(jobType);
 		updatePrintJobFromDto(request, printJob);
 		return printJobRepository.save(printJob);

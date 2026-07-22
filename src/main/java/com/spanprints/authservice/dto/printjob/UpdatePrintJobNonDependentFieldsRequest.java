@@ -7,6 +7,7 @@ import com.spanprints.authservice.enums.PrintJobStatus;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +23,8 @@ import lombok.Setter;
 public class UpdatePrintJobNonDependentFieldsRequest {
 
 	@NotNull(message = "Print Job id is required")
-	private Long id;
+	@NotBlank(message = "Print Job id is required")
+	private String uuid;
 
 	@NotNull(message = "Print job type cannot be empty")
 	private Long printJobTypeId;
