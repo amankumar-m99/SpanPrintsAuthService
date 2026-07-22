@@ -164,14 +164,14 @@ public class PrintJobController {
 		return new PrintJobResponse(printJob);
 	}
 
-	@PostMapping(value = "attatchments/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public PrintJobResponse addPrintJobAttachment(@PathVariable("id") @NotNull @Min(1) Long printJobId,
+	@PostMapping(value = "attatchments/{uuid}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public PrintJobResponse addPrintJobAttachment(@PathVariable @NotNull @NotBlank String uuid,
 			@RequestParam(name = "attachments", required = true) List<MultipartFile> attachments) {
 		Account account = securityUtils.getRequestingAccount();
 		if (account == null) {
 			throw new UsernameNotFoundException("Missing account/customer");
 		}
-		PrintJob printJob = printJobService.getPrintJobById(printJobId);
+		PrintJob printJob = printJobService.getPrintJobByUuid(uuid);
 		fileAttachmentService.addFileAttachment(attachments, printJob);
 		return new PrintJobResponse(printJob);
 	}
