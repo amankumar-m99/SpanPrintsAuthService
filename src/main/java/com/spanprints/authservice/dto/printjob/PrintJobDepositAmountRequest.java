@@ -2,6 +2,7 @@ package com.spanprints.authservice.dto.printjob;
 
 import java.math.BigDecimal;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +18,8 @@ import lombok.Setter;
 public class PrintJobDepositAmountRequest {
 
 	@NotNull(message = "Print Job id is required")
-	private Long id;
+	@NotBlank(message = "Print Job id is required")
+	private String uuid;
 
 	@NotNull(message = "Deposit amount cannot be empty")
 	private BigDecimal depositAmount;
