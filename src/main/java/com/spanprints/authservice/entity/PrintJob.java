@@ -10,6 +10,8 @@ import com.spanprints.authservice.enums.PrintJobStatus;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -31,15 +33,16 @@ public class PrintJob extends AuditableBaseEntity {
 
 	private Integer quantity;
 	private Integer bookNumber;
-//	private Integer wBookNumber;
 	private Instant dateOfDelivery;
 	private Instant dateOfPlaced;
+//	@Enumerated(EnumType.STRING)
 	private PrintJobStatus printJobStatus;
 
 	private BigDecimal totalAmount;
 	private BigDecimal discountedAmount;
 	private BigDecimal depositAmount;
 	private BigDecimal pendingAmount;
+//	@Enumerated(EnumType.STRING)
 	private PaymentStatus paymentStatus;
 
 	private String note;

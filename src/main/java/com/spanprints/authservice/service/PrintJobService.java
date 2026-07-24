@@ -11,12 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.spanprints.authservice.dto.printjob.CreatePrintJobRequest;
+import com.spanprints.authservice.dto.printjob.PrintJobDepositAmountRequest;
+import com.spanprints.authservice.dto.printjob.PrintJobFilterRequest;
 import com.spanprints.authservice.dto.printjob.PrintJobPaginatonResponse;
 import com.spanprints.authservice.dto.printjob.UpdatePrintJobNonDependentFieldsRequest;
-import com.spanprints.authservice.dto.printjob.PrintJobDepositAmountRequest;
 import com.spanprints.authservice.dto.printjob.UpdatePrintJobStatusRequest;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.Customer;
@@ -27,6 +29,7 @@ import com.spanprints.authservice.enums.PrintJobStatus;
 import com.spanprints.authservice.exception.printjob.PrintJobNotFoundException;
 import com.spanprints.authservice.repository.CustomerRepository;
 import com.spanprints.authservice.repository.PrintJobRepository;
+import com.spanprints.authservice.specifications.PrintJobSpecifications;
 import com.spanprints.authservice.util.BasicUtils;
 
 import io.jsonwebtoken.lang.Collections;
@@ -67,6 +70,27 @@ public class PrintJobService {
 
 	public List<PrintJob> getAllPrintJobs() {
 		return printJobRepository.findAll();
+	}
+
+	public List<PrintJob> getFilteredProducts(PrintJobFilterRequest filter) {
+		// Build the dynamic specification from the filter object
+		Specification<PrintJob> spec = PrintJobSpecifications.withFilter(filter);
+
+		// Pass the specification down to the repository layer
+		return printJobRepository.findAll(spec);
+	}
+
+	public Page<PrintJob> getFilteredProductsPaginated(PrintJobFilterRequest filter, Pageable pageable) {
+		Specification<PrintJob> spec = PrintJobSpecifications.withFilter(filter);
+		// Returns a chunk of data with metadata (total pages, total items)
+		return printJobRepository.findAll(spec, pageable);
+	}
+
+	public Page<PrintJob> getFilteredProductsPaginated(PrintJobFilterRequest filter) {
+		Specification<PrintJob> spec = PrintJobSpecifications.withFilter(filter);
+		// Returns a chunk of data with metadata (total pages, total items)
+		Pageable pageable = PageRequest.of(filter.getPageNumber(), filter.getPageSize());
+		return printJobRepository.findAll(spec, pageable);
 	}
 
 	public PrintJobPaginatonResponse getAllPrintJobsPaginated(int pageNumber, int pageSize) {

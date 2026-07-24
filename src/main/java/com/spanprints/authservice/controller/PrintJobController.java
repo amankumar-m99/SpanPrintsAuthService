@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.spanprints.authservice.dto.printjob.CreatePrintJobRequest;
 import com.spanprints.authservice.dto.printjob.PrintJobDepositAmountRequest;
+import com.spanprints.authservice.dto.printjob.PrintJobFilterRequest;
 import com.spanprints.authservice.dto.printjob.PrintJobPaginatonResponse;
 import com.spanprints.authservice.dto.printjob.PrintJobResponse;
 import com.spanprints.authservice.dto.printjob.UpdatePrintJobNonDependentFieldsRequest;
@@ -80,10 +82,10 @@ public class PrintJobController {
 		return printJobService.getAllPrintJobs().stream().map(PrintJobResponse::new).toList();
 	}
 
-	@GetMapping("paginated")
-	public PrintJobPaginatonResponse getAllPrintJobsPaginated(@RequestParam @NotNull @Min(0) int pageNumber,
-			@RequestParam @NotNull @Min(1) int pageSize) {
-		return printJobService.getAllPrintJobsPaginated(pageNumber, pageSize);
+	@PostMapping("paginated")
+	public PrintJobPaginatonResponse getAllPrintJobsPaginated(@Valid @RequestBody PrintJobFilterRequest request) {
+		Page<PrintJob> filteredProductsPaginated = printJobService.getFilteredProductsPaginated(request);
+		return new PrintJobPaginatonResponse(filteredProductsPaginated);
 	}
 
 	@GetMapping("customer-uuid/{uuid}")

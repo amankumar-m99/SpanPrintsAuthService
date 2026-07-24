@@ -1,0 +1,32 @@
+package com.spanprints.authservice.dto.printjob;
+
+import java.util.List;
+
+import com.spanprints.authservice.enums.PaymentStatus;
+import com.spanprints.authservice.enums.PrintJobStatus;
+
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class PrintJobFilterRequest {
+
+	@NotNull(message = "Page number cannot be empty")
+	@Min(0)
+	private Integer pageNumber;
+
+	@NotNull(message = "Page size cannot be empty")
+	@Min(1)
+	private Integer pageSize;
+
+	private List<String> jobNames;
+	private List<PaymentStatus> paymentStatuses;
+	private List<PrintJobStatus> orderStatuses;
+}
