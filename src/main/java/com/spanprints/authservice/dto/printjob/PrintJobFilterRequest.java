@@ -1,5 +1,6 @@
 package com.spanprints.authservice.dto.printjob;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.spanprints.authservice.enums.PaymentStatus;
@@ -26,7 +27,22 @@ public class PrintJobFilterRequest {
 	@Min(1)
 	private Integer pageSize;
 
-	private List<String> jobNames;
-	private List<PaymentStatus> paymentStatuses;
-	private List<PrintJobStatus> orderStatuses;
+	private List<Long> jobTypeIds;//
+	private List<PaymentStatus> paymentStatuses;//
+	private List<PrintJobStatus> orderStatuses;//
+	private Long quantityMin;
+	private Long quantityMax;
+	private Long totalAmountMin;
+	private Long totalAmountMax;
+	private Long discountedAmountMin;
+	private Long discountedAmountMax;
+	private Long pendingAmountMin;
+	private Long pendingAmountMax;
+	private LocalDate deliveryDateMin;
+	private LocalDate deliveryDateMax;
+	private LocalDate placedOnMin;
+	private LocalDate placedOnMax;
+	private String bookNumber;//
+	private String customerName;
+	private String customerPhone;
 }
