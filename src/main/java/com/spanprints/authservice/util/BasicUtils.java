@@ -63,4 +63,8 @@ public class BasicUtils {
 			return new String[]{fileName, ""};
 		return new String[]{fileName.substring(0, lastIndexOfDot), fileName.substring(lastIndexOfDot+1)};
 	}
+
+	public static boolean isNullOrBlank(String string) {
+		return string == null || string.isBlank();
+	}
 }
