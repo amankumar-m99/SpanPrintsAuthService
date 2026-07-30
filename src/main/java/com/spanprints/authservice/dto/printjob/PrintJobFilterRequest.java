@@ -27,9 +27,6 @@ public class PrintJobFilterRequest {
 	@Min(1)
 	private Integer pageSize;
 
-	private List<Long> jobTypeIds;//
-	private List<PaymentStatus> paymentStatuses;//
-	private List<PrintJobStatus> orderStatuses;//
 	private Long quantityMin;
 	private Long quantityMax;
 	private Long totalAmountMin;
@@ -38,11 +35,14 @@ public class PrintJobFilterRequest {
 	private Long discountedAmountMax;
 	private Long pendingAmountMin;
 	private Long pendingAmountMax;
+	private String bookNumber;
+	private String customerName;
+	private String customerPhone;
 	private LocalDate deliveryDateMin;
 	private LocalDate deliveryDateMax;
 	private LocalDate placedOnMin;
 	private LocalDate placedOnMax;
-	private String bookNumber;//
-	private String customerName;
-	private String customerPhone;
+	private List<Long> jobTypeIds;
+	private List<PaymentStatus> paymentStatuses;
+	private List<PrintJobStatus> orderStatuses;
 }
