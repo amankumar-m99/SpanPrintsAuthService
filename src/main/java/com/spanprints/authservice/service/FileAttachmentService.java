@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -41,7 +42,11 @@ public class FileAttachmentService {
 	@Autowired
 	private PrintJobRepository printJobRepository;
 
-	public List<FileAttachment> addFileAttachment(List<MultipartFile> attachments, PrintJob printJob) {
+	public List<FileAttachment> getAllFileAttatchments(){
+		return fileAttachmentRepository.findAll();
+	}
+
+ 	public List<FileAttachment> addFileAttachment(List<MultipartFile> attachments, PrintJob printJob) {
 		if(attachments == null || attachments.isEmpty()) {
 			return Collections.emptyList();
 		}
@@ -103,6 +108,60 @@ public class FileAttachmentService {
 		return fetchFile(uuid, "inline");
 	}
 
+	public boolean deleteFile(String uuid) {
+		try {
+			FileAttachment fileAttachment = fileAttachmentRepository.findByUuid(uuid).orElse(null);
+			if (fileAttachment == null) {
+				return false;
+			}
+			String fileName = fileAttachment.getCreatedFileName();
+			Path fileStorageLocation = Paths.get(fileAttachmentDirectory);
+			Path filePath = fileStorageLocation.resolve(fileName).normalize();
+
+			// Security: prevent path traversal
+			if (!filePath.startsWith(fileStorageLocation)) {
+				return false;
+			}
+
+			Resource resource = new UrlResource(filePath.toUri());
+
+			if (!resource.exists() || !resource.isReadable()) {
+				return false;
+			}
+
+			File fileTobeDeleted = new File(filePath.toUri());
+			return fileTobeDeleted.delete();
+		} catch (MalformedURLException e) {
+		}
+		return false;
+	}
+
+	public URI getFileUri(String uuid) {
+		try {
+			FileAttachment fileAttachment = fileAttachmentRepository.findByUuid(uuid).orElse(null);
+			if (fileAttachment == null) {
+				return null;
+			}
+			String fileName = fileAttachment.getCreatedFileName();
+			Path fileStorageLocation = Paths.get(fileAttachmentDirectory);
+			Path filePath = fileStorageLocation.resolve(fileName).normalize();
+
+			// Security: prevent path traversal
+			if (!filePath.startsWith(fileStorageLocation)) {
+				return null;
+			}
+
+			Resource resource = new UrlResource(filePath.toUri());
+
+			if (!resource.exists() || !resource.isReadable()) {
+				return null;
+			}
+
+			return filePath.toUri();
+		} catch (MalformedURLException e) {
+		}
+		return null;
+	}
 	private ResponseEntity<Resource> fetchFile(String uuid, String contentDisposition) {
 		try {
 			FileAttachment fileAttachment = fileAttachmentRepository.findByUuid(uuid).orElse(null);

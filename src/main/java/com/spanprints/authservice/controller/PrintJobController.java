@@ -1,12 +1,16 @@
 package com.spanprints.authservice.controller;
 
+import java.net.URI;
 import java.time.Instant;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -19,6 +23,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.spanprints.authservice.dto.ErrorResponseDto;
+import com.spanprints.authservice.dto.SuccessResponseDto;
+import com.spanprints.authservice.dto.TextResponseDto;
 import com.spanprints.authservice.dto.printjob.CreatePrintJobRequest;
 import com.spanprints.authservice.dto.printjob.PrintJobDepositAmountRequest;
 import com.spanprints.authservice.dto.printjob.PrintJobFilterRequest;
@@ -176,5 +183,19 @@ public class PrintJobController {
 		PrintJob printJob = printJobService.getPrintJobByUuid(uuid);
 		fileAttachmentService.addFileAttachment(attachments, printJob);
 		return new PrintJobResponse(printJob);
+	}
+
+	@DeleteMapping("delete-file/{orderUuid}/{fileUuid}")
+	public ResponseEntity<TextResponseDto> deleteFile(@PathVariable String orderUuid, @PathVariable String fileUuid) {
+		URI fileUri = fileAttachmentService.getFileUri(fileUuid);
+		boolean isDeleted = printJobService.deleteAttachedFile(orderUuid, fileUuid, fileUri);
+		TextResponseDto responseDto = null;
+		if(isDeleted) {
+			responseDto = new SuccessResponseDto(HttpStatus.OK, "File deleted successfully.");
+		}
+		else {
+			responseDto = new ErrorResponseDto(HttpStatus.FAILED_DEPENDENCY, null, "File not deleted.", null);
+		}
+		return new ResponseEntity<>(responseDto, responseDto.getStatus());
 	}
 }

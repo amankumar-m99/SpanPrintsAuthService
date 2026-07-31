@@ -22,6 +22,11 @@ public class FileAttachmentController {
 	@Autowired
 	private FileAttachmentService fileAttachmentService;
 
+	@GetMapping
+	public List<FileAttachment> getAllFileAttatchments() {
+		return fileAttachmentService.getAllFileAttatchments();
+	}
+
 	@GetMapping("/uuid/{uuid}")
 	public List<FileAttachment> getFileAttatchmentsByPrintJobUuid(@PathVariable @NotNull String uuid) {
 		return fileAttachmentService.getFileAttatchmentsByPrintJobUuid(uuid);

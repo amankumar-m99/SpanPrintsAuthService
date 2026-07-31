@@ -1,6 +1,8 @@
 package com.spanprints.authservice.service;
 
+import java.io.File;
 import java.math.BigDecimal;
+import java.net.URI;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -12,8 +14,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.dto.printjob.CreatePrintJobRequest;
 import com.spanprints.authservice.dto.printjob.PrintJobDepositAmountRequest;
 import com.spanprints.authservice.dto.printjob.PrintJobFilterRequest;
@@ -22,6 +26,7 @@ import com.spanprints.authservice.dto.printjob.UpdatePrintJobNonDependentFieldsR
 import com.spanprints.authservice.dto.printjob.UpdatePrintJobStatusRequest;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.Customer;
+import com.spanprints.authservice.entity.FileAttachment;
 import com.spanprints.authservice.entity.PrintJob;
 import com.spanprints.authservice.entity.PrintJobType;
 import com.spanprints.authservice.enums.PaymentStatus;
@@ -201,5 +206,18 @@ public class PrintJobService {
 		printJob.setDateOfPlaced(BasicUtils.convertLocalDateToInstant(request.getDateOfPlaced()));
 		printJob.setDateOfDelivery(BasicUtils.convertLocalDateToInstant(request.getDateOfDelivery()));
 		printJob.setPrintJobStatus(request.getPrintJobStatus());
+	}
+
+	public boolean deleteAttachedFile(String orderUuid, String fileUuid, URI fileUri) {
+		PrintJob printJob = getPrintJobByUuid(orderUuid);
+		for(FileAttachment attachment: printJob.getAttachments()) {
+			if(attachment.getUuid().equals(fileUuid)) {
+				printJob.getAttachments().remove(attachment);
+				printJobRepository.save(printJob);
+				File file = new File(fileUri);
+				return file.delete();
+			}
+		}
+		return false;
 	}
 }
