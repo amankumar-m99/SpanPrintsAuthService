@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.spanprints.authservice.dto.printjob.CreatePrintJobTypeRequest;
+import com.spanprints.authservice.entity.FileAttachment;
+import com.spanprints.authservice.entity.PrintJob;
 import com.spanprints.authservice.entity.PrintJobType;
 import com.spanprints.authservice.exception.printjob.PrintJobTypeAlreadyExistsException;
 import com.spanprints.authservice.exception.printjob.PrintJobTypeNotFoundException;
@@ -48,5 +50,4 @@ public class PrintJobTypeService {
 		return PrintJobType.builder().code(request.getCode()).name(BasicUtils.formatStringToTitle(request.getName()))
 				.description(request.getDescription()).build();
 	}
-
 }
