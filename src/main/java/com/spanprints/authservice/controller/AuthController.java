@@ -84,8 +84,8 @@ public class AuthController {
 
 	@PostMapping("/login")
 	public ResponseEntity<JwtResponseDto> login(@Valid @RequestBody LoginRequestDto request,
-			@RequestHeader(name = "g-recaptcha-token", required = true) String reCaptchaToken) {
-		gReCaptchaUtils.verify(reCaptchaToken);
+			@RequestHeader(name = "g-recaptcha-token", required = false) String reCaptchaToken) {
+//		gReCaptchaUtils.verify(reCaptchaToken);
 		try {
 			authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
@@ -105,8 +105,8 @@ public class AuthController {
 	@PostMapping("/register")
 	public ResponseEntity<SuccessResponseDto> register(@Valid @RequestBody CreateAccountRequest request,
 			@RequestHeader(value = "Origin", required = false) String frontendBaseUrl,
-			@RequestHeader(name = "g-recaptcha-token", required = true) String reCaptchaToken) {
-		gReCaptchaUtils.verify(reCaptchaToken);
+			@RequestHeader(name = "g-recaptcha-token", required = false) String reCaptchaToken) {
+//		gReCaptchaUtils.verify(reCaptchaToken);
 		String email = accountService.createAccount(request, frontendBaseUrl);
 		String message = String.format(
 				"Account created sucessfully. Verification link sent to your registered e-mail address `%s`", email);
