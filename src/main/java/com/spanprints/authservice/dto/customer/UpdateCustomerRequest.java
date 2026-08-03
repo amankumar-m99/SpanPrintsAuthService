@@ -19,5 +19,6 @@ public class UpdateCustomerRequest {
 	@NotBlank(message = "Primary phone number is required")
 	private String primaryPhoneNumber;
 	private String alternatePhoneNumber;
+	private String note;
 
 }

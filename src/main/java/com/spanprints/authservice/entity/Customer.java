@@ -29,6 +29,7 @@ public class Customer extends AuditableBaseEntity {
 	private String address;
 	private String primaryPhoneNumber;
 	private String alternatePhoneNumber;
+	private String note;
 
 	@ManyToOne
 	@JoinColumn(name = "account_id", referencedColumnName = "id")

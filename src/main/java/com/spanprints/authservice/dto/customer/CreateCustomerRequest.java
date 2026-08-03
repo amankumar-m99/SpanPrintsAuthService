@@ -21,5 +21,6 @@ public class CreateCustomerRequest {
 	@NotBlank(message = "Primary phone number is required")
 	private String primaryPhoneNumber;
 	private String alternatePhoneNumber;
+	private String note;
 
 }

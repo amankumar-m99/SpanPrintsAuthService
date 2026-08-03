@@ -35,6 +35,7 @@ public class ExpenseController {
 	@Autowired
 	private LedgerEntryService ledgerEntryService;
 
+	@Autowired
 	private SecurityUtils securityUtils;
 
 	@PostMapping

@@ -166,6 +166,9 @@ public class PrintJobService {
 		if (pendingAmount.signum() == 0) {
 			printJob.setPaymentStatus(PaymentStatus.PAID);
 		}
+		else {
+			printJob.setPaymentStatus(PaymentStatus.PARTIALLY_PAID);
+		}
 		return printJobRepository.save(printJob);
 	}
 

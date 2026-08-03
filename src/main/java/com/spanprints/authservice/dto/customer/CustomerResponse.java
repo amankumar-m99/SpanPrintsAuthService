@@ -17,6 +17,7 @@ public class CustomerResponse extends EntityResponseDto {
 	private String address;
 	private String primaryPhoneNumber;
 	private String alternatePhoneNumber;
+	private String note;
 	private String createdBy;
 	private Long createdById;
 	private List<Long> printJobIds;
@@ -28,6 +29,7 @@ public class CustomerResponse extends EntityResponseDto {
 		this.address = customer.getAddress();
 		this.primaryPhoneNumber = customer.getPrimaryPhoneNumber();
 		this.alternatePhoneNumber = customer.getAlternatePhoneNumber();
+		this.note = customer.getNote();
 		this.createdBy = customer.getAccount().getUsername();
 		this.createdById = customer.getAccount().getId();
 		this.printJobIds = customer.getPrintJobs() != null

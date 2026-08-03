@@ -59,6 +59,7 @@ public class CustomerService {
 		customer.setPrimaryPhoneNumber(request.getPrimaryPhoneNumber());
 		customer.setAlternatePhoneNumber(request.getAlternatePhoneNumber());
 		customer.setAddress(request.getAddress());
+		customer.setNote(request.getNote());
 		return customerRepository.save(customer);
 	}
 

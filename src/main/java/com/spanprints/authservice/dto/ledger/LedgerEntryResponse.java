@@ -18,8 +18,8 @@ public class LedgerEntryResponse extends EntityResponseDto {
 	private LedgerSource ledgerSource;
 	private Instant transactionDateTime;
 	private String description;
-	private Long printJobId;
-	private Long expenseId;
+	private String printJobUuid;
+	private String expenseUuid;
 	private String addedBy;
 	private Long addedById;
 
@@ -30,8 +30,8 @@ public class LedgerEntryResponse extends EntityResponseDto {
 		this.ledgerSource = ledgerEntry.getLedgerSource();
 		this.transactionDateTime = ledgerEntry.getTransactionDateTime();
 		this.description = ledgerEntry.getDescription();
-		this.printJobId = ledgerEntry.getPrintJob() != null ? ledgerEntry.getPrintJob().getId() : null;
-		this.expenseId = ledgerEntry.getExpense() != null ? ledgerEntry.getExpense().getId() : null;
+		this.printJobUuid = ledgerEntry.getPrintJob() != null ? ledgerEntry.getPrintJob().getUuid() : null;
+		this.expenseUuid = ledgerEntry.getExpense() != null ? ledgerEntry.getExpense().getUuid() : null;
 		this.addedBy = ledgerEntry.getAccount() != null ? ledgerEntry.getAccount().getUsername() : null;
 		this.addedById = ledgerEntry.getAccount() != null ? ledgerEntry.getAccount().getId() : null;
 	}
