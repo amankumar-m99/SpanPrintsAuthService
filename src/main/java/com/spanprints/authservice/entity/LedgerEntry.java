@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,7 +33,7 @@ public class LedgerEntry extends AuditableBaseEntity {
 	@JsonIgnore
 	private PrintJob printJob;
 
-	@ManyToOne
+	@OneToOne
 	@JoinColumn(name = "expense_id", referencedColumnName = "id")
 	@JsonIgnore
 	private Expense expense;
