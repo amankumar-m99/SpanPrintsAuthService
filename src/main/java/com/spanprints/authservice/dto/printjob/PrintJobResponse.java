@@ -19,7 +19,6 @@ public class PrintJobResponse extends EntityResponseDto {
 
 	private Integer quantity;
 	private Integer bookNumber;
-//	private Integer wBookNumber;
 	private Instant dateOfDelivery;
 	private Instant dateOfPlaced;
 	private PrintJobStatus printJobStatus;
@@ -42,6 +41,7 @@ public class PrintJobResponse extends EntityResponseDto {
 
 	private List<Long> attachmentIds;
 	private List<Long> ledgerIds;
+	private List<String> ledgerUuids;
 	private String customerUuid;
 	private Long customerId;
 	private String customerName;
@@ -53,7 +53,6 @@ public class PrintJobResponse extends EntityResponseDto {
 		super(printJob);
 		this.quantity = printJob.getQuantity();
 		this.bookNumber = printJob.getBookNumber();
-//		this.wBookNumber = printJob.getWBookNumber();
 		this.dateOfDelivery = printJob.getDateOfDelivery();
 		this.dateOfPlaced = printJob.getDateOfPlaced();
 		this.printJobStatus = printJob.getPrintJobStatus();
@@ -79,6 +78,9 @@ public class PrintJobResponse extends EntityResponseDto {
 		this.ledgerIds = printJob.getLedgerEntry() != null
 				? printJob.getLedgerEntry().stream().map(LedgerEntry::getId).toList()
 				: Collections.emptyList();
+		this.ledgerUuids = printJob.getLedgerEntry() != null
+				? printJob.getLedgerEntry().stream().map(LedgerEntry::getUuid).toList()
+						: Collections.emptyList();
 		if (printJob.getCustomer() != null) {
 			this.customerUuid = printJob.getCustomer().getUuid();
 			this.customerId = printJob.getCustomer().getId();

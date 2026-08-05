@@ -9,6 +9,7 @@ import com.spanprints.authservice.dto.investment.CreateInvestmentRequest;
 import com.spanprints.authservice.dto.investment.UpdateInvestmentRequest;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.Investment;
+import com.spanprints.authservice.exception.InvalidInputsException;
 import com.spanprints.authservice.exception.ledger.TransactionNotFoundException;
 import com.spanprints.authservice.repository.InvestmentRepository;
 import com.spanprints.authservice.util.BasicUtils;
@@ -40,13 +41,15 @@ public class InvestmentService {
 				.orElseThrow(() -> new TransactionNotFoundException("No investment found by given uuid."));
 	}
 
-	public Investment updateInvestmentById(Long id, UpdateInvestmentRequest request) {
-		Investment investment = getInvestmentById(id);
-		return updateInvestment(investment, request);
-	}
-
-	public Investment updateInvestmentByUuid(String uuid, UpdateInvestmentRequest request) {
-		Investment investment = getInvestmentByUuid(uuid);
+	public Investment updateInvestment(UpdateInvestmentRequest request) {
+		Investment investment = null;
+		if (!BasicUtils.isNullOrBlank(request.getUuid())) {
+			investment = getInvestmentByUuid(request.getUuid());
+		} else if (request.getId() != null) {
+			investment = getInvestmentById(request.getId());
+		} else {
+			throw new InvalidInputsException("Provide id or uuid");
+		}
 		return updateInvestment(investment, request);
 	}
 

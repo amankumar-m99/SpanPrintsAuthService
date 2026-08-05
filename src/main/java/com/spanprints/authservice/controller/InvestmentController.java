@@ -63,20 +63,10 @@ public class InvestmentController {
 		return new InvestmentResponse(investmentService.getInvestmentByUuid(uuid));
 	}
 
-	@PutMapping("/id/{id}")
+	@PutMapping
 	@Transactional
-	public InvestmentResponse updateInvestmentById(@PathVariable @NotNull @Positive @Min(1) Long id,
-			@Valid @RequestBody UpdateInvestmentRequest request) {
-		Investment investment = investmentService.updateInvestmentById(id, request);
-		ledgerEntryService.updateTransaction(investment);
-		return new InvestmentResponse(investment);
-	}
-
-	@PutMapping("/uuid/{uuid}")
-	@Transactional
-	public InvestmentResponse updateInvestmentByUuid(@PathVariable @NotNull String uuid,
-			@Valid @RequestBody UpdateInvestmentRequest request) {
-		Investment investment = investmentService.updateInvestmentByUuid(uuid, request);
+	public InvestmentResponse updateInvestment(@Valid @RequestBody UpdateInvestmentRequest request) {
+		Investment investment = investmentService.updateInvestment(request);
 		ledgerEntryService.updateTransaction(investment);
 		return new InvestmentResponse(investment);
 	}

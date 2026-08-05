@@ -63,20 +63,10 @@ public class ExpenseController {
 		return new ExpenseResponse(expenseService.getExpenseByUuid(uuid));
 	}
 
-	@PutMapping("/id/{id}")
+	@PutMapping
 	@Transactional
-	public ExpenseResponse updateExpenseById(@PathVariable @NotNull @Positive @Min(1) Long id,
-			@Valid @RequestBody UpdateExpenseRequest request) {
-		Expense expense = expenseService.updateExpenseById(id, request);
-		ledgerEntryService.updateTransaction(expense);
-		return new ExpenseResponse(expense);
-	}
-
-	@PutMapping("/uuid/{uuid}")
-	@Transactional
-	public ExpenseResponse updateExpenseByUuid(@PathVariable @NotNull String uuid,
-			@Valid @RequestBody UpdateExpenseRequest request) {
-		Expense expense = expenseService.updateExpenseByUuid(uuid, request);
+	public ExpenseResponse updateExpense(@Valid @RequestBody UpdateExpenseRequest request) {
+		Expense expense = expenseService.updateExpense(request);
 		ledgerEntryService.updateTransaction(expense);
 		return new ExpenseResponse(expense);
 	}

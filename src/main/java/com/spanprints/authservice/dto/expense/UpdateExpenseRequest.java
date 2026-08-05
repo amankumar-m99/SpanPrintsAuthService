@@ -19,6 +19,10 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UpdateExpenseRequest {
 
+	private Long id;
+
+	private String uuid;
+
 	@NotNull(message = "Expense type cannot be empty")
 	@Enumerated(EnumType.STRING)
 	private ExpenseType expenseType;

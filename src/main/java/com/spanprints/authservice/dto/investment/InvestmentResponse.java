@@ -16,7 +16,8 @@ public class InvestmentResponse extends EntityResponseDto {
 	private Instant dateOfInvestment;
 	private String createdBy;
 	private Long createdById;
-	private Long ledgerEntryId;
+	private Long ledgerId;
+	private String ledgerUuid;
 
 	public InvestmentResponse(Investment investment) {
 		super(investment);
@@ -25,6 +26,7 @@ public class InvestmentResponse extends EntityResponseDto {
 		this.dateOfInvestment = investment.getDateOfInvestment();
 		this.createdBy = investment.getAccount() != null ? investment.getAccount().getUsername() : null;
 		this.createdById = investment.getAccount() != null ? investment.getAccount().getId() : null;
-		this.ledgerEntryId = investment.getLedger() != null ? investment.getLedger().getId() : null;
+		this.ledgerId = investment.getLedger() != null ? investment.getLedger().getId() : null;
+		this.ledgerUuid = investment.getLedger() != null ? investment.getLedger().getUuid() : null;
 	}
 }

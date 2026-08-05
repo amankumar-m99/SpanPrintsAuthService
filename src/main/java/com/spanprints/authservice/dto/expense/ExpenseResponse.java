@@ -18,7 +18,8 @@ public class ExpenseResponse extends EntityResponseDto {
 	private Instant dateOfExpense;
 	private String createdBy;
 	private Long createdById;
-	private Long ledgerEntryId;
+	private Long ledgerId;
+	private String ledgerUuid;
 
 	public ExpenseResponse(Expense expense) {
 		super(expense);
@@ -28,6 +29,7 @@ public class ExpenseResponse extends EntityResponseDto {
 		this.dateOfExpense = expense.getDateOfExpense();
 		this.createdBy = expense.getAccount() != null ? expense.getAccount().getUsername() : null;
 		this.createdById = expense.getAccount() != null ? expense.getAccount().getId() : null;
-		this.ledgerEntryId = expense.getLedger() != null ? expense.getLedger().getId() : null;
+		this.ledgerId = expense.getLedger() != null ? expense.getLedger().getId() : null;
+		this.ledgerUuid = expense.getLedger() != null ? expense.getLedger().getUuid() : null;
 	}
 }

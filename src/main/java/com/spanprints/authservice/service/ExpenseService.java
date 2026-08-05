@@ -9,6 +9,7 @@ import com.spanprints.authservice.dto.expense.CreateExpenseRequest;
 import com.spanprints.authservice.dto.expense.UpdateExpenseRequest;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.Expense;
+import com.spanprints.authservice.exception.InvalidInputsException;
 import com.spanprints.authservice.exception.ledger.TransactionNotFoundException;
 import com.spanprints.authservice.repository.ExpenseRepository;
 import com.spanprints.authservice.util.BasicUtils;
@@ -41,13 +42,15 @@ public class ExpenseService {
 				.orElseThrow(() -> new TransactionNotFoundException("No expense found by given uuid."));
 	}
 
-	public Expense updateExpenseById(Long id, UpdateExpenseRequest request) {
-		Expense expense = getExpenseById(id);
-		return updateExpense(expense, request);
-	}
-
-	public Expense updateExpenseByUuid(String uuid, UpdateExpenseRequest request) {
-		Expense expense = getExpenseByUuid(uuid);
+	public Expense updateExpense(UpdateExpenseRequest request) {
+		Expense expense = null;
+		if (!BasicUtils.isNullOrBlank(request.getUuid())) {
+			expense = getExpenseByUuid(request.getUuid());
+		} else if (request.getId() != null) {
+			expense = getExpenseById(request.getId());
+		} else {
+			throw new InvalidInputsException("Provide id or uuid");
+		}
 		return updateExpense(expense, request);
 	}
 

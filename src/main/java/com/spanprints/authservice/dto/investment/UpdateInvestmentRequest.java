@@ -15,6 +15,10 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UpdateInvestmentRequest {
 
+	private Long id;
+
+	private String uuid;
+
 	@NotNull(message = "Amount cannot be empty")
 	private BigDecimal amount;
 
