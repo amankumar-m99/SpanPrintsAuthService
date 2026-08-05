@@ -6,11 +6,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.entity.Expense;
+import com.spanprints.authservice.entity.Investment;
 import com.spanprints.authservice.entity.LedgerEntry;
 import com.spanprints.authservice.entity.LedgerSource;
 import com.spanprints.authservice.entity.LedgerType;
@@ -24,16 +24,23 @@ public class LedgerEntryService {
 	@Autowired
 	private LedgerEntryRepository ledgerEntryRepository;
 
+	public LedgerEntry createLedgerEntry(Investment invesment) {
+		LedgerEntry ledgerEntry = LedgerEntry.builder().amount(invesment.getAmount()).ledgerType(LedgerType.CREDIT)
+				.ledgerSource(LedgerSource.INVESTMENT).transactionDateTime(invesment.getDateOfInvestment())
+				.investment(invesment).account(invesment.getAccount()).build();
+		return ledgerEntryRepository.save(ledgerEntry);
+	}
+
 	public LedgerEntry createLedgerEntry(Expense expense) {
 		LedgerEntry ledgerEntry = LedgerEntry.builder().amount(expense.getAmount()).ledgerType(LedgerType.DEBIT)
-				.ledgerSource(LedgerSource.PURCHASE).transactionDateTime(expense.getDateOfExpense()).printJob(null)
-				.expense(expense).account(expense.getAccount()).build();
+				.ledgerSource(LedgerSource.PURCHASE).transactionDateTime(expense.getDateOfExpense()).expense(expense)
+				.account(expense.getAccount()).build();
 		return ledgerEntryRepository.save(ledgerEntry);
 	}
 
 	public LedgerEntry createLedgerEntry(PrintJob printJob, BigDecimal amount, Instant instant) {
 		LedgerEntry ledgerEntry = LedgerEntry.builder().amount(amount).ledgerType(LedgerType.CREDIT)
-				.ledgerSource(LedgerSource.ORDER).transactionDateTime(instant).printJob(printJob).expense(null)
+				.ledgerSource(LedgerSource.ORDER).transactionDateTime(instant).printJob(printJob)
 				.account(printJob.getAccount()).build();
 		return ledgerEntryRepository.save(ledgerEntry);
 	}
@@ -47,8 +54,16 @@ public class LedgerEntryService {
 		return ledgerEntryRepository.findAll();
 	}
 
-	public ResponseEntity<String> updateTransaction() {
-		return new ResponseEntity<>("Functionality not implemented yet.", HttpStatus.NOT_IMPLEMENTED);
+	public LedgerEntry updateTransaction(Expense expense) {
+		LedgerEntry ledger = expense.getLedger();
+		ledger.setTransactionDateTime(expense.getDateOfExpense());
+		return ledgerEntryRepository.save(ledger);
+	}
+
+	public LedgerEntry updateTransaction(Investment investment) {
+		LedgerEntry ledger = investment.getLedger();
+		ledger.setTransactionDateTime(investment.getDateOfInvestment());
+		return ledgerEntryRepository.save(ledger);
 	}
 
 	public void deleteLedgerEntry(LedgerEntry ledgerEntry) {

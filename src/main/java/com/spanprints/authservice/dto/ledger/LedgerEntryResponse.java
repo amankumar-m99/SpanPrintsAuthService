@@ -20,6 +20,7 @@ public class LedgerEntryResponse extends EntityResponseDto {
 	private String description;
 	private String printJobUuid;
 	private String expenseUuid;
+	private String investmentUuid;
 	private String addedBy;
 	private Long addedById;
 
@@ -32,6 +33,7 @@ public class LedgerEntryResponse extends EntityResponseDto {
 		this.description = ledgerEntry.getDescription();
 		this.printJobUuid = ledgerEntry.getPrintJob() != null ? ledgerEntry.getPrintJob().getUuid() : null;
 		this.expenseUuid = ledgerEntry.getExpense() != null ? ledgerEntry.getExpense().getUuid() : null;
+		this.investmentUuid = ledgerEntry.getInvestment() != null ? ledgerEntry.getInvestment().getUuid() : null;
 		this.addedBy = ledgerEntry.getAccount() != null ? ledgerEntry.getAccount().getUsername() : null;
 		this.addedById = ledgerEntry.getAccount() != null ? ledgerEntry.getAccount().getId() : null;
 	}

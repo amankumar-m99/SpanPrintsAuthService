@@ -43,7 +43,7 @@ public class LedgerController {
 
 	@PutMapping
 	public ResponseEntity<String> updateLedgerEntry() {
-		return ledgerEntryService.updateTransaction();
+		return new ResponseEntity<>("Functionality not implemented yet.", HttpStatus.NOT_IMPLEMENTED);
 	}
 
 	@DeleteMapping("/{transactionId}")

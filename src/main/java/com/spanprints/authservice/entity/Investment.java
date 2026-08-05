@@ -5,7 +5,9 @@ import java.time.Instant;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
@@ -16,36 +18,24 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @Builder
-public class LedgerEntry extends AuditableBaseEntity {
+public class Investment extends AuditableBaseEntity {
+
 	private BigDecimal amount;
-	private LedgerType ledgerType;
-	private LedgerSource ledgerSource;
-	private Instant transactionDateTime;
 	private String description;
-
-	@ManyToOne
-	@JoinColumn(name = "printjob_id", referencedColumnName = "id")
-	@JsonIgnore
-	private PrintJob printJob;
-
-	@OneToOne
-	@JoinColumn(name = "expense_id", referencedColumnName = "id")
-	@JsonIgnore
-	private Expense expense;
-
-	@OneToOne
-	@JoinColumn(name = "investment_id", referencedColumnName = "id")
-	@JsonIgnore
-	private Investment investment;
+	private Instant dateOfInvestment;
 
 	@ManyToOne
 	@JoinColumn(name = "account_id", referencedColumnName = "id")
 	@JsonIgnore
 	private Account account;
+
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JsonIgnore
+	private LedgerEntry ledger;
 
 }
