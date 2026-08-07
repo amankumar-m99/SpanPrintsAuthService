@@ -40,10 +40,12 @@ import com.spanprints.authservice.entity.PrintJobType;
 import com.spanprints.authservice.service.CustomerService;
 import com.spanprints.authservice.service.FileAttachmentService;
 import com.spanprints.authservice.service.LedgerEntryService;
+import com.spanprints.authservice.service.PrintJobHistoryService;
 import com.spanprints.authservice.service.PrintJobService;
 import com.spanprints.authservice.service.PrintJobTypeService;
 import com.spanprints.authservice.util.SecurityUtils;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -59,6 +61,8 @@ public class PrintJobController {
 	@Autowired
 	private PrintJobTypeService printJobTypeService;
 	@Autowired
+	private PrintJobHistoryService printJobHistoryService;
+	@Autowired
 	private LedgerEntryService ledgerEntryService;
 	@Autowired
 	private SecurityUtils securityUtils;
@@ -68,6 +72,7 @@ public class PrintJobController {
 	private FileAttachmentService fileAttachmentService;
 
 	@PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@Transactional
 	public PrintJobResponse createPrintJob(@Valid @ModelAttribute CreatePrintJobRequest request,
 			@RequestParam(name = "attachments", required = false) List<MultipartFile> attachments) {
 		Account account = securityUtils.getRequestingAccount();
@@ -81,6 +86,7 @@ public class PrintJobController {
 		PrintJob printJob = printJobService.createPrintJob(request, printJobType, account, customer);
 		fileAttachmentService.addFileAttachment(attachments, printJob);
 		ledgerEntryService.createLedgerEntry(printJob, printJob.getDepositAmount(), Instant.now());
+		printJobHistoryService.createPrintJobHistory(printJob, account, "Order created");
 		return new PrintJobResponse(printJob);
 	}
 
@@ -143,6 +149,7 @@ public class PrintJobController {
 	}
 
 	@PutMapping("deposit-amount")
+	@Transactional
 	public PrintJobResponse updatePrintJobPaymentDetails(@Valid @RequestBody PrintJobDepositAmountRequest request) {
 		Account account = securityUtils.getRequestingAccount();
 		if (account == null) {
@@ -150,30 +157,36 @@ public class PrintJobController {
 		}
 		PrintJob printJob = printJobService.updatePrintJobPaymentDetails(request);
 		ledgerEntryService.createLedgerEntry(printJob, request.getDepositAmount(), Instant.now());
+		printJobHistoryService.createPrintJobHistory(printJob, account, "Amount of " + request.getDepositAmount() + "deposited");
 		return new PrintJobResponse(printJob);
 	}
 
 	@PatchMapping("order-status")
+	@Transactional
 	public PrintJobResponse updatePrintJobStatus(@Valid @RequestBody UpdatePrintJobStatusRequest request) {
 		Account account = securityUtils.getRequestingAccount();
 		if (account == null) {
 			throw new UsernameNotFoundException("Missing account/customer");
 		}
 		PrintJob printJob = printJobService.updatePrintJobStatus(request);
+		printJobHistoryService.createPrintJobHistory(printJob, account, "Order status updated to " + request.getPrintJobStatus().toString());
 		return new PrintJobResponse(printJob);
 	}
 
 	@PatchMapping("mark-as-paid/{uuid}")
+	@Transactional
 	public PrintJobResponse markPrintJobAsPaid(@PathVariable @NotNull @NotBlank String uuid) {
 		Account account = securityUtils.getRequestingAccount();
 		if (account == null) {
 			throw new UsernameNotFoundException("Missing account/customer");
 		}
 		PrintJob printJob = printJobService.markPrintJobAsPaid(uuid);
+		printJobHistoryService.createPrintJobHistory(printJob, account, "Waived-off pending amount");
 		return new PrintJobResponse(printJob);
 	}
 
 	@PostMapping(value = "attatchments/{uuid}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@Transactional
 	public PrintJobResponse addPrintJobAttachment(@PathVariable @NotNull @NotBlank String uuid,
 			@RequestParam(name = "attachments", required = true) List<MultipartFile> attachments) {
 		Account account = securityUtils.getRequestingAccount();
@@ -182,6 +195,7 @@ public class PrintJobController {
 		}
 		PrintJob printJob = printJobService.getPrintJobByUuid(uuid);
 		fileAttachmentService.addFileAttachment(attachments, printJob);
+		printJobHistoryService.createPrintJobHistory(printJob, account, "Uploaded " + attachments.size() + " file(s)");
 		return new PrintJobResponse(printJob);
 	}
 

@@ -73,4 +73,8 @@ public class PrintJob extends AuditableBaseEntity {
 	@JsonIgnore
 	private Customer customer;
 
+	@OneToMany(mappedBy = "printJob", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JsonIgnore
+	private List<PrintJobHistory> printJobHistories;
+
 }

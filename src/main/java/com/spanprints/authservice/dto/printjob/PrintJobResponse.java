@@ -3,6 +3,7 @@ package com.spanprints.authservice.dto.printjob;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.spanprints.authservice.dto.EntityResponseDto;
 import com.spanprints.authservice.entity.FileAttachment;
@@ -42,6 +43,7 @@ public class PrintJobResponse extends EntityResponseDto {
 	private List<Long> attachmentIds;
 	private List<Long> ledgerIds;
 	private List<String> ledgerUuids;
+	private List<PrintJobHistoryResponse> printJobHistories;
 	private String customerUuid;
 	private Long customerId;
 	private String customerName;
@@ -80,7 +82,9 @@ public class PrintJobResponse extends EntityResponseDto {
 				: Collections.emptyList();
 		this.ledgerUuids = printJob.getLedgerEntry() != null
 				? printJob.getLedgerEntry().stream().map(LedgerEntry::getUuid).toList()
-						: Collections.emptyList();
+				: Collections.emptyList();
+		this.printJobHistories = printJob.getPrintJobHistories().stream().map(PrintJobHistoryResponse::new)
+				.collect(Collectors.toList());
 		if (printJob.getCustomer() != null) {
 			this.customerUuid = printJob.getCustomer().getUuid();
 			this.customerId = printJob.getCustomer().getId();
