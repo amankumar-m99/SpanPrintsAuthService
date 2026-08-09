@@ -148,19 +148,6 @@ public class PrintJobController {
 		return new PrintJobResponse(printJob);
 	}
 
-	@PutMapping("deposit-amount")
-	@Transactional
-	public PrintJobResponse updatePrintJobPaymentDetails(@Valid @RequestBody PrintJobDepositAmountRequest request) {
-		Account account = securityUtils.getRequestingAccount();
-		if (account == null) {
-			throw new UsernameNotFoundException("Missing account/customer");
-		}
-		PrintJob printJob = printJobService.updatePrintJobPaymentDetails(request);
-		ledgerEntryService.createLedgerEntry(printJob, request.getDepositAmount(), Instant.now());
-		printJobHistoryService.createPrintJobHistory(printJob, account, "Amount of " + request.getDepositAmount() + "deposited");
-		return new PrintJobResponse(printJob);
-	}
-
 	@PatchMapping("order-status")
 	@Transactional
 	public PrintJobResponse updatePrintJobStatus(@Valid @RequestBody UpdatePrintJobStatusRequest request) {
@@ -172,16 +159,41 @@ public class PrintJobController {
 		printJobHistoryService.createPrintJobHistory(printJob, account, "Order status updated to " + request.getPrintJobStatus().toString());
 		return new PrintJobResponse(printJob);
 	}
-
-	@PatchMapping("mark-as-paid/{uuid}")
+	
+	@PutMapping("deposit-partial-amount")
 	@Transactional
-	public PrintJobResponse markPrintJobAsPaid(@PathVariable @NotNull @NotBlank String uuid) {
+	public PrintJobResponse depositPartialAmount(@Valid @RequestBody PrintJobDepositAmountRequest request) {
 		Account account = securityUtils.getRequestingAccount();
 		if (account == null) {
 			throw new UsernameNotFoundException("Missing account/customer");
 		}
-		PrintJob printJob = printJobService.markPrintJobAsPaid(uuid);
-		printJobHistoryService.createPrintJobHistory(printJob, account, "Waived-off pending amount");
+		PrintJob printJob = printJobService.depositPartialAmount(request);
+		ledgerEntryService.createLedgerEntry(printJob, request.getDepositAmount(), Instant.now());
+		printJobHistoryService.createPrintJobHistory(printJob, account, "Amount of " + request.getDepositAmount() + " deposited");
+		return new PrintJobResponse(printJob);
+	}
+
+	@PatchMapping("deposit-pending-amount/{uuid}")
+	@Transactional
+	public PrintJobResponse depositPendingAmount(@PathVariable @NotNull @NotBlank String uuid) {
+		Account account = securityUtils.getRequestingAccount();
+		if (account == null) {
+			throw new UsernameNotFoundException("Missing account/customer");
+		}
+		PrintJob printJob = printJobService.depositPendingAmount(uuid);
+		printJobHistoryService.createPrintJobHistory(printJob, account, "Deposited pending amount");
+		return new PrintJobResponse(printJob);
+	}
+
+	@PatchMapping("discount-pending-amount/{uuid}")
+	@Transactional
+	public PrintJobResponse discountPendingAmount(@PathVariable @NotNull @NotBlank String uuid) {
+		Account account = securityUtils.getRequestingAccount();
+		if (account == null) {
+			throw new UsernameNotFoundException("Missing account/customer");
+		}
+		PrintJob printJob = printJobService.discountPendingAmount(uuid);
+		printJobHistoryService.createPrintJobHistory(printJob, account, "Waived-off (discounted) pending amount");
 		return new PrintJobResponse(printJob);
 	}
 

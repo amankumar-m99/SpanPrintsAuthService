@@ -14,7 +14,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -45,10 +44,6 @@ public class PrintJob extends AuditableBaseEntity {
 
 	private String note;
 	private String description;
-
-	@OneToOne(mappedBy = "printJob", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	@JsonIgnore
-	private InventoryHistory inventoryHistory;
 
 	@ManyToOne
 	@JoinColumn(name = "account_id", referencedColumnName = "id")

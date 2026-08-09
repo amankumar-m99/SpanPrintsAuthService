@@ -1,6 +1,7 @@
 package com.spanprints.authservice.dto.inventory;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 
 import com.spanprints.authservice.dto.EntityResponseDto;
 import com.spanprints.authservice.entity.InventoryHistory;
@@ -13,20 +14,24 @@ import lombok.Getter;
 @Getter
 public class InventoryHistoryResponse extends EntityResponseDto {
 
-	private Long inventoryItemId;
-	private Long vendorId;
-	private BigDecimal rate;
-	private BigDecimal amountPaid;
-	private Long quantity; // delta (+ / -)
+	private BigDecimal amount;
 
 	@Enumerated(EnumType.STRING)
 	private InventoryAction action;
 
+	private Instant dateOfTransaction;
+	private Long quantity; // delta (+ / -)
+	private String description;
+	private Long vendorId;
+	private Long inventoryItemId;
+
 	protected InventoryHistoryResponse(InventoryHistory inventoryHistory) {
 		super(inventoryHistory);
-		this.rate = inventoryHistory.getRate();
-		this.amountPaid = inventoryHistory.getAmount();
+		this.amount = inventoryHistory.getAmount();
+		this.action = inventoryHistory.getAction();
+		this.dateOfTransaction = inventoryHistory.getTransactionDateTime();
 		this.quantity = inventoryHistory.getQuantity();
+		this.description = inventoryHistory.getDescription();
 		this.inventoryItemId = inventoryHistory.getInventoryItem() != null ? inventoryHistory.getInventoryItem().getId()
 				: null;
 		this.vendorId = inventoryHistory.getInventoryItem() != null ? inventoryHistory.getVendor().getId() : null;

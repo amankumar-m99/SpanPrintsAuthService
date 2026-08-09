@@ -1,7 +1,5 @@
 package com.spanprints.authservice.service;
 
-import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,21 +7,27 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.spanprints.authservice.dto.SuccessResponseDto;
+import com.spanprints.authservice.dto.inventory.AddStockRequest;
 import com.spanprints.authservice.dto.inventory.CreateInventoryItemRequest;
-import com.spanprints.authservice.entity.Account;
+import com.spanprints.authservice.dto.inventory.SubtractStockRequest;
+import com.spanprints.authservice.dto.inventory.UpdateInventoryItemRequest;
 import com.spanprints.authservice.entity.InventoryHistory;
 import com.spanprints.authservice.entity.InventoryItem;
 import com.spanprints.authservice.entity.LedgerEntry;
 import com.spanprints.authservice.entity.LedgerSource;
 import com.spanprints.authservice.entity.LedgerType;
+import com.spanprints.authservice.entity.Vendor;
 import com.spanprints.authservice.enums.InventoryAction;
 import com.spanprints.authservice.exception.inventory.InventoryItemNotFoundException;
 import com.spanprints.authservice.repository.InventoryHistoryRepository;
 import com.spanprints.authservice.repository.InventoryItemRepository;
 import com.spanprints.authservice.repository.LedgerEntryRepository;
+import com.spanprints.authservice.repository.VendorRepository;
+import com.spanprints.authservice.util.BasicUtils;
 import com.spanprints.authservice.util.SecurityUtils;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 
 @Service
 public class InventoryItemService {
@@ -38,25 +42,26 @@ public class InventoryItemService {
 	private InventoryHistoryRepository inventoryHistoryRepository;
 
 	@Autowired
+	private VendorRepository vendorRepository;
+
+	@Autowired
 	private SecurityUtils securityUtils;
 
 	@Transactional
 	public InventoryItem createInventoryItem(CreateInventoryItemRequest request) {
-		Account account = securityUtils.getRequestingAccount();
 		InventoryItem item = InventoryItem.builder().code(request.getCode()).name(request.getName())
-				.description(request.getDescription()).rate(request.getRate()).quantity(request.getQuantity()).build();
-		BigDecimal amount = item.getRate().multiply(new BigDecimal(request.getQuantity()));
+				.description(request.getDescription()).rate(request.getRate()).build();
 		item = inventoryItemRepository.save(item);
-		InventoryHistory history = InventoryHistory.builder().inventoryItem(item).rate(item.getRate()).amount(amount)
-				.action(InventoryAction.PURCHASE).build();
-		inventoryHistoryRepository.save(history);
-		if (request.getAddToLedger().equals(true)) {
-			LedgerEntry ledgerEntry = LedgerEntry.builder().account(account).amount(amount).ledgerType(LedgerType.DEBIT)
-					.description("Purchase inventory-item id " + item.getId()).ledgerSource(LedgerSource.PURCHASE)
-					.transactionDateTime(Instant.now()).build();
-			ledgerEntryRepository.save(ledgerEntry);
-		}
 		return item;
+	}
+
+	public InventoryItem updateInventoryItem(UpdateInventoryItemRequest request) {
+		InventoryItem inventoryItem = getInventoryItemById(request.getId());
+		inventoryItem.setName(request.getName());
+		inventoryItem.setCode(request.getCode());
+		inventoryItem.setRate(request.getRate());
+		inventoryItem.setDescription(request.getDescription());
+		return inventoryItemRepository.save(inventoryItem);
 	}
 
 	public InventoryItem getInventoryItemById(Long id) {
@@ -70,6 +75,43 @@ public class InventoryItemService {
 
 	public List<InventoryItem> getAllInventoryItems() {
 		return inventoryItemRepository.findAll();
+	}
+
+	@Transactional
+	public InventoryItem addStock(@Valid AddStockRequest request) {
+		InventoryItem inventoryItem = getInventoryItemById(request.getItemId());
+		Long quantity = inventoryItem.getQuantity();
+		inventoryItem.setQuantity(quantity - request.getQuantity());
+		inventoryItem = inventoryItemRepository.save(inventoryItem);
+		Vendor vendor = vendorRepository.findById(request.getVendorId()).orElse(null);
+		InventoryHistory history = InventoryHistory.builder().inventoryItem(inventoryItem)
+				.amount(request.getAmountPaid()).action(InventoryAction.PURCHASE).quantity(request.getQuantity())
+				.vendor(vendor).description(request.getDescription())
+				.transactionDateTime(BasicUtils.convertLocalDateToInstant(request.getDateOfTransaction())).build();
+		inventoryHistoryRepository.save(history);
+		if (request.getAddToLedger() != null && request.getAddToLedger()) {
+			LedgerEntry ledgerEntry = LedgerEntry.builder().amount(request.getAmountPaid())
+					.ledgerSource(LedgerSource.PURCHASE).ledgerType(LedgerType.DEBIT)
+					.description("Purchased Inventory item: " + inventoryItem.getUuid())
+					.transactionDateTime(BasicUtils.convertLocalDateToInstant(request.getDateOfTransaction()))
+					.account(securityUtils.getRequestingAccount()).build();
+			ledgerEntryRepository.save(ledgerEntry);
+		}
+		return inventoryItem;
+	}
+
+	@Transactional
+	public InventoryItem subtractStock(@Valid SubtractStockRequest request) {
+		InventoryItem inventoryItem = getInventoryItemById(request.getItemId());
+		Long quantity = inventoryItem.getQuantity();
+		inventoryItem.setQuantity(quantity - request.getQuantity());
+		inventoryItem = inventoryItemRepository.save(inventoryItem);
+		InventoryHistory history = InventoryHistory.builder().inventoryItem(inventoryItem)
+				.action(InventoryAction.CONSUMPTION).quantity(request.getQuantity())
+				.description(request.getDescription())
+				.transactionDateTime(BasicUtils.convertLocalDateToInstant(request.getDateOfTransaction())).build();
+		inventoryHistoryRepository.save(history);
+		return inventoryItem;
 	}
 
 	public SuccessResponseDto deleteAllInventoryItems() {

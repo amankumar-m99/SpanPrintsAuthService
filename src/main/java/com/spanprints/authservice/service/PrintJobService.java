@@ -146,7 +146,15 @@ public class PrintJobService {
 				.pendingAmount(request.getPendingAmount()).paymentStatus(request.getPaymentStatus()).build();
 	}
 
-	public PrintJob updatePrintJobPaymentDetails(PrintJobDepositAmountRequest request) {
+	public PrintJob updatePrintJob(UpdatePrintJobNonDependentFieldsRequest request, PrintJobType jobType) {
+		PrintJob printJob = printJobRepository.findByUuid(request.getUuid())
+				.orElseThrow(() -> new PrintJobNotFoundException("No order with uuid" + request.getUuid()));
+		printJob.setJobType(jobType);
+		updatePrintJobFromDto(request, printJob);
+		return printJobRepository.save(printJob);
+	}
+
+	public PrintJob depositPartialAmount(PrintJobDepositAmountRequest request) {
 		PrintJob printJob = printJobRepository.findByUuid(request.getUuid())
 				.orElseThrow(() -> new PrintJobNotFoundException("No order with uuid" + request.getUuid()));
 		BigDecimal totalAmount = printJob.getTotalAmount();
@@ -163,22 +171,25 @@ public class PrintJobService {
 		printJob.setPendingAmount(pendingAmount);
 		if (pendingAmount.signum() == 0) {
 			printJob.setPaymentStatus(PaymentStatus.PAID);
-		}
-		else {
+		} else {
 			printJob.setPaymentStatus(PaymentStatus.PARTIALLY_PAID);
 		}
 		return printJobRepository.save(printJob);
 	}
 
-	public PrintJob updatePrintJob(UpdatePrintJobNonDependentFieldsRequest request, PrintJobType jobType) {
-		PrintJob printJob = printJobRepository.findByUuid(request.getUuid())
-				.orElseThrow(() -> new PrintJobNotFoundException("No order with uuid" + request.getUuid()));
-		printJob.setJobType(jobType);
-		updatePrintJobFromDto(request, printJob);
+	public PrintJob depositPendingAmount(String uuid) {
+		PrintJob printJob = printJobRepository.findByUuid(uuid)
+				.orElseThrow(() -> new PrintJobNotFoundException("No order with uuid" + uuid));
+		BigDecimal totalAmount = printJob.getTotalAmount();
+		BigDecimal discountAmount = printJob.getDiscountedAmount();
+		BigDecimal depositAmount = printJob.getDepositAmount();
+		BigDecimal pendingAmount = totalAmount.subtract(discountAmount).subtract(depositAmount);
+		printJob.setDepositAmount(pendingAmount);
+		printJob.setPaymentStatus(PaymentStatus.PAID);
 		return printJobRepository.save(printJob);
 	}
 
-	public PrintJob markPrintJobAsPaid(String uuid) {
+	public PrintJob discountPendingAmount(String uuid) {
 		PrintJob printJob = printJobRepository.findByUuid(uuid)
 				.orElseThrow(() -> new PrintJobNotFoundException("No order with uuid" + uuid));
 		BigDecimal totalAmount = printJob.getTotalAmount();
@@ -211,8 +222,8 @@ public class PrintJobService {
 
 	public boolean deleteAttachedFile(String orderUuid, String fileUuid, URI fileUri) {
 		PrintJob printJob = getPrintJobByUuid(orderUuid);
-		for(FileAttachment attachment: printJob.getAttachments()) {
-			if(attachment.getUuid().equals(fileUuid)) {
+		for (FileAttachment attachment : printJob.getAttachments()) {
+			if (attachment.getUuid().equals(fileUuid)) {
 				printJob.getAttachments().remove(attachment);
 				printJobRepository.save(printJob);
 				File file = new File(fileUri);

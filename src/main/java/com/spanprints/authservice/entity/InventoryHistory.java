@@ -1,6 +1,7 @@
 package com.spanprints.authservice.entity;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -11,7 +12,6 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,23 +31,21 @@ public class InventoryHistory extends AuditableBaseEntity {
 	@JsonIgnore
 	private InventoryItem inventoryItem;
 
-	private BigDecimal rate;
 	private BigDecimal amount;
 
 	@Enumerated(EnumType.STRING)
 	private InventoryAction action;
 
+	private Instant transactionDateTime;
+
 	private Long quantity; // delta (+ / -)
+
+	private String description;
 
 	@ManyToOne
 	@JoinColumn(name = "vendor_id", referencedColumnName = "id")
 	@JsonIgnore
 	private Vendor vendor;
-
-	@OneToOne
-	@JoinColumn(name = "printJob_id", referencedColumnName = "id")
-	@JsonIgnore
-	private PrintJob printJob;
 
 	@JsonProperty("itemId")
 	public Long getItemId() {

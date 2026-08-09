@@ -1,5 +1,7 @@
 package com.spanprints.authservice.dto.inventory;
 
+import java.math.BigDecimal;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,6 +20,6 @@ public class UpdateInventoryItemRequest {
 	@NotNull(message = "Item name is required")
 	private String name;
 	private String code;
-	private Double rate;
+	private BigDecimal rate;
 	private String description;
 }

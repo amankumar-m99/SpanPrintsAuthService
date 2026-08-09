@@ -18,6 +18,4 @@ public class CreateInventoryItemRequest {
 	private String name;
 	private String description;
 	private BigDecimal rate;
-	private Long quantity;
-	private Boolean addToLedger;
 }
