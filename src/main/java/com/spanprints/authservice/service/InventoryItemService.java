@@ -18,6 +18,7 @@ import com.spanprints.authservice.entity.LedgerSource;
 import com.spanprints.authservice.entity.LedgerType;
 import com.spanprints.authservice.entity.Vendor;
 import com.spanprints.authservice.enums.InventoryAction;
+import com.spanprints.authservice.exception.InvalidInputsException;
 import com.spanprints.authservice.exception.inventory.InventoryItemNotFoundException;
 import com.spanprints.authservice.repository.InventoryHistoryRepository;
 import com.spanprints.authservice.repository.InventoryItemRepository;
@@ -79,11 +80,20 @@ public class InventoryItemService {
 
 	@Transactional
 	public InventoryItem addStock(@Valid AddStockRequest request) {
+		if(request.getQuantity() < 0) {
+			throw new InvalidInputsException("Quantity cannot be less than zero.");
+		}
 		InventoryItem inventoryItem = getInventoryItemById(request.getItemId());
 		Long quantity = inventoryItem.getQuantity();
-		inventoryItem.setQuantity(quantity - request.getQuantity());
+		if(quantity == null) {
+			quantity = 0L;
+		}
+		inventoryItem.setQuantity(quantity + request.getQuantity());
 		inventoryItem = inventoryItemRepository.save(inventoryItem);
-		Vendor vendor = vendorRepository.findById(request.getVendorId()).orElse(null);
+		Vendor vendor = null;
+		if(request.getVendorId() != null) {
+			vendor = vendorRepository.findById(request.getVendorId()).orElse(null);
+		}
 		InventoryHistory history = InventoryHistory.builder().inventoryItem(inventoryItem)
 				.amount(request.getAmountPaid()).action(InventoryAction.PURCHASE).quantity(request.getQuantity())
 				.vendor(vendor).description(request.getDescription())
@@ -102,8 +112,14 @@ public class InventoryItemService {
 
 	@Transactional
 	public InventoryItem subtractStock(@Valid SubtractStockRequest request) {
+		if(request.getQuantity() < 0) {
+			throw new InvalidInputsException("Quantity cannot be less than zero.");
+		}
 		InventoryItem inventoryItem = getInventoryItemById(request.getItemId());
 		Long quantity = inventoryItem.getQuantity();
+		if(quantity < request.getQuantity()) {
+			throw new InvalidInputsException("Requested quantity higher than available quantity.");
+		}
 		inventoryItem.setQuantity(quantity - request.getQuantity());
 		inventoryItem = inventoryItemRepository.save(inventoryItem);
 		InventoryHistory history = InventoryHistory.builder().inventoryItem(inventoryItem)
