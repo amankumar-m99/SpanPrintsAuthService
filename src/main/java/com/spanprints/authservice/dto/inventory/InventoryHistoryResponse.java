@@ -25,7 +25,7 @@ public class InventoryHistoryResponse extends EntityResponseDto {
 	private Long vendorId;
 	private Long inventoryItemId;
 
-	protected InventoryHistoryResponse(InventoryHistory inventoryHistory) {
+	public InventoryHistoryResponse(InventoryHistory inventoryHistory) {
 		super(inventoryHistory);
 		this.amount = inventoryHistory.getAmount();
 		this.action = inventoryHistory.getAction();
@@ -34,7 +34,7 @@ public class InventoryHistoryResponse extends EntityResponseDto {
 		this.description = inventoryHistory.getDescription();
 		this.inventoryItemId = inventoryHistory.getInventoryItem() != null ? inventoryHistory.getInventoryItem().getId()
 				: null;
-		this.vendorId = inventoryHistory.getInventoryItem() != null ? inventoryHistory.getVendor().getId() : null;
+		this.vendorId = inventoryHistory.getVendor() != null ? inventoryHistory.getVendor().getId() : null;
 	}
 
 }
