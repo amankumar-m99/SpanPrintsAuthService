@@ -30,7 +30,7 @@ public class CustomerService {
 	public Customer createCustomer(CreateCustomerRequest request) {
 		throwIfPhoneNumberAlreadyExists(request.getPrimaryPhoneNumber());
 		Account account = securityUtils.getRequestingAccount();
-		Customer customer = Customer.builder().name(request.getName()).email(request.getEmail())
+		Customer customer = Customer.builder().name(request.getName()).email(request.getEmail()).note(request.getNote())
 				.primaryPhoneNumber(request.getPrimaryPhoneNumber())
 				.alternatePhoneNumber(request.getAlternatePhoneNumber()).address(request.getAddress()).account(account)
 				.build();
@@ -39,7 +39,8 @@ public class CustomerService {
 
 	public Customer createCustomerForPrintJob(CreatePrintJobRequest request) {
 		CreateCustomerRequest createCustomerRequest = CreateCustomerRequest.builder().name(request.getCustomerName())
-				.primaryPhoneNumber(request.getCustomerPrimaryPhoneNumber()).address(request.getCustomerAddress()).build();
+				.primaryPhoneNumber(request.getCustomerPrimaryPhoneNumber()).address(request.getCustomerAddress())
+				.build();
 		return createCustomer(createCustomerRequest);
 	}
 
