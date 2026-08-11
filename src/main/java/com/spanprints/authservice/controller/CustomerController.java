@@ -3,6 +3,7 @@ package com.spanprints.authservice.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,8 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.dto.customer.CreateCustomerRequest;
+import com.spanprints.authservice.dto.customer.CustomerFilterRequest;
+import com.spanprints.authservice.dto.customer.CustomerPaginatonResponse;
 import com.spanprints.authservice.dto.customer.CustomerResponse;
 import com.spanprints.authservice.dto.customer.UpdateCustomerRequest;
+import com.spanprints.authservice.entity.Customer;
 import com.spanprints.authservice.service.CustomerService;
 
 import jakarta.validation.Valid;
@@ -43,6 +47,12 @@ public class CustomerController {
 	public ResponseEntity<List<CustomerResponse>> getAllCustomers() {
 		List<CustomerResponse> list = customerService.getAllCustomers().stream().map(CustomerResponse::new).toList();
 		return new ResponseEntity<>(list, HttpStatus.OK);
+	}
+
+	@PostMapping("/paginated")
+	public  CustomerPaginatonResponse getPaginatedCustomers(@Valid @RequestBody CustomerFilterRequest request) {
+		Page<Customer> filteredProductsPaginated = customerService.getFilteredPaginatedCustomers(request);
+		return new CustomerPaginatonResponse(filteredProductsPaginated);
 	}
 
 //	@GetMapping("/search")

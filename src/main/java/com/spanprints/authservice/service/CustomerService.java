@@ -4,11 +4,16 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.dto.customer.CreateCustomerRequest;
+import com.spanprints.authservice.dto.customer.CustomerFilterRequest;
 import com.spanprints.authservice.dto.customer.UpdateCustomerRequest;
 import com.spanprints.authservice.dto.printjob.CreatePrintJobRequest;
 import com.spanprints.authservice.entity.Account;
@@ -16,6 +21,7 @@ import com.spanprints.authservice.entity.Customer;
 import com.spanprints.authservice.exception.customer.CustomerAlreadyExistsException;
 import com.spanprints.authservice.exception.customer.CustomerNotFoundException;
 import com.spanprints.authservice.repository.CustomerRepository;
+import com.spanprints.authservice.specifications.CustomerSpecifications;
 import com.spanprints.authservice.util.SecurityUtils;
 
 @Service
@@ -66,6 +72,13 @@ public class CustomerService {
 
 	public List<Customer> getAllCustomers() {
 		return customerRepository.findAll();
+	}
+
+	public Page<Customer> getFilteredPaginatedCustomers(CustomerFilterRequest filter) {
+		Specification<Customer> spec = CustomerSpecifications.withFilter(filter);
+		// Returns a chunk of data with metadata (total pages, total items)
+		Pageable pageable = PageRequest.of(filter.getPageNumber(), filter.getPageSize());
+		return customerRepository.findAll(spec, pageable);
 	}
 
 	public Customer getCustomerById(Long id) {
