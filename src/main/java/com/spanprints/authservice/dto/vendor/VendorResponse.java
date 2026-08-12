@@ -15,10 +15,12 @@ public class VendorResponse extends EntityResponseDto {
 	private String email;
 	private String name;
 	private String address;
+	private String note;
 	private String primaryPhoneNumber;
 	private String alternatePhoneNumber;
 	private String createdBy;
 	private Long createdById;
+	private String createdByUuid;
 	private List<Long> inventoryHistoryIds;
 
 	public VendorResponse(Vendor vendor) {
@@ -26,10 +28,12 @@ public class VendorResponse extends EntityResponseDto {
 		this.email = vendor.getEmail();
 		this.name = vendor.getName();
 		this.address = vendor.getAddress();
+		this.note = vendor.getNote();
 		this.primaryPhoneNumber = vendor.getPrimaryPhoneNumber();
 		this.alternatePhoneNumber = vendor.getAlternatePhoneNumber();
 		this.createdBy = vendor.getAccount() != null ? vendor.getAccount().getUsername() : null;
 		this.createdById = vendor.getAccount() != null ? vendor.getAccount().getId() : null;
+		this.createdByUuid = vendor.getAccount() != null ? vendor.getAccount().getUuid() : null;
 		this.inventoryHistoryIds = vendor.getInventoryHistories() != null
 				? vendor.getInventoryHistories().stream().map(InventoryHistory::getId).toList()
 				: Collections.emptyList();

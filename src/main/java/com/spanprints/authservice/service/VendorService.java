@@ -30,7 +30,7 @@ public class VendorService {
 		Account account = securityUtils.getRequestingAccount();
 		Vendor vendor = Vendor.builder().name(request.getName()).email(request.getEmail())
 				.primaryPhoneNumber(request.getPrimaryPhoneNumber()).address(request.getAddress())
-				.alternatePhoneNumber(request.getAlternatePhoneNumber()).account(account).build();
+				.alternatePhoneNumber(request.getAlternatePhoneNumber()).note(request.getNote()).account(account).build();
 		return vendorRepository.save(vendor);
 	}
 
@@ -38,6 +38,7 @@ public class VendorService {
 		Vendor vendor = getVendorById(id);
 		vendor.setEmail(request.getEmail());
 		vendor.setName(request.getName());
+		vendor.setNote(request.getNote());
 		vendor.setPrimaryPhoneNumber(request.getPrimaryPhoneNumber());
 		vendor.setAlternatePhoneNumber(request.getAlternatePhoneNumber());
 		return vendorRepository.save(vendor);

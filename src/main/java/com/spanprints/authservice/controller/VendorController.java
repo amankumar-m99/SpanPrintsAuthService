@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.dto.vendor.CreateVendorRequest;
 import com.spanprints.authservice.dto.vendor.UpdateVendorRequest;
-import com.spanprints.authservice.entity.Vendor;
+import com.spanprints.authservice.dto.vendor.VendorResponse;
 import com.spanprints.authservice.service.VendorService;
 
 import jakarta.validation.Valid;
@@ -33,29 +33,33 @@ public class VendorController {
 	private VendorService vendorService;
 
 	@PostMapping
-	public ResponseEntity<Vendor> addVendor(@Valid @RequestBody CreateVendorRequest request) {
-		return new ResponseEntity<>(vendorService.createVendor(request), HttpStatus.CREATED);
+	public ResponseEntity<VendorResponse> addVendor(@Valid @RequestBody CreateVendorRequest request) {
+		VendorResponse vendorResponse = new VendorResponse(vendorService.createVendor(request));
+		return new ResponseEntity<>(vendorResponse, HttpStatus.CREATED);
 	}
 
 	@GetMapping
-	public ResponseEntity<List<Vendor>> getAllVendors() {
-		return new ResponseEntity<>(vendorService.getAllVendors(), HttpStatus.OK);
+	public List<VendorResponse> getAllVendors() {
+		return vendorService.getAllVendors().stream().map(VendorResponse::new).toList();
 	}
 
 	@GetMapping("/id/{id}")
-	public ResponseEntity<Vendor> getVendorById(@PathVariable @NotNull @Positive @Min(1) Long id) {
-		return new ResponseEntity<>(vendorService.getVendorById(id), HttpStatus.OK);
+	public ResponseEntity<VendorResponse> getVendorById(@PathVariable @NotNull @Positive @Min(1) Long id) {
+		VendorResponse vendorResponse = new VendorResponse(vendorService.getVendorById(id));
+		return new ResponseEntity<>(vendorResponse, HttpStatus.OK);
 	}
 
 	@GetMapping("/uuid/{uuid}")
-	public ResponseEntity<Vendor> getVendorByUuid(@PathVariable @NotNull String uuid) {
-		return new ResponseEntity<>(vendorService.getVendorByUuid(uuid), HttpStatus.OK);
+	public ResponseEntity<VendorResponse> getVendorByUuid(@PathVariable @NotNull String uuid) {
+		VendorResponse vendorResponse = new VendorResponse(vendorService.getVendorByUuid(uuid));
+		return new ResponseEntity<>(vendorResponse, HttpStatus.OK);
 	}
 
 	@PutMapping("/id/{id}")
-	public ResponseEntity<Vendor> updateVendor(@PathVariable @NotNull @Positive @Min(1) Long id,
+	public ResponseEntity<VendorResponse> updateVendor(@PathVariable @NotNull @Positive @Min(1) Long id,
 			@Valid @RequestBody UpdateVendorRequest request) {
-		return new ResponseEntity<>(vendorService.updateVendor(id, request), HttpStatus.OK);
+		VendorResponse vendorResponse = new VendorResponse(vendorService.updateVendor(id, request));
+		return new ResponseEntity<>(vendorResponse, HttpStatus.OK);
 	}
 
 	@DeleteMapping

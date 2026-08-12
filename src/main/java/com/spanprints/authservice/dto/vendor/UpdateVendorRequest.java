@@ -16,6 +16,7 @@ public class UpdateVendorRequest {
 	private String name;
 	private String email;
 	private String address;
+	private String note;
 	private String primaryPhoneNumber;
 	private String alternatePhoneNumber;
 }
