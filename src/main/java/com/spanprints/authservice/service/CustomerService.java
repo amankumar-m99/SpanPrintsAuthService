@@ -1,5 +1,6 @@
 package com.spanprints.authservice.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +21,6 @@ import com.spanprints.authservice.entity.Customer;
 import com.spanprints.authservice.exception.customer.CustomerAlreadyExistsException;
 import com.spanprints.authservice.exception.customer.CustomerNotFoundException;
 import com.spanprints.authservice.repository.CustomerRepository;
-import com.spanprints.authservice.specifications.CustomerSpecifications;
 import com.spanprints.authservice.util.SecurityUtils;
 
 @Service
@@ -75,10 +74,22 @@ public class CustomerService {
 	}
 
 	public Page<Customer> getFilteredPaginatedCustomers(CustomerFilterRequest filter) {
-		Specification<Customer> spec = CustomerSpecifications.withFilter(filter);
-		// Returns a chunk of data with metadata (total pages, total items)
 		Pageable pageable = PageRequest.of(filter.getPageNumber(), filter.getPageSize());
-		return customerRepository.findAll(spec, pageable);
+		String name = (filter.getName() != null && !filter.getName().isBlank()) ? filter.getName().trim() : null;
+		String email = (filter.getEmail() != null && !filter.getEmail().isBlank()) ? filter.getEmail().trim() : null;
+		String address = (filter.getAddress() != null && !filter.getAddress().isBlank()) ? filter.getAddress().trim()
+				: null;
+		String phone = (filter.getPhone() != null && !filter.getPhone().isBlank()) ? filter.getPhone().trim() : null;
+
+		BigDecimal outstandingMin = filter.getOutstandingAmountMin() != null
+				? BigDecimal.valueOf(filter.getOutstandingAmountMin())
+				: null;
+		BigDecimal outstandingMax = filter.getOutstandingAmountMax() != null
+				? BigDecimal.valueOf(filter.getOutstandingAmountMax())
+				: null;
+
+		return customerRepository.filteredCustomers(name, email, address, phone, filter.getOrderCountMin(),
+				filter.getOrderCountMax(), outstandingMin, outstandingMax, pageable);
 	}
 
 	public Customer getCustomerById(Long id) {
