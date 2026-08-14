@@ -1,17 +1,18 @@
-package com.spanprints.authservice.dto.printjob;
+package com.spanprints.authservice.dto;
 
 import java.util.List;
+import java.util.function.Function;
 
 import org.springframework.data.domain.Page;
 
-import com.spanprints.authservice.entity.PrintJob;
+import com.spanprints.authservice.entity.AuditableBaseEntity;
 
 import lombok.Getter;
 
 @Getter
-public class PrintJobPaginatonResponse {
+public class PaginationResponse<T extends AuditableBaseEntity, U extends EntityResponseDto> {
 
-	private List<PrintJobResponse> orders;
+	private List<U> elements;
 	private int currentPageNumber;
 	private int numberOfTotalPages;
 	private long totalElements;
@@ -21,8 +22,8 @@ public class PrintJobPaginatonResponse {
 	private boolean isLast;
 	private int size;
 
-	public PrintJobPaginatonResponse(Page<PrintJob> page) {
-		orders = page.getContent().stream().map(PrintJobResponse::new).toList();
+	public PaginationResponse(Page<T> page, Function<T, U> fun) {
+		elements = page.getContent().stream().map(fun).toList();
 		currentPageNumber = page.getNumber();
 		numberOfTotalPages = page.getTotalPages();
 		totalElements = page.getTotalElements();
@@ -32,5 +33,4 @@ public class PrintJobPaginatonResponse {
 		isFirst = page.isFirst();
 		isLast = page.isLast();
 	}
-
 }

@@ -24,12 +24,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.spanprints.authservice.dto.ErrorResponseDto;
+import com.spanprints.authservice.dto.PaginationResponse;
 import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.dto.TextResponseDto;
 import com.spanprints.authservice.dto.printjob.CreatePrintJobRequest;
 import com.spanprints.authservice.dto.printjob.PrintJobDepositAmountRequest;
 import com.spanprints.authservice.dto.printjob.PrintJobFilterAndPaginationRequest;
-import com.spanprints.authservice.dto.printjob.PrintJobPaginatonResponse;
 import com.spanprints.authservice.dto.printjob.PrintJobResponse;
 import com.spanprints.authservice.dto.printjob.UpdatePrintJobNonDependentFieldsRequest;
 import com.spanprints.authservice.dto.printjob.UpdatePrintJobStatusRequest;
@@ -96,9 +96,9 @@ public class PrintJobController {
 	}
 
 	@PostMapping("paginated")
-	public PrintJobPaginatonResponse getAllPrintJobsPaginated(@Valid @RequestBody PrintJobFilterAndPaginationRequest request) {
+	public PaginationResponse<PrintJob, PrintJobResponse> getAllPrintJobsPaginated(@Valid @RequestBody PrintJobFilterAndPaginationRequest request) {
 		Page<PrintJob> filteredProductsPaginated = printJobService.getFilteredProductsPaginated(request);
-		return new PrintJobPaginatonResponse(filteredProductsPaginated);
+		return new PaginationResponse<>(filteredProductsPaginated, PrintJobResponse::new);
 	}
 
 	@GetMapping("customer-uuid/{uuid}")

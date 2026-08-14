@@ -16,10 +16,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.spanprints.authservice.dto.PaginationResponse;
 import com.spanprints.authservice.dto.printjob.CreatePrintJobRequest;
 import com.spanprints.authservice.dto.printjob.PrintJobDepositAmountRequest;
 import com.spanprints.authservice.dto.printjob.PrintJobFilterAndPaginationRequest;
-import com.spanprints.authservice.dto.printjob.PrintJobPaginatonResponse;
+import com.spanprints.authservice.dto.printjob.PrintJobResponse;
 import com.spanprints.authservice.dto.printjob.UpdatePrintJobNonDependentFieldsRequest;
 import com.spanprints.authservice.dto.printjob.UpdatePrintJobStatusRequest;
 import com.spanprints.authservice.entity.Account;
@@ -97,10 +98,10 @@ public class PrintJobService {
 		return printJobRepository.findAll(spec, pageable);
 	}
 
-	public PrintJobPaginatonResponse getAllPrintJobsPaginated(int pageNumber, int pageSize) {
+	public PaginationResponse<PrintJob, PrintJobResponse> getAllPrintJobsPaginated(int pageNumber, int pageSize) {
 		Pageable page = PageRequest.of(pageNumber, pageSize);
 		Page<PrintJob> all = printJobRepository.findAll(page);
-		return new PrintJobPaginatonResponse(all);
+		return new PaginationResponse<>(all, PrintJobResponse::new);
 	}
 
 	public List<PrintJob> getAllPrintJobsByCustomerUuid(String uuid) {
