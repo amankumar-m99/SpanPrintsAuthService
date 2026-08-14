@@ -3,6 +3,7 @@ package com.spanprints.authservice.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,12 +15,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.spanprints.authservice.dto.PaginationResponse;
 import com.spanprints.authservice.dto.SuccessResponseDto;
+import com.spanprints.authservice.dto.expense.ExpenseFilterAndPaginationRequest;
 import com.spanprints.authservice.dto.inventory.AddStockRequest;
 import com.spanprints.authservice.dto.inventory.CreateInventoryItemRequest;
 import com.spanprints.authservice.dto.inventory.InventoryItemResponse;
 import com.spanprints.authservice.dto.inventory.SubtractStockRequest;
 import com.spanprints.authservice.dto.inventory.UpdateInventoryItemRequest;
+import com.spanprints.authservice.entity.InventoryItem;
 import com.spanprints.authservice.service.InventoryItemService;
 
 import jakarta.transaction.Transactional;
@@ -49,6 +53,13 @@ public class InventoryItemController {
 		return inventoryItemService.getAllInventoryItems().stream().map(InventoryItemResponse::new).toList();
 	}
 
+	@PostMapping("/paginated")
+	public PaginationResponse<InventoryItem, InventoryItemResponse> getPaginatedCustomers(
+			@Valid @RequestBody ExpenseFilterAndPaginationRequest filter) {
+		Page<InventoryItem> filteredProductsPaginated = inventoryItemService.getFilteredPaginatedExpenses(filter);
+		return new PaginationResponse<>(filteredProductsPaginated, InventoryItemResponse::new);
+	}
+
 	@PutMapping
 	public ResponseEntity<InventoryItemResponse> updateInventoryItem(
 			@Valid @RequestBody UpdateInventoryItemRequest request) {
@@ -59,15 +70,13 @@ public class InventoryItemController {
 
 	@PutMapping("add-stock")
 	public ResponseEntity<InventoryItemResponse> addStock(@Valid @RequestBody AddStockRequest request) {
-		InventoryItemResponse inventoryItem = new InventoryItemResponse(
-				inventoryItemService.addStock(request));
+		InventoryItemResponse inventoryItem = new InventoryItemResponse(inventoryItemService.addStock(request));
 		return new ResponseEntity<>(inventoryItem, HttpStatus.CREATED);
 	}
 
 	@PutMapping("subtract-stock")
 	public ResponseEntity<InventoryItemResponse> subtractStock(@Valid @RequestBody SubtractStockRequest request) {
-		InventoryItemResponse inventoryItem = new InventoryItemResponse(
-				inventoryItemService.subtractStock(request));
+		InventoryItemResponse inventoryItem = new InventoryItemResponse(inventoryItemService.subtractStock(request));
 		return new ResponseEntity<>(inventoryItem, HttpStatus.CREATED);
 	}
 

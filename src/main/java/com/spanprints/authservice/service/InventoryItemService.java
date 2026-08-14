@@ -3,10 +3,14 @@ package com.spanprints.authservice.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.spanprints.authservice.dto.SuccessResponseDto;
+import com.spanprints.authservice.dto.expense.ExpenseFilterAndPaginationRequest;
 import com.spanprints.authservice.dto.inventory.AddStockRequest;
 import com.spanprints.authservice.dto.inventory.CreateInventoryItemRequest;
 import com.spanprints.authservice.dto.inventory.SubtractStockRequest;
@@ -76,6 +80,12 @@ public class InventoryItemService {
 
 	public List<InventoryItem> getAllInventoryItems() {
 		return inventoryItemRepository.findAll();
+	}
+
+	public Page<InventoryItem> getFilteredPaginatedExpenses(@Valid ExpenseFilterAndPaginationRequest filter) {
+		Pageable pageable = PageRequest.of(filter.getPaginationRequest().getPageNumber(),
+				filter.getPaginationRequest().getPageSize());
+		return inventoryItemRepository.findAll(pageable);
 	}
 
 	@Transactional
