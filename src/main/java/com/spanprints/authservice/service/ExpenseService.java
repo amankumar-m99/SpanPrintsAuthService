@@ -3,9 +3,13 @@ package com.spanprints.authservice.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.spanprints.authservice.dto.expense.CreateExpenseRequest;
+import com.spanprints.authservice.dto.expense.ExpenseFilterAndPaginationRequest;
 import com.spanprints.authservice.dto.expense.UpdateExpenseRequest;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.Expense;
@@ -13,6 +17,8 @@ import com.spanprints.authservice.exception.InvalidInputsException;
 import com.spanprints.authservice.exception.ledger.TransactionNotFoundException;
 import com.spanprints.authservice.repository.ExpenseRepository;
 import com.spanprints.authservice.util.BasicUtils;
+
+import jakarta.validation.Valid;
 
 @Service
 public class ExpenseService {
@@ -30,6 +36,12 @@ public class ExpenseService {
 
 	public List<Expense> getAllExpenses() {
 		return expenseRepository.findAll();
+	}
+
+	public Page<Expense> getFilteredPaginatedExpenses(@Valid ExpenseFilterAndPaginationRequest filter) {
+		Pageable pageable = PageRequest.of(filter.getPaginationRequest().getPageNumber(),
+				filter.getPaginationRequest().getPageSize());
+		return expenseRepository.findAll(pageable);
 	}
 
 	public Expense getExpenseById(Long id) {

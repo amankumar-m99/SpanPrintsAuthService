@@ -3,6 +3,7 @@ package com.spanprints.authservice.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.spanprints.authservice.dto.PaginationResponse;
 import com.spanprints.authservice.dto.expense.CreateExpenseRequest;
+import com.spanprints.authservice.dto.expense.ExpenseFilterAndPaginationRequest;
 import com.spanprints.authservice.dto.expense.ExpenseResponse;
 import com.spanprints.authservice.dto.expense.UpdateExpenseRequest;
 import com.spanprints.authservice.entity.Account;
@@ -49,8 +52,14 @@ public class ExpenseController {
 
 	@GetMapping
 	public List<ExpenseResponse> getAllExpenses() {
-		List<ExpenseResponse> list = expenseService.getAllExpenses().stream().map(ExpenseResponse::new).toList();
-		return list;
+		return expenseService.getAllExpenses().stream().map(ExpenseResponse::new).toList();
+	}
+
+	@PostMapping("/paginated")
+	public PaginationResponse<Expense, ExpenseResponse> getPaginatedCustomers(
+			@Valid @RequestBody ExpenseFilterAndPaginationRequest filter) {
+		Page<Expense> filteredProductsPaginated = expenseService.getFilteredPaginatedExpenses(filter);
+		return new PaginationResponse<>(filteredProductsPaginated, ExpenseResponse::new);
 	}
 
 	@GetMapping("/id/{id}")
