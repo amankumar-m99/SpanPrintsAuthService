@@ -82,7 +82,7 @@ public class InventoryItemService {
 		return inventoryItemRepository.findAll();
 	}
 
-	public Page<InventoryItem> getFilteredPaginatedExpenses(@Valid ExpenseFilterAndPaginationRequest filter) {
+	public Page<InventoryItem> getFilteredPaginatedInventoryItems(@Valid ExpenseFilterAndPaginationRequest filter) {
 		Pageable pageable = PageRequest.of(filter.getPaginationRequest().getPageNumber(),
 				filter.getPaginationRequest().getPageSize());
 		return inventoryItemRepository.findAll(pageable);

@@ -54,7 +54,7 @@ public class VendorService {
 		return vendorRepository.findAll();
 	}
 
-	public Page<Vendor> getFilteredPaginatedExpenses(@Valid VendorFilterAndPaginationRequest filter) {
+	public Page<Vendor> getFilteredPaginatedVendors(@Valid VendorFilterAndPaginationRequest filter) {
 		Pageable pageable = PageRequest.of(filter.getPaginationRequest().getPageNumber(),
 				filter.getPaginationRequest().getPageSize());
 		return vendorRepository.findAll(pageable);

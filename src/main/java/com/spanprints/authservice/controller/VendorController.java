@@ -50,7 +50,7 @@ public class VendorController {
 	@PostMapping("/paginated")
 	public PaginationResponse<Vendor, VendorResponse> getPaginatedCustomers(
 			@Valid @RequestBody VendorFilterAndPaginationRequest filter) {
-		Page<Vendor> filteredProductsPaginated = vendorService.getFilteredPaginatedExpenses(filter);
+		Page<Vendor> filteredProductsPaginated = vendorService.getFilteredPaginatedVendors(filter);
 		return new PaginationResponse<>(filteredProductsPaginated, VendorResponse::new);
 	}
 

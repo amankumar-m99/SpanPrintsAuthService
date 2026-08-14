@@ -56,7 +56,7 @@ public class InventoryItemController {
 	@PostMapping("/paginated")
 	public PaginationResponse<InventoryItem, InventoryItemResponse> getPaginatedCustomers(
 			@Valid @RequestBody ExpenseFilterAndPaginationRequest filter) {
-		Page<InventoryItem> filteredProductsPaginated = inventoryItemService.getFilteredPaginatedExpenses(filter);
+		Page<InventoryItem> filteredProductsPaginated = inventoryItemService.getFilteredPaginatedInventoryItems(filter);
 		return new PaginationResponse<>(filteredProductsPaginated, InventoryItemResponse::new);
 	}
 
