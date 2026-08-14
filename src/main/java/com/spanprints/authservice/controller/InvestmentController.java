@@ -3,6 +3,7 @@ package com.spanprints.authservice.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.spanprints.authservice.dto.PaginationResponse;
 import com.spanprints.authservice.dto.investment.CreateInvestmentRequest;
+import com.spanprints.authservice.dto.investment.InvestmentFilterAndPaginationRequest;
 import com.spanprints.authservice.dto.investment.InvestmentResponse;
 import com.spanprints.authservice.dto.investment.UpdateInvestmentRequest;
 import com.spanprints.authservice.entity.Account;
@@ -49,8 +52,14 @@ public class InvestmentController {
 
 	@GetMapping
 	public List<InvestmentResponse> getAllInvestments() {
-		List<InvestmentResponse> list = investmentService.getAllInvestments().stream().map(InvestmentResponse::new).toList();
-		return list;
+		return investmentService.getAllInvestments().stream().map(InvestmentResponse::new).toList();
+	}
+
+	@PostMapping("/paginated")
+	public PaginationResponse<Investment, InvestmentResponse> getPaginatedCustomers(
+			@Valid @RequestBody InvestmentFilterAndPaginationRequest filter) {
+		Page<Investment> filteredProductsPaginated = investmentService.getFilteredPaginatedInvestments(filter);
+		return new PaginationResponse<>(filteredProductsPaginated, InvestmentResponse::new);
 	}
 
 	@GetMapping("/id/{id}")

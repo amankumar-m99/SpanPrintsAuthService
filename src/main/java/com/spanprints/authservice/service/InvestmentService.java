@@ -3,9 +3,13 @@ package com.spanprints.authservice.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.spanprints.authservice.dto.investment.CreateInvestmentRequest;
+import com.spanprints.authservice.dto.investment.InvestmentFilterAndPaginationRequest;
 import com.spanprints.authservice.dto.investment.UpdateInvestmentRequest;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.Investment;
@@ -13,6 +17,8 @@ import com.spanprints.authservice.exception.InvalidInputsException;
 import com.spanprints.authservice.exception.ledger.TransactionNotFoundException;
 import com.spanprints.authservice.repository.InvestmentRepository;
 import com.spanprints.authservice.util.BasicUtils;
+
+import jakarta.validation.Valid;
 
 @Service
 public class InvestmentService {
@@ -29,6 +35,12 @@ public class InvestmentService {
 
 	public List<Investment> getAllInvestments() {
 		return investmentRepository.findAll();
+	}
+
+	public Page<Investment> getFilteredPaginatedInvestments(@Valid InvestmentFilterAndPaginationRequest filter) {
+		Pageable pageable = PageRequest.of(filter.getPaginationRequest().getPageNumber(),
+				filter.getPaginationRequest().getPageSize());
+		return investmentRepository.findAll(pageable);
 	}
 
 	public Investment getInvestmentById(Long id) {
