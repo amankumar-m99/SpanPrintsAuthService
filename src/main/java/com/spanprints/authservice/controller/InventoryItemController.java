@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.spanprints.authservice.dto.PaginationResponse;
 import com.spanprints.authservice.dto.SuccessResponseDto;
-import com.spanprints.authservice.dto.expense.ExpenseFilterAndPaginationRequest;
 import com.spanprints.authservice.dto.inventory.AddStockRequest;
 import com.spanprints.authservice.dto.inventory.CreateInventoryItemRequest;
+import com.spanprints.authservice.dto.inventory.InventoryFilterAndPaginationRequest;
 import com.spanprints.authservice.dto.inventory.InventoryItemResponse;
 import com.spanprints.authservice.dto.inventory.SubtractStockRequest;
 import com.spanprints.authservice.dto.inventory.UpdateInventoryItemRequest;
@@ -55,7 +55,7 @@ public class InventoryItemController {
 
 	@PostMapping("/paginated")
 	public PaginationResponse<InventoryItem, InventoryItemResponse> getPaginatedCustomers(
-			@Valid @RequestBody ExpenseFilterAndPaginationRequest filter) {
+			@Valid @RequestBody InventoryFilterAndPaginationRequest filter) {
 		Page<InventoryItem> filteredProductsPaginated = inventoryItemService.getFilteredPaginatedInventoryItems(filter);
 		return new PaginationResponse<>(filteredProductsPaginated, InventoryItemResponse::new);
 	}

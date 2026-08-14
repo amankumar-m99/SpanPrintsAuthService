@@ -10,9 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.spanprints.authservice.dto.SuccessResponseDto;
-import com.spanprints.authservice.dto.expense.ExpenseFilterAndPaginationRequest;
 import com.spanprints.authservice.dto.inventory.AddStockRequest;
 import com.spanprints.authservice.dto.inventory.CreateInventoryItemRequest;
+import com.spanprints.authservice.dto.inventory.InventoryFilterAndPaginationRequest;
 import com.spanprints.authservice.dto.inventory.SubtractStockRequest;
 import com.spanprints.authservice.dto.inventory.UpdateInventoryItemRequest;
 import com.spanprints.authservice.entity.InventoryHistory;
@@ -82,7 +82,7 @@ public class InventoryItemService {
 		return inventoryItemRepository.findAll();
 	}
 
-	public Page<InventoryItem> getFilteredPaginatedInventoryItems(@Valid ExpenseFilterAndPaginationRequest filter) {
+	public Page<InventoryItem> getFilteredPaginatedInventoryItems(@Valid InventoryFilterAndPaginationRequest filter) {
 		Pageable pageable = PageRequest.of(filter.getPaginationRequest().getPageNumber(),
 				filter.getPaginationRequest().getPageSize());
 		return inventoryItemRepository.findAll(pageable);
