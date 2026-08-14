@@ -3,11 +3,10 @@ package com.spanprints.authservice.dto.printjob;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.spanprints.authservice.dto.PaginationRequest;
 import com.spanprints.authservice.enums.PaymentStatus;
 import com.spanprints.authservice.enums.PrintJobStatus;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,15 +16,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PrintJobFilterRequest {
+public class PrintJobFilterAndPaginationRequest {
 
-	@NotNull(message = "Page number cannot be empty")
-	@Min(0)
-	private Integer pageNumber;
-
-	@NotNull(message = "Page size cannot be empty")
-	@Min(1)
-	private Integer pageSize;
+	private PaginationRequest paginationRequest;
 
 	private Long quantityMin;
 	private Long quantityMax;

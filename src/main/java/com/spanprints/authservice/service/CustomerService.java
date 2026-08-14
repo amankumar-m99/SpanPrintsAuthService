@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.dto.customer.CreateCustomerRequest;
-import com.spanprints.authservice.dto.customer.CustomerFilterRequest;
+import com.spanprints.authservice.dto.customer.CustomerFilterAndPaginationRequest;
 import com.spanprints.authservice.dto.customer.UpdateCustomerRequest;
 import com.spanprints.authservice.dto.printjob.CreatePrintJobRequest;
 import com.spanprints.authservice.entity.Account;
@@ -73,8 +73,7 @@ public class CustomerService {
 		return customerRepository.findAll();
 	}
 
-	public Page<Customer> getFilteredPaginatedCustomers(CustomerFilterRequest filter) {
-		Pageable pageable = PageRequest.of(filter.getPageNumber(), filter.getPageSize());
+	public Page<Customer> getFilteredPaginatedCustomers(CustomerFilterAndPaginationRequest filter) {
 		String name = (filter.getName() != null && !filter.getName().isBlank()) ? filter.getName().trim() : null;
 		String email = (filter.getEmail() != null && !filter.getEmail().isBlank()) ? filter.getEmail().trim() : null;
 		String address = (filter.getAddress() != null && !filter.getAddress().isBlank()) ? filter.getAddress().trim()
@@ -88,6 +87,8 @@ public class CustomerService {
 				? BigDecimal.valueOf(filter.getOutstandingAmountMax())
 				: null;
 
+		Pageable pageable = PageRequest.of(filter.getPaginationRequest().getPageNumber(),
+				filter.getPaginationRequest().getPageSize());
 		return customerRepository.filteredCustomers(name, email, address, phone, filter.getOrderCountMin(),
 				filter.getOrderCountMax(), outstandingMin, outstandingMax, pageable);
 	}

@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 
 import com.spanprints.authservice.dto.printjob.CreatePrintJobRequest;
 import com.spanprints.authservice.dto.printjob.PrintJobDepositAmountRequest;
-import com.spanprints.authservice.dto.printjob.PrintJobFilterRequest;
+import com.spanprints.authservice.dto.printjob.PrintJobFilterAndPaginationRequest;
 import com.spanprints.authservice.dto.printjob.PrintJobPaginatonResponse;
 import com.spanprints.authservice.dto.printjob.UpdatePrintJobNonDependentFieldsRequest;
 import com.spanprints.authservice.dto.printjob.UpdatePrintJobStatusRequest;
@@ -75,7 +75,7 @@ public class PrintJobService {
 		return printJobRepository.findAll();
 	}
 
-	public List<PrintJob> getFilteredProducts(PrintJobFilterRequest filter) {
+	public List<PrintJob> getFilteredProducts(PrintJobFilterAndPaginationRequest filter) {
 		// Build the dynamic specification from the filter object
 		Specification<PrintJob> spec = PrintJobSpecifications.withFilter(filter);
 
@@ -83,16 +83,17 @@ public class PrintJobService {
 		return printJobRepository.findAll(spec);
 	}
 
-	public Page<PrintJob> getFilteredProductsPaginated(PrintJobFilterRequest filter, Pageable pageable) {
+	public Page<PrintJob> getFilteredProductsPaginated(PrintJobFilterAndPaginationRequest filter, Pageable pageable) {
 		Specification<PrintJob> spec = PrintJobSpecifications.withFilter(filter);
 		// Returns a chunk of data with metadata (total pages, total items)
 		return printJobRepository.findAll(spec, pageable);
 	}
 
-	public Page<PrintJob> getFilteredProductsPaginated(PrintJobFilterRequest filter) {
+	public Page<PrintJob> getFilteredProductsPaginated(PrintJobFilterAndPaginationRequest filter) {
 		Specification<PrintJob> spec = PrintJobSpecifications.withFilter(filter);
 		// Returns a chunk of data with metadata (total pages, total items)
-		Pageable pageable = PageRequest.of(filter.getPageNumber(), filter.getPageSize());
+		Pageable pageable = PageRequest.of(filter.getPaginationRequest().getPageNumber(),
+				filter.getPaginationRequest().getPageSize());
 		return printJobRepository.findAll(spec, pageable);
 	}
 

@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.spanprints.authservice.dto.customer.CustomerFilterRequest;
+import com.spanprints.authservice.dto.customer.CustomerFilterAndPaginationRequest;
 import com.spanprints.authservice.entity.Customer;
 import com.spanprints.authservice.util.BasicUtils;
 
@@ -16,7 +16,7 @@ public class CustomerSpecifications {
 	private CustomerSpecifications() {
 	}
 
-	public static Specification<Customer> withFilter(CustomerFilterRequest filter) {
+	public static Specification<Customer> withFilter(CustomerFilterAndPaginationRequest filter) {
 		return (root, query, criteriaBuilder) -> {
 			List<Predicate> predicates = new ArrayList<>();
 

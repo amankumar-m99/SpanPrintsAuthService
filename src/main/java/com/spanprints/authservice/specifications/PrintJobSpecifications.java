@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.spanprints.authservice.dto.printjob.PrintJobFilterRequest;
+import com.spanprints.authservice.dto.printjob.PrintJobFilterAndPaginationRequest;
 import com.spanprints.authservice.entity.Customer;
 import com.spanprints.authservice.entity.PrintJob;
 import com.spanprints.authservice.entity.PrintJobType;
@@ -28,7 +28,7 @@ public class PrintJobSpecifications {
 	private PrintJobSpecifications() {
 	}
 
-	public static Specification<PrintJob> withFilter(PrintJobFilterRequest filter) {
+	public static Specification<PrintJob> withFilter(PrintJobFilterAndPaginationRequest filter) {
 		return (root, query, criteriaBuilder) -> {
 			List<Predicate> predicates = new ArrayList<>();
 

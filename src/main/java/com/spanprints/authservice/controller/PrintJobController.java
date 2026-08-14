@@ -28,7 +28,7 @@ import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.dto.TextResponseDto;
 import com.spanprints.authservice.dto.printjob.CreatePrintJobRequest;
 import com.spanprints.authservice.dto.printjob.PrintJobDepositAmountRequest;
-import com.spanprints.authservice.dto.printjob.PrintJobFilterRequest;
+import com.spanprints.authservice.dto.printjob.PrintJobFilterAndPaginationRequest;
 import com.spanprints.authservice.dto.printjob.PrintJobPaginatonResponse;
 import com.spanprints.authservice.dto.printjob.PrintJobResponse;
 import com.spanprints.authservice.dto.printjob.UpdatePrintJobNonDependentFieldsRequest;
@@ -96,7 +96,7 @@ public class PrintJobController {
 	}
 
 	@PostMapping("paginated")
-	public PrintJobPaginatonResponse getAllPrintJobsPaginated(@Valid @RequestBody PrintJobFilterRequest request) {
+	public PrintJobPaginatonResponse getAllPrintJobsPaginated(@Valid @RequestBody PrintJobFilterAndPaginationRequest request) {
 		Page<PrintJob> filteredProductsPaginated = printJobService.getFilteredProductsPaginated(request);
 		return new PrintJobPaginatonResponse(filteredProductsPaginated);
 	}

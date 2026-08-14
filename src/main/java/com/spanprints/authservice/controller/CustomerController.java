@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.dto.customer.CreateCustomerRequest;
-import com.spanprints.authservice.dto.customer.CustomerFilterRequest;
+import com.spanprints.authservice.dto.customer.CustomerFilterAndPaginationRequest;
 import com.spanprints.authservice.dto.customer.CustomerPaginatonResponse;
 import com.spanprints.authservice.dto.customer.CustomerResponse;
 import com.spanprints.authservice.dto.customer.UpdateCustomerRequest;
@@ -50,7 +50,7 @@ public class CustomerController {
 	}
 
 	@PostMapping("/paginated")
-	public  CustomerPaginatonResponse getPaginatedCustomers(@Valid @RequestBody CustomerFilterRequest request) {
+	public  CustomerPaginatonResponse getPaginatedCustomers(@Valid @RequestBody CustomerFilterAndPaginationRequest request) {
 		Page<Customer> filteredProductsPaginated = customerService.getFilteredPaginatedCustomers(request);
 		return new CustomerPaginatonResponse(filteredProductsPaginated);
 	}
