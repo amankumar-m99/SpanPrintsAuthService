@@ -3,6 +3,7 @@ package com.spanprints.authservice.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,8 +11,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.spanprints.authservice.dto.PaginationResponse;
 import com.spanprints.authservice.dto.printjob.CreatePrintJobTypeRequest;
+import com.spanprints.authservice.dto.printjob.PrintJobTypeFilterAndPaginationRequest;
 import com.spanprints.authservice.dto.printjob.PrintJobTypeResponse;
+import com.spanprints.authservice.entity.PrintJobType;
 import com.spanprints.authservice.service.PrintJobTypeService;
 
 import jakarta.validation.Valid;
@@ -34,6 +38,13 @@ public class PrintJobTypeController {
 	@GetMapping
 	public List<PrintJobTypeResponse> getAllPrintJobs() {
 		return printJobTypeService.getAllPrintJobTypes().stream().map(PrintJobTypeResponse::new).toList();
+	}
+
+	@PostMapping("/paginated")
+	public PaginationResponse<PrintJobType, PrintJobTypeResponse> getPaginatedCustomers(
+			@Valid @RequestBody PrintJobTypeFilterAndPaginationRequest filter) {
+		Page<PrintJobType> filteredProductsPaginated = printJobTypeService.getFilteredPaginatedExpenses(filter);
+		return new PaginationResponse<>(filteredProductsPaginated, PrintJobTypeResponse::new);
 	}
 
 	@GetMapping("/id/{id}")
