@@ -5,10 +5,14 @@ import java.time.Instant;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.spanprints.authservice.dto.SuccessResponseDto;
+import com.spanprints.authservice.dto.ledger.LedgerEntryFilterAndPaginationRequest;
 import com.spanprints.authservice.entity.Expense;
 import com.spanprints.authservice.entity.Investment;
 import com.spanprints.authservice.entity.LedgerEntry;
@@ -17,6 +21,8 @@ import com.spanprints.authservice.entity.LedgerType;
 import com.spanprints.authservice.entity.PrintJob;
 import com.spanprints.authservice.exception.ledger.TransactionNotFoundException;
 import com.spanprints.authservice.repository.LedgerEntryRepository;
+
+import jakarta.validation.Valid;
 
 @Service
 public class LedgerEntryService {
@@ -52,6 +58,12 @@ public class LedgerEntryService {
 
 	public List<LedgerEntry> getAllLedgerEntry() {
 		return ledgerEntryRepository.findAll();
+	}
+
+	public Page<LedgerEntry> getFilteredPaginatedLedgerEntry(@Valid LedgerEntryFilterAndPaginationRequest  filter) {
+		Pageable pageable = PageRequest.of(filter.getPaginationRequest().getPageNumber(),
+				filter.getPaginationRequest().getPageSize());
+		return ledgerEntryRepository.findAll(pageable);
 	}
 
 	public LedgerEntry updateTransaction(Expense expense) {
