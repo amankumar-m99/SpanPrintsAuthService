@@ -22,8 +22,8 @@ public class PaginationResponse<T extends AuditableBaseEntity, U extends EntityR
 	private boolean isLast;
 	private int size;
 
-	public PaginationResponse(Page<T> page, Function<T, U> fun) {
-		elements = page.getContent().stream().map(fun).toList();
+	public PaginationResponse(Page<T> page, Function<T, U> responseMapper) {
+		elements = page.getContent().stream().map(responseMapper).toList();
 		currentPageNumber = page.getNumber();
 		numberOfTotalPages = page.getTotalPages();
 		totalElements = page.getTotalElements();
