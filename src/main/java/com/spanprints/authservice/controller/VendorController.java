@@ -3,6 +3,7 @@ package com.spanprints.authservice.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,10 +15,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.spanprints.authservice.dto.PaginationResponse;
 import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.dto.vendor.CreateVendorRequest;
 import com.spanprints.authservice.dto.vendor.UpdateVendorRequest;
+import com.spanprints.authservice.dto.vendor.VendorFilterAndPaginationRequest;
 import com.spanprints.authservice.dto.vendor.VendorResponse;
+import com.spanprints.authservice.entity.Vendor;
 import com.spanprints.authservice.service.VendorService;
 
 import jakarta.validation.Valid;
@@ -41,6 +45,13 @@ public class VendorController {
 	@GetMapping
 	public List<VendorResponse> getAllVendors() {
 		return vendorService.getAllVendors().stream().map(VendorResponse::new).toList();
+	}
+
+	@PostMapping("/paginated")
+	public PaginationResponse<Vendor, VendorResponse> getPaginatedCustomers(
+			@Valid @RequestBody VendorFilterAndPaginationRequest filter) {
+		Page<Vendor> filteredProductsPaginated = vendorService.getFilteredPaginatedExpenses(filter);
+		return new PaginationResponse<>(filteredProductsPaginated, VendorResponse::new);
 	}
 
 	@GetMapping("/id/{id}")

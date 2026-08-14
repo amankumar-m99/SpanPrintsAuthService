@@ -3,18 +3,24 @@ package com.spanprints.authservice.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.spanprints.authservice.dto.SuccessResponseDto;
 import com.spanprints.authservice.dto.vendor.CreateVendorRequest;
 import com.spanprints.authservice.dto.vendor.UpdateVendorRequest;
+import com.spanprints.authservice.dto.vendor.VendorFilterAndPaginationRequest;
 import com.spanprints.authservice.entity.Account;
 import com.spanprints.authservice.entity.Vendor;
 import com.spanprints.authservice.exception.vendor.VendorAlreadyExistsException;
 import com.spanprints.authservice.exception.vendor.VendorNotFoundException;
 import com.spanprints.authservice.repository.VendorRepository;
 import com.spanprints.authservice.util.SecurityUtils;
+
+import jakarta.validation.Valid;
 
 @Service
 public class VendorService {
@@ -46,6 +52,12 @@ public class VendorService {
 
 	public List<Vendor> getAllVendors() {
 		return vendorRepository.findAll();
+	}
+
+	public Page<Vendor> getFilteredPaginatedExpenses(@Valid VendorFilterAndPaginationRequest filter) {
+		Pageable pageable = PageRequest.of(filter.getPaginationRequest().getPageNumber(),
+				filter.getPaginationRequest().getPageSize());
+		return vendorRepository.findAll(pageable);
 	}
 
 	public Vendor getVendorById(Long id) {
