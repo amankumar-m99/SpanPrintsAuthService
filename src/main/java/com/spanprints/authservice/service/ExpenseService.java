@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.spanprints.authservice.dto.expense.CreateExpenseRequest;
@@ -16,6 +17,7 @@ import com.spanprints.authservice.entity.Expense;
 import com.spanprints.authservice.exception.InvalidInputsException;
 import com.spanprints.authservice.exception.ledger.TransactionNotFoundException;
 import com.spanprints.authservice.repository.ExpenseRepository;
+import com.spanprints.authservice.specifications.ExpenseSpecifications;
 import com.spanprints.authservice.util.BasicUtils;
 
 import jakarta.validation.Valid;
@@ -39,9 +41,11 @@ public class ExpenseService {
 	}
 
 	public Page<Expense> getFilteredPaginatedExpenses(@Valid ExpenseFilterAndPaginationRequest filter) {
+		Specification<Expense> spec = ExpenseSpecifications.withFilter(filter);
+		// Returns a chunk of data with metadata (total pages, total items)
 		Pageable pageable = PageRequest.of(filter.getPaginationRequest().getPageNumber(),
 				filter.getPaginationRequest().getPageSize());
-		return expenseRepository.findAll(pageable);
+		return expenseRepository.findAll(spec, pageable);
 	}
 
 	public Expense getExpenseById(Long id) {
