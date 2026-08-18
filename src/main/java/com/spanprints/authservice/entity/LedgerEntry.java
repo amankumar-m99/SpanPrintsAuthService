@@ -5,7 +5,6 @@ import java.time.Instant;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -24,9 +23,7 @@ import lombok.Setter;
 @Builder
 public class LedgerEntry extends AuditableBaseEntity {
 	private BigDecimal amount;
-	@Column(name="ledgerType")
 	private LedgerEntryType ledgerEntryType;
-	@Column(name="ledgerSource")
 	private LedgerEntrySource ledgerEntrySource;
 	private Instant transactionDateTime;
 	private String description;
