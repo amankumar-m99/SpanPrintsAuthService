@@ -1,6 +1,6 @@
 package com.spanprints.authservice.entity;
 
-public enum LedgerType {
+public enum LedgerEntryType {
 
 	DEBIT, CREDIT
 }

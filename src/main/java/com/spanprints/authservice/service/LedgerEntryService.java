@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +17,12 @@ import com.spanprints.authservice.dto.ledger.LedgerEntryFilterAndPaginationReque
 import com.spanprints.authservice.entity.Expense;
 import com.spanprints.authservice.entity.Investment;
 import com.spanprints.authservice.entity.LedgerEntry;
-import com.spanprints.authservice.entity.LedgerSource;
-import com.spanprints.authservice.entity.LedgerType;
+import com.spanprints.authservice.entity.LedgerEntrySource;
+import com.spanprints.authservice.entity.LedgerEntryType;
 import com.spanprints.authservice.entity.PrintJob;
 import com.spanprints.authservice.exception.ledger.TransactionNotFoundException;
 import com.spanprints.authservice.repository.LedgerEntryRepository;
-
-import jakarta.validation.Valid;
+import com.spanprints.authservice.specifications.LedgderSpecifications;
 
 @Service
 public class LedgerEntryService {
@@ -31,22 +31,23 @@ public class LedgerEntryService {
 	private LedgerEntryRepository ledgerEntryRepository;
 
 	public LedgerEntry createLedgerEntry(Investment invesment) {
-		LedgerEntry ledgerEntry = LedgerEntry.builder().amount(invesment.getAmount()).ledgerType(LedgerType.CREDIT)
-				.ledgerSource(LedgerSource.INVESTMENT).transactionDateTime(invesment.getDateOfInvestment())
-				.investment(invesment).account(invesment.getAccount()).build();
+		LedgerEntry ledgerEntry = LedgerEntry.builder().amount(invesment.getAmount())
+				.ledgerEntryType(LedgerEntryType.CREDIT).ledgerEntrySource(LedgerEntrySource.INVESTMENT)
+				.transactionDateTime(invesment.getDateOfInvestment()).investment(invesment)
+				.account(invesment.getAccount()).build();
 		return ledgerEntryRepository.save(ledgerEntry);
 	}
 
 	public LedgerEntry createLedgerEntry(Expense expense) {
-		LedgerEntry ledgerEntry = LedgerEntry.builder().amount(expense.getAmount()).ledgerType(LedgerType.DEBIT)
-				.ledgerSource(LedgerSource.PURCHASE).transactionDateTime(expense.getDateOfExpense()).expense(expense)
-				.account(expense.getAccount()).build();
+		LedgerEntry ledgerEntry = LedgerEntry.builder().amount(expense.getAmount())
+				.ledgerEntryType(LedgerEntryType.DEBIT).ledgerEntrySource(LedgerEntrySource.PURCHASE)
+				.transactionDateTime(expense.getDateOfExpense()).expense(expense).account(expense.getAccount()).build();
 		return ledgerEntryRepository.save(ledgerEntry);
 	}
 
 	public LedgerEntry createLedgerEntry(PrintJob printJob, BigDecimal amount, Instant instant) {
-		LedgerEntry ledgerEntry = LedgerEntry.builder().amount(amount).ledgerType(LedgerType.CREDIT)
-				.ledgerSource(LedgerSource.ORDER).transactionDateTime(instant).printJob(printJob)
+		LedgerEntry ledgerEntry = LedgerEntry.builder().amount(amount).ledgerEntryType(LedgerEntryType.CREDIT)
+				.ledgerEntrySource(LedgerEntrySource.ORDER).transactionDateTime(instant).printJob(printJob)
 				.account(printJob.getAccount()).build();
 		return ledgerEntryRepository.save(ledgerEntry);
 	}
@@ -60,10 +61,11 @@ public class LedgerEntryService {
 		return ledgerEntryRepository.findAll();
 	}
 
-	public Page<LedgerEntry> getFilteredPaginatedLedgerEntry(@Valid LedgerEntryFilterAndPaginationRequest  filter) {
+	public Page<LedgerEntry> getFilteredPaginatedLedgerEntry(LedgerEntryFilterAndPaginationRequest filter) {
+		Specification<LedgerEntry> spec = LedgderSpecifications.withFilter(filter);
 		Pageable pageable = PageRequest.of(filter.getPaginationRequest().getPageNumber(),
 				filter.getPaginationRequest().getPageSize());
-		return ledgerEntryRepository.findAll(pageable);
+		return ledgerEntryRepository.findAll(spec, pageable);
 	}
 
 	public LedgerEntry updateTransaction(Expense expense) {

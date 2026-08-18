@@ -5,8 +5,8 @@ import java.time.Instant;
 
 import com.spanprints.authservice.dto.EntityResponseDto;
 import com.spanprints.authservice.entity.LedgerEntry;
-import com.spanprints.authservice.entity.LedgerSource;
-import com.spanprints.authservice.entity.LedgerType;
+import com.spanprints.authservice.entity.LedgerEntrySource;
+import com.spanprints.authservice.entity.LedgerEntryType;
 
 import lombok.Getter;
 
@@ -14,8 +14,8 @@ import lombok.Getter;
 public class LedgerEntryResponse extends EntityResponseDto {
 
 	private BigDecimal amount;
-	private LedgerType ledgerType;
-	private LedgerSource ledgerSource;
+	private LedgerEntryType ledgerEntryType;
+	private LedgerEntrySource ledgerEntrySource;
 	private Instant transactionDateTime;
 	private String description;
 	private String printJobUuid;
@@ -27,8 +27,8 @@ public class LedgerEntryResponse extends EntityResponseDto {
 	public LedgerEntryResponse(LedgerEntry ledgerEntry) {
 		super(ledgerEntry);
 		this.amount = ledgerEntry.getAmount();
-		this.ledgerType = ledgerEntry.getLedgerType();
-		this.ledgerSource = ledgerEntry.getLedgerSource();
+		this.ledgerEntryType = ledgerEntry.getLedgerEntryType();
+		this.ledgerEntrySource = ledgerEntry.getLedgerEntrySource();
 		this.transactionDateTime = ledgerEntry.getTransactionDateTime();
 		this.description = ledgerEntry.getDescription();
 		this.printJobUuid = ledgerEntry.getPrintJob() != null ? ledgerEntry.getPrintJob().getUuid() : null;

@@ -18,8 +18,8 @@ import com.spanprints.authservice.dto.inventory.UpdateInventoryItemRequest;
 import com.spanprints.authservice.entity.InventoryHistory;
 import com.spanprints.authservice.entity.InventoryItem;
 import com.spanprints.authservice.entity.LedgerEntry;
-import com.spanprints.authservice.entity.LedgerSource;
-import com.spanprints.authservice.entity.LedgerType;
+import com.spanprints.authservice.entity.LedgerEntrySource;
+import com.spanprints.authservice.entity.LedgerEntryType;
 import com.spanprints.authservice.entity.Vendor;
 import com.spanprints.authservice.enums.InventoryAction;
 import com.spanprints.authservice.exception.InvalidInputsException;
@@ -90,18 +90,18 @@ public class InventoryItemService {
 
 	@Transactional
 	public InventoryItem addStock(@Valid AddStockRequest request) {
-		if(request.getQuantity() < 0) {
+		if (request.getQuantity() < 0) {
 			throw new InvalidInputsException("Quantity cannot be less than zero.");
 		}
 		InventoryItem inventoryItem = getInventoryItemById(request.getItemId());
 		Long quantity = inventoryItem.getQuantity();
-		if(quantity == null) {
+		if (quantity == null) {
 			quantity = 0L;
 		}
 		inventoryItem.setQuantity(quantity + request.getQuantity());
 		inventoryItem = inventoryItemRepository.save(inventoryItem);
 		Vendor vendor = null;
-		if(request.getVendorId() != null) {
+		if (request.getVendorId() != null) {
 			vendor = vendorRepository.findById(request.getVendorId()).orElse(null);
 		}
 		InventoryHistory history = InventoryHistory.builder().inventoryItem(inventoryItem)
@@ -111,7 +111,7 @@ public class InventoryItemService {
 		inventoryHistoryRepository.save(history);
 		if (request.getAddToLedger() != null && request.getAddToLedger()) {
 			LedgerEntry ledgerEntry = LedgerEntry.builder().amount(request.getAmountPaid())
-					.ledgerSource(LedgerSource.PURCHASE).ledgerType(LedgerType.DEBIT)
+					.ledgerEntrySource(LedgerEntrySource.PURCHASE).ledgerEntryType(LedgerEntryType.DEBIT)
 					.description("Purchased Inventory item: " + inventoryItem.getUuid())
 					.transactionDateTime(BasicUtils.convertLocalDateToInstant(request.getDateOfTransaction()))
 					.account(securityUtils.getRequestingAccount()).build();
@@ -122,12 +122,12 @@ public class InventoryItemService {
 
 	@Transactional
 	public InventoryItem subtractStock(@Valid SubtractStockRequest request) {
-		if(request.getQuantity() < 0) {
+		if (request.getQuantity() < 0) {
 			throw new InvalidInputsException("Quantity cannot be less than zero.");
 		}
 		InventoryItem inventoryItem = getInventoryItemById(request.getItemId());
 		Long quantity = inventoryItem.getQuantity();
-		if(quantity < request.getQuantity()) {
+		if (quantity < request.getQuantity()) {
 			throw new InvalidInputsException("Requested quantity higher than available quantity.");
 		}
 		inventoryItem.setQuantity(quantity - request.getQuantity());

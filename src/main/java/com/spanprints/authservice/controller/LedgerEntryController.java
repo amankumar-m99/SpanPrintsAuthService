@@ -29,7 +29,7 @@ import jakarta.validation.constraints.Positive;
 
 @RestController
 @RequestMapping("/ledgerentries")
-public class LedgerController {
+public class LedgerEntryController {
 
 	@Autowired
 	private LedgerEntryService ledgerEntryService;

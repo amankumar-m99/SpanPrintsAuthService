@@ -1,5 +1,5 @@
 package com.spanprints.authservice.entity;
 
-public enum LedgerSource {
+public enum LedgerEntrySource {
 	ORDER, PURCHASE, REFUND, PERSONAL, INVESTMENT, OTHER
 }
