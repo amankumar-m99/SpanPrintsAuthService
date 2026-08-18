@@ -22,7 +22,7 @@ import com.spanprints.authservice.entity.LedgerEntryType;
 import com.spanprints.authservice.entity.PrintJob;
 import com.spanprints.authservice.exception.ledger.TransactionNotFoundException;
 import com.spanprints.authservice.repository.LedgerEntryRepository;
-import com.spanprints.authservice.specifications.LedgderSpecifications;
+import com.spanprints.authservice.specifications.LedgderEntrySpecifications;
 
 @Service
 public class LedgerEntryService {
@@ -62,7 +62,7 @@ public class LedgerEntryService {
 	}
 
 	public Page<LedgerEntry> getFilteredPaginatedLedgerEntry(LedgerEntryFilterAndPaginationRequest filter) {
-		Specification<LedgerEntry> spec = LedgderSpecifications.withFilter(filter);
+		Specification<LedgerEntry> spec = LedgderEntrySpecifications.withFilter(filter);
 		Pageable pageable = PageRequest.of(filter.getPaginationRequest().getPageNumber(),
 				filter.getPaginationRequest().getPageSize());
 		return ledgerEntryRepository.findAll(spec, pageable);

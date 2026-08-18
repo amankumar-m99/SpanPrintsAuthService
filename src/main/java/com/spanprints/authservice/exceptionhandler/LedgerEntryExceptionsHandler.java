@@ -14,7 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
-public class LedgerExceptionsHandler {
+public class LedgerEntryExceptionsHandler {
 
 	@ExceptionHandler(TransactionNotFoundException.class)
 	public ResponseEntity<ErrorResponseDto> handleTransactionNotFoundException(TransactionNotFoundException ex,

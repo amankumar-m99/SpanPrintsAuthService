@@ -17,9 +17,9 @@ import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
-public class LedgderSpecifications {
+public class LedgderEntrySpecifications {
 
-	private LedgderSpecifications() {
+	private LedgderEntrySpecifications() {
 	}
 
 	public static Specification<LedgerEntry> withFilter(LedgerEntryFilterAndPaginationRequest filter) {
@@ -46,7 +46,7 @@ public class LedgderSpecifications {
 				predicates.add(expenseTypeExpression.in(filter.getLedgerEntryTypes()));
 			}
 
-			Predicate dateOfTransactionCriteria = buildCriteriaForCol(criteriaBuilder, root, "dateOfExpense",
+			Predicate dateOfTransactionCriteria = buildCriteriaForCol(criteriaBuilder, root, "transactionDateTime",
 					filter.getTransactionDateMin(), filter.getTransactionDateMax());
 			if (dateOfTransactionCriteria != null)
 				predicates.add(dateOfTransactionCriteria);
