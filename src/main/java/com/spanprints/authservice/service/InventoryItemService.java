@@ -112,7 +112,6 @@ public class InventoryItemService {
 		if (request.getAddToLedger() != null && request.getAddToLedger()) {
 			LedgerEntry ledgerEntry = LedgerEntry.builder().amount(request.getAmountPaid())
 					.ledgerEntrySource(LedgerEntrySource.PURCHASE).ledgerEntryType(LedgerEntryType.DEBIT)
-					.description("Purchased Inventory item: " + inventoryItem.getUuid())
 					.transactionDateTime(BasicUtils.convertLocalDateToInstant(request.getDateOfTransaction()))
 					.account(securityUtils.getRequestingAccount()).build();
 			ledgerEntryRepository.save(ledgerEntry);

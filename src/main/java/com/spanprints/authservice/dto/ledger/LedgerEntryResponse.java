@@ -30,7 +30,6 @@ public class LedgerEntryResponse extends EntityResponseDto {
 		this.ledgerEntryType = ledgerEntry.getLedgerEntryType();
 		this.ledgerEntrySource = ledgerEntry.getLedgerEntrySource();
 		this.transactionDateTime = ledgerEntry.getTransactionDateTime();
-		this.description = ledgerEntry.getDescription();
 		this.printJobUuid = ledgerEntry.getPrintJob() != null ? ledgerEntry.getPrintJob().getUuid() : null;
 		this.expenseUuid = ledgerEntry.getExpense() != null ? ledgerEntry.getExpense().getUuid() : null;
 		this.investmentUuid = ledgerEntry.getInvestment() != null ? ledgerEntry.getInvestment().getUuid() : null;
