@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>com.spanprints</groupId>
 	<artifactId>AuthService</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>2026.08.20.1</version>
 	<name>SpanPrintsAuthService</name>
 	<description>Auth service for SpanPrints</description>
 	<url />
